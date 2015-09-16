@@ -7,7 +7,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    //hej
+    //hej då
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
