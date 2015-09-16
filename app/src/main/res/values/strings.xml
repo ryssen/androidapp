@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">androidapp</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="header_activities">Aktiviteter</string>
+    <string name="create_activity_text">Ny aktivitet</string>
+    <string name="add_activity_button">Lägg till</string>
 </resources>
