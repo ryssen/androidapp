@@ -1,5 +1,8 @@
 <resources>
     <string name="header_activities">Aktiviteter</string>
     <string name="create_activity_text">Ny aktivitet</string>
-    <string name="add_activity_button">Lägg till</string>
+    <string name="activity_button">Lägg till</string>
+
+    <string name="app_name">a</string>
+    <string name="action_settings">b</string>
 </resources>
