@@ -14,39 +14,39 @@
         android:layout_gravity="center"
         android:text="@string/header_activities"
         android:textSize="40dp"
-        android:layout_weight="20"
+        android:layout_weight="5"
         android:textColor="@color/main_text_color"/>
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="80">
-    <EditText
-        android:id="@+id/new_activity_field"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_marginBottom="10dp"
-        android:hint="@string/create_activity_text"
-        android:maxLength="20"
-        android:textColorHint="@color/main_text_color"
-        android:textColor="@color/main_text_color"/>
-    <Button
-        android:id="@+id/add_activity_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/new_activity_field"
-        android:background="@color/main_objects_background"
-        android:textColor="@color/main_text_color"
-        android:text="@string/activity_button"/>
     <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="10dp"
-            android:layout_below="@id/add_activity_button"
-            android:background="@color/main_objects_background">
-    </ListView>
-    </RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="95" />
+    <!--<EditText-->
+        <!--android:id="@+id/new_activity_field"-->
+        <!--android:layout_width="200dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:gravity="center"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:hint="@string/create_activity_text"-->
+        <!--android:maxLength="20"-->
+        <!--android:textColorHint="@color/main_text_color"-->
+        <!--android:textColor="@color/main_text_color"/>-->
+    <!--<Button-->
+        <!--android:id="@+id/add_activity_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_below="@id/new_activity_field"-->
+        <!--android:background="@color/main_objects_background"-->
+        <!--android:textColor="@color/main_text_color"-->
+        <!--android:text="@string/activity_button"/>-->
+    <!--<ListView-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:background="@color/main_objects_background">-->
+    <!--</ListView>-->
 </LinearLayout>
