@@ -1,7 +1,11 @@
 package com.example.eandreje.androidapp;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,10 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import android.widget.Toast;
-
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,30 +26,43 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> activityList_array = new ArrayList<String>();
     int posChosen;
     String stringchosen;
-    final String[] RemoveEdit = {"Ändra namn", "Ta bort Aktivitet"};
+    final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
     boolean editName = false;
-
+    FragmentManager fragmentManager = getFragmentManager();
+    CreateActivityFragment documentFrag = new CreateActivityFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
         activityAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, activityList_array);
         activityList = (ListView) findViewById(R.id.listView);
         activityList.setAdapter(activityAdapter);
+        if(activityAdapter != null)
+           // activityAdapter.add(loadFromSharedPref());
 
-        activityList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
+        activityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             //Activates a onItemLongClick on all "Aktiviteter".
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.add(R.id.main_activity_layout, documentFrag, "documentFragment");
+                transaction.commit();
+            }
+        });
+
+        //Menu that activates on longclick
+        activityList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 posChosen = position;
                 stringchosen = activityAdapter.getItem(position).toString();
+                //Toast.makeText(MainActivity.this, stringchosen, Toast.LENGTH_SHORT).show();
                 {
                     Dialog();
                 }
-                return false;
+                return true;
             }
         });
 
@@ -58,15 +72,13 @@ public class MainActivity extends AppCompatActivity {
     //If the user wants to delete an "Aktivitet", its deleted from the list and the Dialog is closed.
     public void Dialog()
     {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(stringchosen);
         builder.setItems(RemoveEdit, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
-                    editName= true;
-
+                    editName = true;
                     addOrChangeName();
                 }
                 if (which == 1) {
@@ -74,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
                     activityAdapter.notifyDataSetChanged();
                     dialog.dismiss();
                 }
-
             }
         });
         builder.show();
     }
+
     //This function either adds or changes a name depending on if the boolean EditName = true/false.
     //The boolean is set in the function Dialog above and is set to true or false depending on if the user
     //clicked "Ändra namn" or "ta bort namn" in the RemoveEdit-string set in the Dialog.
@@ -105,26 +117,22 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(activityList_array.contains(userInput.getText().toString()))
-                {
+                if (activityList_array.contains(userInput.getText().toString())) {
                     Toast.makeText(MainActivity.this, "Namnet måste vara unikt", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    if(editName)
-                    {
+                } else {
+                    if (editName) {
                         activityList_array.set(posChosen, userInput.getText().toString());
+                        //saveToSharedPref();
                         activityAdapter.notifyDataSetChanged();
                     }
-                    if(!editName)
-                    {
+                    if (!editName) {
                         activityList_array.add(userInput.getText().toString());
                         activityAdapter.notifyDataSetChanged();
                     }
                 }
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -133,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -150,9 +157,27 @@ public class MainActivity extends AppCompatActivity {
             case R.id.add_activity_icon:
                 editName = false;
                 addOrChangeName();
-
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+//    //Handles saving of data to shared preferences
+//    public void saveToSharedPref(){
+//        int i = 0;
+//        SharedPreferences saveData = getSharedPreferences("activities", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = saveData.edit();
+//        while(activityList != null) {
+//            editor.putString("ActivityName", activityList.getItemAtPosition(i).toString());
+//            editor.commit();
+//            i++;
+//        }
+//    }
+//
+//    //Handles saving of data to shared preferences
+//    public String loadFromSharedPref(){
+//        SharedPreferences loadData = getSharedPreferences("activities", Context.MODE_PRIVATE);
+//        String activityName = loadData.getString("ActivityName", "default");
+//        return activityName;
+//    }
 }

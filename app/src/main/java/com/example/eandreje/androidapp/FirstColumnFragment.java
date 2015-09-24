@@ -7,13 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class CreateActivityFragment extends Fragment {
-
+/**
+ * Created by eandreje on 2015-09-24.
+ */
+public class FirstColumnFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.document_layout, container, false);
-        return view;
+        return inflater.inflate(R.layout.in_open_document_layout, container, false);
     }
 }
 
