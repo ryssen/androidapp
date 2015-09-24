@@ -26,7 +26,10 @@ public class MainActivity extends AppCompatActivity {
     ListView activityList;
     ArrayAdapter<String> activityAdapter;
     ArrayList<String> activityList_array = new ArrayList<String>();
-    String chosen;
+    TextView chosen;
+    String hej = "ändrad";
+    String temp;
+    String stringchosen;
     final String[] RemoveEdit = {"Ändra namn", "Ta bort Aktivitet"};
     boolean editName = false;
     //String[] newActivity = {"Fotboll", "Konferens", "Möte"};
@@ -51,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         //AdapterView.OnItemClickListener itemClick = new AdapterView.OnItemClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                chosen = (activityAdapter.getItem(position).toString());
-                //Toast.makeText(MainActivity.this, chosen, Toast.LENGTH_SHORT).show();
+                chosen = (TextView)view;
+
+                stringchosen = activityAdapter.getItem(position).toString();
+                Toast.makeText(MainActivity.this, stringchosen, Toast.LENGTH_SHORT).show();
                 {
                     Dialog();
                 }
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     {
         //Toast.makeText(MainActivity.this, chosen, Toast.LENGTH_SHORT).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(chosen);
+        builder.setTitle(stringchosen);
         //builder.setNegativeButton("Cancel", null);
         builder.setItems(RemoveEdit, new DialogInterface.OnClickListener() {
             @Override
@@ -84,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
                     addOrChangeName();
                 }
                 if (which == 1) {
-                    Toast.makeText(MainActivity.this, chosen, Toast.LENGTH_SHORT).show();
-                    activityList_array.remove(chosen);
+                    Toast.makeText(MainActivity.this, stringchosen, Toast.LENGTH_SHORT).show();
+                    activityList_array.remove(stringchosen);
                     activityAdapter.notifyDataSetChanged();
                     dialog.dismiss();
                 }
@@ -117,15 +122,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if(activityList_array.contains(userInput.getText().toString()))
                 {
-                    dialog.cancel();
+
                     Toast.makeText(MainActivity.this, "Namnet måste vara unikt", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
                     if(editName==true)
                     {
+                        Toast.makeText(MainActivity.this, "CHECK!!!!", Toast.LENGTH_SHORT).show();
+                        temp = userInput.getText().toString();
 
-                        //chosen.setText(userInput.toString());
+                       chosen.setText("ÄNDRAD!!!");
                         activityAdapter.notifyDataSetChanged();
                     }
                     if(editName==false)
