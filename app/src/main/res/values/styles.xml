@@ -2,7 +2,8 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
+          <item name="android:alertDialogTheme">@style/CustomDialog</item>
+         <!-- Customize your theme here. -->
     </style>
 
     <!-- Base application theme. -->
@@ -11,5 +12,14 @@
         <item name="android:windowNoTitle">true</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="CustomDialog" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+
+
+    </style>
+
+
+
 
 </resources>

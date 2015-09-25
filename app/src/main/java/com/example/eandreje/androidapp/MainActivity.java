@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> activityAdapter;
     ArrayList<String> activityList_array = new ArrayList<String>();
     int posChosen;
-    String stringchosen;
+    String stringChosen;
     final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
     boolean editName = false;
     FragmentManager fragmentManager = getFragmentManager();
@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 posChosen = position;
-                stringchosen = activityAdapter.getItem(position).toString();
-                //Toast.makeText(MainActivity.this, stringchosen, Toast.LENGTH_SHORT).show();
+                stringChosen = activityAdapter.getItem(position).toString();
                 {
                     Dialog();
                 }
@@ -72,9 +71,17 @@ public class MainActivity extends AppCompatActivity {
     //If the user wants to delete an "Aktivitet", its deleted from the list and the Dialog is closed.
     public void Dialog()
     {
+       // LayoutInflater li_2 = LayoutInflater.from(this);
+       // View removeEditView = li_2.inflate(R.layout.remove_edit, null);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(stringchosen);
-        builder.setItems(RemoveEdit, new DialogInterface.OnClickListener() {
+
+        //setTheme(android.R.style.Theme_Holo_Light);
+       // builder.setView(removeEditView);
+
+        builder.setTitle(stringChosen);
+        builder.setItems(RemoveEdit,
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
@@ -82,13 +89,14 @@ public class MainActivity extends AppCompatActivity {
                     addOrChangeName();
                 }
                 if (which == 1) {
-                    activityList_array.remove(stringchosen);
+                    activityList_array.remove(stringChosen);
                     activityAdapter.notifyDataSetChanged();
                     dialog.dismiss();
                 }
             }
         });
         builder.show();
+
     }
 
     //This function either adds or changes a name depending on if the boolean EditName = true/false.
@@ -101,10 +109,9 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater li = LayoutInflater.from(this);
         View add_activityView = li.inflate(R.layout.add_activity, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         builder.setView(add_activityView);
-
         final EditText userInput = (EditText) add_activityView.findViewById(R.id.user_input);
-
         builder.setCancelable(false);
         if(editName)
         {
@@ -117,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (activityList_array.contains(userInput.getText().toString())) {
-                    Toast.makeText(MainActivity.this, "Namnet måste vara unikt", Toast.LENGTH_SHORT).show();
+                if (activityList_array.contains(userInput.getText().toString()) || userInput.getText().toString().equals("") || userInput.getText().toString().contains("\n"))  {
+                    Toast.makeText(MainActivity.this, "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
                 } else {
                     if (editName) {
                         activityList_array.set(posChosen, userInput.getText().toString());
@@ -140,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+
     }
 
     @Override
@@ -161,18 +169,18 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-//    //Handles saving of data to shared preferences
-//    public void saveToSharedPref(){
-//        int i = 0;
-//        SharedPreferences saveData = getSharedPreferences("activities", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = saveData.edit();
-//        while(activityList != null) {
-//            editor.putString("ActivityName", activityList.getItemAtPosition(i).toString());
-//            editor.commit();
-//            i++;
-//        }
-//    }
+//
+   //Handles saving of data to shared preferences
+   public void saveToSharedPref(){
+        int i = 0;
+       SharedPreferences saveData = getSharedPreferences("activities", Context.MODE_PRIVATE);
+       SharedPreferences.Editor editor = saveData.edit();
+        while(activityList != null) {
+            editor.putString("ActivityName", activityList.getItemAtPosition(i).toString());
+            editor.commit();
+            i++;
+        }
+    }
 //
 //    //Handles saving of data to shared preferences
 //    public String loadFromSharedPref(){
