@@ -1,5 +1,6 @@
 package com.example.eandreje.androidapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    SharedPre sharedPre;
+    Activity context = this;
 
     ListView activityListView;
     static ArrayAdapter<ListItem> activityAdapter;
@@ -42,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sharedPre = new SharedPre();
+        sharedPre.loadFromSharedPref(context);
+        activityList = sharedPre.tempList;
 
         activityAdapter = new ArrayAdapter<ListItem>(this, android.R.layout.simple_list_item_1, activityList);
         activityListView = (ListView) findViewById(R.id.listView);
@@ -101,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
                             ListItem itemToRemove = activityAdapter.getItem(position);
                             activityAdapter.remove(itemToRemove);
                             dialog.dismiss();
+                            sharedPre.saveToSharedPref(context,activityList);
+
                         }
                     }
                 });
@@ -143,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                         activityAdapter.add(new ListItem(userInput.getText().toString()));
                     }
                 }
+                sharedPre.saveToSharedPref(context,activityList);
             }
         });
         builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {

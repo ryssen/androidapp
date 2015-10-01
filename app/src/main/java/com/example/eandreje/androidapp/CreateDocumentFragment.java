@@ -29,7 +29,7 @@ public class CreateDocumentFragment extends Fragment {
         View view = inflater.inflate(R.layout.document_layout, container, false);
         getActivity().setTitle("gello");
         ListView listView = (ListView)view.findViewById(R.id.document_listview);
-        adapter = new ArrayAdapter<DocItem>(getActivity().getApplicationContext(), R.layout.row_layout, docItem.getDocContainer());
+        //adapter = new ArrayAdapter<DocItem>(getActivity().getApplicationContext(), R.layout.row_layout, docItem.getDocContainer());
         listView.setAdapter(adapter);
 
         Button add = (Button)view.findViewById(R.id.newButton);
@@ -56,7 +56,7 @@ public class CreateDocumentFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.document_actionbar, menu);
+       // inflater.inflate(R.menu.document_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
