@@ -8,4 +8,7 @@
     <string name="action_settings">b</string>
     <string-array name="RemoveEdit">{"Ändra namn", "Ta bort aktivitet"}</string-array>
     <string name="changeName">Ändra namn</string>
+    <string name="positive_answer_dialog">OK</string>
+    <string name="negative_answer_dialog">Avbryt</string>
+    <string name="dialog_title">Lägg till ny aktivitet</string>
 </resources>
