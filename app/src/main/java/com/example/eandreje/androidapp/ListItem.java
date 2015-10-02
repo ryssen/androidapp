@@ -1,8 +1,11 @@
 package com.example.eandreje.androidapp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class ListItem {
+public class ListItem implements Parcelable {
     String id;
     private final ArrayList<DocItem> docContainer = new ArrayList<DocItem>();
 
@@ -34,5 +37,15 @@ public class ListItem {
     @Override
     public String toString() {
         return this.id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }

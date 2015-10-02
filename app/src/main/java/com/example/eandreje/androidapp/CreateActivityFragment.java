@@ -1,5 +1,6 @@
 package com.example.eandreje.androidapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,18 +13,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateActivityFragment extends Fragment implements CustomDialogFragment.Communicator{
     SharedPre sharedPre;
-    //kolla hur activity ska referas
+    //kolla hur activity ska refereras
     //Activity context = getActivity();
     ListView activityListView;
     static ArrayAdapter<ListItem> activityAdapter;
     static List<ListItem> activityList = new ArrayList<ListItem>();
-
-    CustomDialogFragment.Communicator communicator;
+    Communicator communicator;
+    //CustomDialogFragment.Communicator communicator;
 
     int posChosen;
     String stringChosen;
@@ -37,19 +40,23 @@ public class CreateActivityFragment extends Fragment implements CustomDialogFrag
     }
 
     public interface Communicator{
-        public void activeObject(CreateActivityFragment frag);
+        void activeObject(ListItem listItem);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_main, container, false);
-
-
+        getActivity().supportInvalidateOptionsMenu();
 //        sharedPre = new SharedPre();
 //        sharedPre.loadFromSharedPref(context);
 //        activityList = sharedPre.tempList;
-
         activityAdapter = new ArrayAdapter<ListItem>(getActivity(), android.R.layout.simple_list_item_1, activityList);
         activityListView = (ListView)view.findViewById(R.id.listView);
         activityListView.setAdapter(activityAdapter);
@@ -57,21 +64,9 @@ public class CreateActivityFragment extends Fragment implements CustomDialogFrag
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                CreateDocumentFragment docFragment = new CreateDocumentFragment();
-//                //FragmentManager fm = getFragmentManager();
-//                //docFragment.addToActivity(activityList.get(position));
-////                FragmentTransaction ft = fm.beginTransaction();
-////                ft.add(R.id.main_activity_layout, docFragment, "docFragment");
-////                ft.addToBackStack(null);
-////                ft.commit();
-////            getSupportFragmentManager().beginTransaction()
-////                    .add(R.id.main_activity_layout, docFragment)
-////                    .addToBackStack(null).commit();
-//            }
+                communicator.activeObject(activityList.get(position));
             }
         });
-
-
     //Menu that activates on longclick
 //    activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 //        @Override
@@ -84,12 +79,23 @@ public class CreateActivityFragment extends Fragment implements CustomDialogFrag
 //            return true;
 //        }
 //    });
-        setHasOptionsMenu(true);
         return view;
 }
 
-    public static List<ListItem> getActivityList() {
-        return activityList;
+//    public static List<ListItem> getActivityList() {
+//        return activityList;
+//    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            communicator = (Communicator)getActivity();
+        }
+        catch (ClassCastException e){
+            throw new ClassCastException(getActivity().toString() + " must implement Communicator");
+        }
     }
 
     @Override
@@ -113,3 +119,14 @@ public class CreateActivityFragment extends Fragment implements CustomDialogFrag
         }
     }
 }
+//                CreateDocumentFragment docFragment = new CreateDocumentFragment();
+//                //FragmentManager fm = getFragmentManager();
+//                //docFragment.addToActivity(activityList.get(position));
+////                FragmentTransaction ft = fm.beginTransaction();
+////                ft.add(R.id.main_activity_layout, docFragment, "docFragment");
+////                ft.addToBackStack(null);
+////                ft.commit();
+////            getSupportFragmentManager().beginTransaction()
+////                    .add(R.id.main_activity_layout, docFragment)
+////                    .addToBackStack(null).commit();
+//            }

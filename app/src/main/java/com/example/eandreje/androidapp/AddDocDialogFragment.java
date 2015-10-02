@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class CustomDialogFragment extends DialogFragment {
+public class AddDocDialogFragment extends DialogFragment {
     Communicator communicator;
 
     @NonNull
@@ -19,7 +19,7 @@ public class CustomDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflate = getActivity().getLayoutInflater();
-        builder.setView(inflate.inflate(R.layout.default_dialog, null));
+        builder.setView(inflate.inflate(R.layout.add_doc_dialog, null));
         builder.setNegativeButton(R.string.negative_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -28,9 +28,9 @@ public class CustomDialogFragment extends DialogFragment {
         builder.setPositiveButton(R.string.positive_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                EditText textbox = (EditText)getDialog().findViewById(R.id.dialog_editText);
-                communicator.activityName(textbox.getText().toString());
-                Toast.makeText(getActivity(), textbox.getText().toString() + " är tillagd", Toast.LENGTH_SHORT).show();
+                EditText textbox = (EditText)getDialog().findViewById(R.id.dialog_editText2);
+                communicator.documentName(textbox.getText().toString());
+                //Toast.makeText(getActivity(), textbox.getText().toString() + " är tillagd", Toast.LENGTH_SHORT).show();
             }
         });
         Dialog dialog = builder.create();
@@ -81,7 +81,7 @@ public class CustomDialogFragment extends DialogFragment {
 //        builder.show();
 //    }
 
-//    This function either adds or changes a name depending on if the boolean EditName = true/false.
+    //    This function either adds or changes a name depending on if the boolean EditName = true/false.
 //    The boolean is set in the function Dialog above and is set to true or false depending on if the user
 //    clicked "Ändra namn" or "ta bort namn" in the RemoveEdit-string set in the Dialog.
 //    The title on the Alert will also change depending on what the user has chosen.
@@ -130,6 +130,6 @@ public class CustomDialogFragment extends DialogFragment {
 //        dialog.show();
 //    }
     public interface Communicator{
-        public void activityName(String name);
+        public void documentName(String name);
     }
 }

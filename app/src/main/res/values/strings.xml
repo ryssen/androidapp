@@ -11,4 +11,5 @@
     <string name="positive_answer_dialog">OK</string>
     <string name="negative_answer_dialog">Avbryt</string>
     <string name="dialog_title">Lägg till ny aktivitet</string>
+    <string name="add_doc_dialog_title">Lägg till nytt dokument</string>
 </resources>
