@@ -3,45 +3,42 @@ package com.example.eandreje.androidapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity implements CreateActivityFragment.Communicator,
-        CustomDialogFragment.Communicator, AddDocDialogFragment.Communicator
+public class MainActivity extends AppCompatActivity implements CreateActivityFragment.CreateActivityFragmentListener,
+        CreateDocumentFragment.CreateDocumentFragmentListener
 {
     CreateActivityFragment activityFragment;
     CreateDocumentFragment documentFragment;
+    LeftsideDocumentFragment leftsideDocumentFragment;
+    RightsideDocumentFragment rightsideDocumentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         activityFragment = new CreateActivityFragment();
-        //FragmentManager fm = getFragmentManager();
-        //docFragment.addToActivity(activityList.get(position));
-//                FragmentTransaction ft = fm.beginTransaction();
-//                ft.add(R.id.main_activity_layout, docFragment, "docFragment");
-//                ft.addToBackStack(null);
-//                ft.commit();
+
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_activity_layout, activityFragment)
-                .addToBackStack(null).commit();
+                .commit();
     }
 
-
+    //activeObject recieves the clicked listobject(activities) which is forwarded
+    //to the static newInstance method.
     @Override
     public void activeObject(ListItem listItem) {
-        documentFragment = new CreateDocumentFragment();
+        documentFragment = CreateDocumentFragment.newInstance(listItem);
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_activity_layout, CreateDocumentFragment.newInstance(listItem))
+                .replace(R.id.main_activity_layout, documentFragment)
                 .addToBackStack(null).commit();
     }
 
-    //From dialog OK button
+    //docObject recieves the clicked listobject(document)
     @Override
-    public void activityName(String name) {
-        activityFragment.activityName(name);
-    }
-
-    @Override
-    public void documentName(String name) {
-
+    public void docObjectClicked(DocItem doc) {
+        leftsideDocumentFragment = new LeftsideDocumentFragment().newInstance(doc);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_activity_layout, leftsideDocumentFragment)
+                .addToBackStack(null).commit();
     }
 }

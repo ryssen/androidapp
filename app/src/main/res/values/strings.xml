@@ -4,7 +4,7 @@
     <string name="activity_button">Lägg till</string>
     <string name="add_activity_title">Lägg till aktivitet</string>
     <string name="doc_list_title">Dokument</string>
-    <string name="app_name">Aktiviteter</string>
+    <string name="app_name">Närvaroappen</string>
     <string name="action_settings">b</string>
     <string-array name="RemoveEdit">{"Ändra namn", "Ta bort aktivitet"}</string-array>
     <string name="changeName">Ändra namn</string>

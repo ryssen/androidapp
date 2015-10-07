@@ -1,13 +1,13 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
           <item name="android:alertDialogTheme">@style/CustomDialog</item>
          <!-- Customize your theme here. -->
     </style>
 
     <!-- Base application theme. -->
-    <style name="NoActionBar" parent="@android:style/Theme.Holo.Light">
+    <style name="NoActionBar" parent="@android:style/Theme.Holo">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <!-- Customize your theme here. -->
@@ -23,3 +23,8 @@
 
 
 </resources>
+    <!--
+    "Theme.AppCompat.Light"
+    "@android:style/Theme.Holo.Light"
+    "@android:style/Theme.Holo.Light.Dialog"
+    -->

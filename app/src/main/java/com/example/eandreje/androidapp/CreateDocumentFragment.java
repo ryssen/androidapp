@@ -1,8 +1,7 @@
 package com.example.eandreje.androidapp;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,17 +10,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-public class CreateDocumentFragment extends Fragment implements AddDocDialogFragment.Communicator {
+public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener {
     ArrayAdapter<DocItem> adapter;
-    ListItem docItem = new ListItem();
     ListItem listItem;
-    private String docName;
+    ListView listView;
+    CreateDocumentFragmentListener createDocumentFragmentListener;
 
-    public static final CreateDocumentFragment newInstance(ListItem listItem){
+    //newInstance factoring method, returns a new instance of this class
+    // with custom parameter
+    public static CreateDocumentFragment newInstance(ListItem listItem){
         CreateDocumentFragment fragment = new CreateDocumentFragment();
         Bundle bundle = new Bundle(1);
         bundle.putParcelable("key", listItem);
@@ -31,8 +32,8 @@ public class CreateDocumentFragment extends Fragment implements AddDocDialogFrag
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         listItem = getArguments().getParcelable("key");
     }
 
@@ -40,23 +41,30 @@ public class CreateDocumentFragment extends Fragment implements AddDocDialogFrag
     //@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.document_layout, container, false);
-        ListView listView = (ListView)view.findViewById(R.id.document_listview);
+        listView = (ListView)view.findViewById(R.id.document_listview);
         adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, listItem.getDocContainer());
         listView.setAdapter(adapter);
 
-//        Button addDocButton = (Button)view.findViewById(R.id.add_doc_icon);
-//        addDocButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//            }
-//        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                createDocumentFragmentListener.docObjectClicked(listItem.getDocContainer().get(position));
+            }
+        });
         return view;
     }
 
-    //Receives the docList from the caller object
-    //in Activity Listview, and is used to initiate the adapter in onCreate()
-    public void addToActivity(ListItem activity){
-        docItem = activity;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try
+        {
+            createDocumentFragmentListener = (CreateDocumentFragmentListener)getActivity();
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(getActivity().toString() + " must implement CreateActivityFragmentListener");
+        }
     }
 
     @Override
@@ -72,18 +80,21 @@ public class CreateDocumentFragment extends Fragment implements AddDocDialogFrag
         switch (item.getItemId())
         {
             case R.id.add_doc_icon:
-                AddDocDialogFragment addDocDialogFragment = new AddDocDialogFragment();
-                addDocDialogFragment.show(getFragmentManager(), "NewDocDialog");
-                //adapter.add(new DocItem("hej"));
+                DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                defaultDialogFragment.listener = this; //interface gets its reference
+                defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
-    public void documentName(String name) {
-        Toast.makeText(getActivity(), "hallooo", Toast.LENGTH_SHORT).show();
-        adapter.add(new DocItem(name));
+    public void enteredText(String text) {
+        adapter.add(new DocItem(text));
+    }
+
+    public interface CreateDocumentFragmentListener{
+        void docObjectClicked(DocItem doc);
     }
 }
 

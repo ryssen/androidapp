@@ -1,25 +1,24 @@
 package com.example.eandreje.androidapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class AddDocDialogFragment extends DialogFragment {
-    Communicator communicator;
+public class DefaultDialogFragment extends android.support.v4.app.DialogFragment {
+    DefaultDialogFragmentListener listener;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflate = getActivity().getLayoutInflater();
-        builder.setView(inflate.inflate(R.layout.add_doc_dialog, null));
+        builder.setView(inflate.inflate(R.layout.default_dialog, null));
+
         builder.setNegativeButton(R.string.negative_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -28,31 +27,20 @@ public class AddDocDialogFragment extends DialogFragment {
         builder.setPositiveButton(R.string.positive_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                EditText textbox = (EditText)getDialog().findViewById(R.id.dialog_editText2);
-                communicator.documentName(textbox.getText().toString());
-                //Toast.makeText(getActivity(), textbox.getText().toString() + " är tillagd", Toast.LENGTH_SHORT).show();
+                EditText textbox = (EditText) getDialog().findViewById(R.id.dialog_editText);
+                listener.enteredText(textbox.getText().toString());
+                Toast.makeText(getActivity(), textbox.getText().toString() + " är tillagd", Toast.LENGTH_SHORT).show();
             }
         });
         Dialog dialog = builder.create();
         return dialog;
     }
 
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        communicator = (Communicator)getActivity();
-//    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try{
-            communicator = (Communicator)getActivity();
-        }
-        catch (ClassCastException e){
-            throw new ClassCastException(activity.toString() + " must implement Communicator");
-        }
+    //Communication interface
+    public interface DefaultDialogFragmentListener {
+        void enteredText(String text);
     }
+}
 
 
     //Checks if the user wants to change name on an existing "Aktivitet" or delete it.
@@ -81,14 +69,13 @@ public class AddDocDialogFragment extends DialogFragment {
 //        builder.show();
 //    }
 
-    //    This function either adds or changes a name depending on if the boolean EditName = true/false.
+//    This function either adds or changes a name depending on if the boolean EditName = true/false.
 //    The boolean is set in the function Dialog above and is set to true or false depending on if the user
 //    clicked "Ändra namn" or "ta bort namn" in the RemoveEdit-string set in the Dialog.
 //    The title on the Alert will also change depending on what the user has chosen.
 //    Its not possible to enter a name which already exists.
 //    public void addOrChangeName() {
 //        LayoutInflater li = LayoutInflater.from(this);
-//        View add_activityView = li.inflate(R.layout.add_activity, null);
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //
 //        builder.setView(add_activityView);
@@ -129,7 +116,5 @@ public class AddDocDialogFragment extends DialogFragment {
 //        AlertDialog dialog = builder.create();
 //        dialog.show();
 //    }
-    public interface Communicator{
-        public void documentName(String name);
-    }
-}
+
+

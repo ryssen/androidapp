@@ -13,35 +13,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateActivityFragment extends Fragment implements CustomDialogFragment.Communicator{
+public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener {
     SharedPre sharedPre;
-    //kolla hur activity ska refereras
-    //Activity context = getActivity();
     ListView activityListView;
-    static ArrayAdapter<ListItem> activityAdapter;
-    static List<ListItem> activityList = new ArrayList<ListItem>();
-    Communicator communicator;
-    //CustomDialogFragment.Communicator communicator;
+    ArrayAdapter<ListItem> activityAdapter;
+    List<ListItem> activityList = new ArrayList<ListItem>();
+    CreateActivityFragmentListener createActivityFragmentListener;
 
-    int posChosen;
-    String stringChosen;
-    final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
-    boolean editName = false;
-
-    //Recieved listitem name from dialog
-    @Override
-    public void activityName(String name) {
-        activityAdapter.add(new ListItem(name));
-    }
-
-    public interface Communicator{
-        void activeObject(ListItem listItem);
-    }
+//    int posChosen;
+//    String stringChosen;
+//    final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
+//    boolean editName = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +37,7 @@ public class CreateActivityFragment extends Fragment implements CustomDialogFrag
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_main, container, false);
+        View view = inflater.inflate(R.layout.activities_layout, container, false);
         getActivity().supportInvalidateOptionsMenu();
 //        sharedPre = new SharedPre();
 //        sharedPre.loadFromSharedPref(context);
@@ -64,37 +49,22 @@ public class CreateActivityFragment extends Fragment implements CustomDialogFrag
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                communicator.activeObject(activityList.get(position));
+               createActivityFragmentListener.activeObject(activityList.get(position));
             }
         });
-    //Menu that activates on longclick
-//    activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//        @Override
-//        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//            posChosen = position;
-//            stringChosen = activityAdapter.getItem(position).toString();
-//            {
-//                Dialog(position);
-//            }
-//            return true;
-//        }
-//    });
         return view;
-}
-
-//    public static List<ListItem> getActivityList() {
-//        return activityList;
-//    }
-
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try{
-            communicator = (Communicator)getActivity();
+        try
+        {
+            createActivityFragmentListener = (CreateActivityFragmentListener)getActivity();
         }
-        catch (ClassCastException e){
-            throw new ClassCastException(getActivity().toString() + " must implement Communicator");
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(getActivity().toString() + " must implement CreateActivityFragmentListener");
         }
     }
 
@@ -106,11 +76,11 @@ public class CreateActivityFragment extends Fragment implements CustomDialogFrag
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.add_activity_icon:
-                CustomDialogFragment customDialogFragment = new CustomDialogFragment();
-                customDialogFragment.show(getFragmentManager(), "dialog");
+                DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                defaultDialogFragment.listener = this;
+                defaultDialogFragment.show(getFragmentManager(), "dialog");
 
                 //editName = false;
                 //addOrChangeName();
@@ -118,15 +88,28 @@ public class CreateActivityFragment extends Fragment implements CustomDialogFrag
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //Recieved name from userinput in dialog
+    @Override
+    public void enteredText(String text) {
+        activityAdapter.add(new ListItem(text));
+    }
+
+    public interface CreateActivityFragmentListener {
+        void activeObject(ListItem listItem);
 }
-//                CreateDocumentFragment docFragment = new CreateDocumentFragment();
-//                //FragmentManager fm = getFragmentManager();
-//                //docFragment.addToActivity(activityList.get(position));
-////                FragmentTransaction ft = fm.beginTransaction();
-////                ft.add(R.id.main_activity_layout, docFragment, "docFragment");
-////                ft.addToBackStack(null);
-////                ft.commit();
-////            getSupportFragmentManager().beginTransaction()
-////                    .add(R.id.main_activity_layout, docFragment)
-////                    .addToBackStack(null).commit();
+}
+
+
+//Menu that activates on longclick
+//    activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//        @Override
+//        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//            posChosen = position;
+//            stringChosen = activityAdapter.getItem(position).toString();
+//            {
+//                Dialog(position);
 //            }
+//            return true;
+//        }
+//    });
