@@ -6,12 +6,18 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class OptionsDialogFragment extends android.support.v4.app.DialogFragment {
     protected final int ARRAYSIZE = 10;
-    private String[] optionsList = new String[ARRAYSIZE];
+
+    private ArrayList<String> optionsList;
     private ArrayAdapter<String> adapter;
     private ListView listView;
 
@@ -20,14 +26,23 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflate = getActivity().getLayoutInflater();
-        builder.setView(inflate.inflate(R.layout.act_options_layout, null));
+        View view = inflate.inflate(R.layout.act_options_layout, null);
+        builder.setView(view);
 
-        listView = (ListView) getDialog().findViewById(R.id.listView2);
-        optionsList[0] = "Ändra namn";
-        optionsList[1] = "Ta bort rad";
+        listView = (ListView)view.findViewById(R.id.listView3);
+        optionsList = new ArrayList<>();
+        optionsList.add("Ändra namn");
+        optionsList.add("Ta bort rad");
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, optionsList);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity(), "You clicked ", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         builder.setNegativeButton(R.string.negative_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
@@ -43,6 +58,14 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
         return dialog;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+
+
+    }
 }
 
 

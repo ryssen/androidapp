@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +51,15 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               createActivityFragmentListener.activeObject(activityList.get(position));
+                createActivityFragmentListener.activeObject(activityList.get(position));
+            }
+        });
+        activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                OptionsDialogFragment optionsDialog = new OptionsDialogFragment();
+                optionsDialog.show(getFragmentManager(), "Options");
+                return false;
             }
         });
         return view;
