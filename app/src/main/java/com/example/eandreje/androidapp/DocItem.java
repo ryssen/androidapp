@@ -4,14 +4,23 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class DocItem implements Parcelable {
-    String id;
+    int id;
+    int parentId;
+    String name;
     String context = "doable";
+    
 
-    public DocItem(){
+    public DocItem(){super();}
+
+    public DocItem(int id, int parentID, String name){
+        this.id = id;
+        this.parentId = parentID;
+        this.name = name;
+
     }
 
-    public DocItem(String name){
-        id = name;
+    public DocItem(String name) {
+        this.name = name;
     }
 
     public String getContext() {
@@ -22,9 +31,22 @@ public class DocItem implements Parcelable {
         this.context = context;
     }
 
+
+    public void setId(int id) {this.id = id;}
+
+    public int getId() {return id;}
+
+    public void setParentId(int parentId) {this.parentId = parentId;}
+
+    public int getParentId() {return parentId;}
+
+    public void setName(String name){this.name = name;}
+
+    public String getName(){return name;}
+
     @Override
     public String toString() {
-        return this.id;
+        return this.name;
     }
 
     @Override
@@ -35,6 +57,7 @@ public class DocItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
+        
     }
 }
 

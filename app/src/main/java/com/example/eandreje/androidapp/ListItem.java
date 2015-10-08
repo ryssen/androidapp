@@ -4,39 +4,46 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListItem implements Parcelable {
-    String id;
+    int id;
+    String name;
     private final ArrayList<DocItem> docContainer = new ArrayList<DocItem>();
 
     public ListItem( ){
         super();
     }
 
-    public ListItem(String name){
+    public ListItem(int id, String name){
         super();
-        this.id = name;
-    }
-
-    public void setId(String id) {
         this.id = id;
+        this.name = name;
     }
 
-    public String getId() {
-        return id;
+    public ListItem(String name) {
+        this.name = name;
     }
+
+    public void setId(int id) {this.id = id;}
+
+    public int getId() {return id;}
+
+    public void setName(String name) {this.name = name;}
+
+    public String getName(){return name;}
 
     public void addToDocList(DocItem doc){
           docContainer.add(doc);
     }
 
-    public ArrayList<DocItem> getDocContainer() {
+    public List<DocItem> getDocContainer() {
         return docContainer;
     }
 
     @Override
     public String toString() {
-        return this.id;
+        return this.name;
     }
 
     @Override
