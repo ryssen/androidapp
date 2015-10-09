@@ -19,6 +19,8 @@ public class SharedPre
     List<ListItem> tempList;
     List<DocItem> tempListDoc;
     List<DocItem> secTemp;
+    int tempLi_ID;
+    int tempDi_ID;
 
 //Here are the methods for saving, loading, editing, adding and removing Listitems
     public void saveListItem(Context context,  List<ListItem> list)
@@ -181,13 +183,30 @@ public class SharedPre
         }
 
     }
-    public void ListItemID(Context context, int ListItemID)
+    public void saveListItemID(Context context, int ListItemID)
     {
+        data = context.getSharedPreferences("ListItemIdCounter", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = data.edit();
+        editor.putInt("listitemid", ListItemID);
+        editor.commit();
+    }
+    public void loadListItemID(Context context)
+    {
+        data = context.getSharedPreferences("ListItemIdCounter", Context.MODE_PRIVATE);
+        tempLi_ID = data.getInt("listitemid", 0);
 
     }
-    public void DocItemID(Context context, int DocItemID)
+    public void saveDocItemID(Context context, int DocItemID)
     {
-
+        data = context.getSharedPreferences("DocItemIdCounter", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = data.edit();
+        editor.putInt("docitemid", DocItemID);
+        editor.commit();
+    }
+    public void loadDocItemID(Context context)
+    {
+        data = context.getSharedPreferences("DocItemIdCounter", Context.MODE_PRIVATE);
+        tempDi_ID = data.getInt("DocItemIdCounter", 0);
     }
 
     public void clearAllone(Context context)

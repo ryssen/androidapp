@@ -1,9 +1,7 @@
 package com.example.eandreje.androidapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.VoiceInteractor;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;

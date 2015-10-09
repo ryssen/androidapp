@@ -21,9 +21,9 @@ public class ListItem implements Parcelable {
         this.name = name;
     }
 
-    public ListItem(String name) {
-        this.name = name;
-    }
+//    public ListItem(String name) {
+//        this.name = name;
+//    }
 
     public void setId(int id) {this.id = id;}
 

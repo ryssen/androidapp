@@ -29,7 +29,7 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
             public void onClick(DialogInterface dialog, int which) {
                 EditText textbox = (EditText) getDialog().findViewById(R.id.dialog_editText);
                 listener.enteredText(textbox.getText().toString());
-                Toast.makeText(getActivity(), textbox.getText().toString() + " är tillagd", Toast.LENGTH_SHORT).show();
+
             }
         });
         Dialog dialog = builder.create();

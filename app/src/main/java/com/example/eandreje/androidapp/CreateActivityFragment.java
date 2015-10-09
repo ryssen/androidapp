@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,13 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     List<ListItem> activityList = new ArrayList<ListItem>();
     CreateActivityFragmentListener createActivityFragmentListener;
     OptionsDialogFragment optionsDialog;
+    Context context;
+    ListItem ItemClicked;
+
+    OptionsDialogFragment optionsDialogFragment;
+    int key;
+    int Li_ID;
+
 //    int posChosen;
 //    String stringChosen;
 //    final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
@@ -42,7 +50,14 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activities_layout, container, false);
         getActivity().supportInvalidateOptionsMenu();
-//        sharedPre = new SharedPre();
+        sharedPre = new SharedPre();
+        context = getActivity();
+        sharedPre.clearAllone(context);
+        sharedPre.clearAlltwo(context);
+        sharedPre.loadListItemID(context);
+        Li_ID = sharedPre.tempLi_ID;
+        optionsDialogFragment = new OptionsDialogFragment();
+
 //        sharedPre.loadFromSharedPref(context);
 //        activityList = sharedPre.tempList;
         activityAdapter = new ArrayAdapter<ListItem>(getActivity(), android.R.layout.simple_list_item_1, activityList);
@@ -61,6 +76,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ItemClicked = activityAdapter.getItem(position);
                 optionsDialog.show(getFragmentManager(), "Options");
                 return true;
             }
@@ -82,8 +98,6 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
 
-                //editName = false;
-                //addOrChangeName();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -92,7 +106,21 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     //Recieved name from userinput in dialog
     @Override
     public void enteredText(String text) {
-        activityAdapter.add(new ListItem(text));
+
+        if( activityList.toString().contains(text.toString()) ||text.toString().contentEquals("") || text.toString().contains("\n"))
+        {
+            Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            Li_ID++;
+            sharedPre.saveListItemID(context, Li_ID);
+            ListItem l = new ListItem(Li_ID, text);
+            activityAdapter.add(l);
+            sharedPre.addListItem(context, l);
+            UpdateAndSave();
+            Toast.makeText(getActivity(), text.toString() + " är tillagd", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -101,24 +129,30 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
             Toast.makeText(getActivity(), "0" + pos, Toast.LENGTH_SHORT).show();
         if(pos == 1)
             Toast.makeText(getActivity(), "1" + pos, Toast.LENGTH_SHORT).show();
+            removeItem();
+
 
     }
 
     public interface CreateActivityFragmentListener {
         void activeObject(ListItem listItem);
 }
+    public void UpdateAndSave()
+    {
+        activityList = sharedPre.tempList;
+        activityAdapter.clear();
+        activityAdapter.addAll(activityList);
+        sharedPre.saveListItem(context, activityList);
+    }
+    public void removeItem()
+    {
+        Toast.makeText(getActivity(), "hej1", Toast.LENGTH_LONG).show();
+        context = getActivity();
+        sharedPre.removeListItem(context, ItemClicked);
+        key = ItemClicked.getId();
+        sharedPre.removeMultipleDocItems(context, key);
+        sharedPre.saveDocItem(context, sharedPre.tempListDoc);
+        UpdateAndSave();
+    }
 }
 
-
-//Menu that activates on longclick
-//    activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//        @Override
-//        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//            posChosen = position;
-//            stringChosen = activityAdapter.getItem(position).toString();
-//            {
-//                Dialog(position);
-//            }
-//            return true;
-//        }
-//    });
