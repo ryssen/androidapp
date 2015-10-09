@@ -22,7 +22,6 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
     private ListView listView;
 
     public OptionsDialogFragment(){
-
     }
 
     @Override
@@ -50,19 +49,7 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 listener.getChoice(position);
-            }
-        });
-
-        builder.setNegativeButton(R.string.negative_answer_dialog, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        builder.setPositiveButton(R.string.positive_answer_dialog, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-
+                dismiss();
             }
         });
         Dialog dialog = builder.create();

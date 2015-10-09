@@ -20,6 +20,7 @@ import java.util.List;
 
 public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
+
     SharedPre sharedPre;
     ListView activityListView;
     ArrayAdapter<ListItem> activityAdapter;
@@ -42,7 +43,25 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Aktiviteter");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try
+        {
+            createActivityFragmentListener = (CreateActivityFragmentListener)getActivity();
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(context.toString() + " must implement CreateActivityFragmentListener");
+        }
     }
 
     @Nullable

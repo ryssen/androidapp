@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_activity_layout, activityFragment)
                 .commit();
+        this.setTitle("Aktiviteter");
     }
 
     //activeObject recieves the clicked listobject(activities) which is forwarded
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_activity_layout, documentFragment)
                 .addToBackStack(null).commit();
+        this.setTitle("Dokument");
     }
 
     //docObject recieves the clicked listobject(document)

@@ -14,23 +14,27 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener {
+public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
+        OptionsDialogFragment.OptionsDialogFragmentListener{
+
     ArrayAdapter<DocItem> adapter;
     ListItem listItem;
     ListView listView;
     Activity context;
     SharedPre sharedPre = new SharedPre();
     int key;
-    int DocItemID;
+    int docItemID;
     CreateDocumentFragmentListener createDocumentFragmentListener;
+    OptionsDialogFragment optionsDialogFragment;
 
     //newInstance factoring method, returns a new instance of this class
     // with custom parameter
     public static CreateDocumentFragment newInstance(ListItem listItem){
         CreateDocumentFragment fragment = new CreateDocumentFragment();
         Bundle bundle = new Bundle(1);
-        bundle.putParcelable("key", listItem);
+        bundle.putParcelable("listobject", listItem);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -39,7 +43,13 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listItem = getArguments().getParcelable("key");
+        listItem = getArguments().getParcelable("listobject");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Dokument");
     }
 
     @Nullable
@@ -48,10 +58,13 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         key = getArguments().getInt("key");
         View view = inflater.inflate(R.layout.document_layout, container, false);
         context = getActivity();
-        sharedPre.loadDocItem(context, key);
-        listItem.getDocContainer().clear();
-        listItem.getDocContainer().addAll(sharedPre.secTemp);
-        
+//        sharedPre.loadDocItem(context, key);
+//        listItem.getDocContainer().clear();
+//        listItem.getDocContainer().addAll(sharedPre.secTemp);
+
+        optionsDialogFragment = new OptionsDialogFragment();
+        optionsDialogFragment.listener = this;
+
         listView = (ListView)view.findViewById(R.id.document_listview);
         adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, listItem.getDocContainer());
         listView.setAdapter(adapter);
@@ -60,6 +73,13 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 createDocumentFragmentListener.docObjectClicked(listItem.getDocContainer().get(position));
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                optionsDialogFragment.show(getFragmentManager(), "docOptions");
+                return true;
             }
         });
         return view;
@@ -102,6 +122,19 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     @Override
     public void enteredText(String text) {
         adapter.add(new DocItem(text));
+    }
+
+    @Override
+    public void getChoice(int pos) {
+    switch (pos){
+        case 0:
+            DefaultDialogFragment docDialog = new DefaultDialogFragment();
+            docDialog.listener = this;
+            docDialog.show(getFragmentManager(), "editDocDialog");
+        case 1:
+            Toast.makeText(getActivity(), "you clicked 1", Toast.LENGTH_SHORT).show();
+        default:
+    }
     }
 
     public interface CreateDocumentFragmentListener{
