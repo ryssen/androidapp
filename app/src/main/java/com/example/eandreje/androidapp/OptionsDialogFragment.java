@@ -22,6 +22,7 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
     private ListView listView;
 
     public OptionsDialogFragment(){
+
     }
 
     @Override
@@ -50,8 +51,10 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 listener.getChoice(position);
                 dismiss();
+                
             }
         });
+        
         Dialog dialog = builder.create();
         return dialog;
     }

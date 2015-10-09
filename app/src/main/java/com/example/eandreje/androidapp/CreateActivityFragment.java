@@ -33,11 +33,12 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     OptionsDialogFragment optionsDialogFragment;
     int key;
     int Li_ID;
+    boolean nameExists = false;
 
 //    int posChosen;
 //    String stringChosen;
 //    final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
-//    boolean editName = false;
+      private boolean changeName = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,10 +72,12 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         getActivity().supportInvalidateOptionsMenu();
         sharedPre = new SharedPre();
         context = getActivity();
-        sharedPre.clearAllone(context);
-        sharedPre.clearAlltwo(context);
+//        sharedPre.clearAllone(context);
+//        sharedPre.clearAlltwo(context);
         sharedPre.loadListItemID(context);
         Li_ID = sharedPre.tempLi_ID;
+        sharedPre.loadListItem(context);
+        activityList = sharedPre.tempList;
         optionsDialogFragment = new OptionsDialogFragment();
 
 //        sharedPre.loadFromSharedPref(context);
@@ -125,32 +128,36 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     //Recieved name from userinput in dialog
     @Override
     public void enteredText(String text) {
-
-        if( activityList.toString().contains(text.toString()) ||text.toString().contentEquals("") || text.toString().contains("\n"))
+        nameExists = false;
+        checkName(text);
+        if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists==true)
         {
             Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
+
         }
         else
         {
-            Li_ID++;
-            sharedPre.saveListItemID(context, Li_ID);
-            ListItem l = new ListItem(Li_ID, text);
-            activityAdapter.add(l);
-            sharedPre.addListItem(context, l);
-            UpdateAndSave();
-            Toast.makeText(getActivity(), text.toString() + " är tillagd", Toast.LENGTH_SHORT).show();
+            if(!changeName)
+           addItem(text);
+            if(changeName)
+                editItem(text);
         }
     }
 
     @Override
-    public void getChoice(int pos) {
-        if(pos == 0)
-            Toast.makeText(getActivity(), "0" + pos, Toast.LENGTH_SHORT).show();
-        if(pos == 1)
-            Toast.makeText(getActivity(), "1" + pos, Toast.LENGTH_SHORT).show();
-            removeItem();
-
-
+    public void getChoice(int pos)
+    {
+            if(pos==0)
+            {
+                changeName = true;
+                DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                defaultDialogFragment.listener = this;
+                defaultDialogFragment.show(getFragmentManager(), "dialog");
+            }
+            if(pos==1)
+            {
+                removeItem();
+            }
     }
 
     public interface CreateActivityFragmentListener {
@@ -163,10 +170,36 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityAdapter.addAll(activityList);
         sharedPre.saveListItem(context, activityList);
     }
+    public void addItem(String text)
+    {
+        Li_ID++;
+        sharedPre.saveListItemID(context, Li_ID);
+        ListItem l = new ListItem(Li_ID, text);
+        activityAdapter.add(l);
+        sharedPre.addListItem(context, l);
+        UpdateAndSave();
+        Toast.makeText(getActivity(), text.toString() + " är tillagd", Toast.LENGTH_SHORT).show();
+    }
+    public void editItem(String text)
+    {
+       sharedPre.editListItem(context, text, ItemClicked);
+        UpdateAndSave();
+
+    }
+    public void  checkName(String text)
+    {
+        for(ListItem l : activityList)
+        {
+            if (l.getName().equals(text))
+            {
+                nameExists = true;
+            }
+        }
+    }
     public void removeItem()
     {
-        Toast.makeText(getActivity(), "hej1", Toast.LENGTH_LONG).show();
-        context = getActivity();
+
+       // context = getActivity();
         sharedPre.removeListItem(context, ItemClicked);
         key = ItemClicked.getId();
         sharedPre.removeMultipleDocItems(context, key);

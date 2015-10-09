@@ -64,7 +64,6 @@ public class SharedPre
 
             }
         }
-
     }
 
     public void addListItem(Context context, ListItem addListItem)
@@ -109,9 +108,16 @@ public class SharedPre
         data = context.getSharedPreferences("DocItems", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = data.edit();
         Gson gson = new Gson();
-        JsonArray ObjArray = gson.toJsonTree(list).getAsJsonArray();
-        editor.putString("DokumentNamn", ObjArray.toString());
-        editor.commit();
+        if(list == null)
+        {
+            editor.putString("DokumentNamn", "");
+            editor.commit();
+        }
+        else {
+            JsonArray ObjArray = gson.toJsonTree(list).getAsJsonArray();
+            editor.putString("DokumentNamn", ObjArray.toString());
+            editor.commit();
+        }
     }
     public void loadDocItem(Context context, int key)
     {

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class DefaultDialogFragment extends android.support.v4.app.DialogFragment {
     DefaultDialogFragmentListener listener;
@@ -30,14 +31,13 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 listener.enteredText(textbox.getText().toString());
+
             }
         });
         builder.setView(view);
 
         Dialog dialog = builder.create();
         textbox = (EditText)view.findViewById(R.id.dialog_editText);
-        //textbox.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        //textbox.setSingleLine(true);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
 
