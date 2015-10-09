@@ -14,17 +14,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener {
+public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
+        OptionsDialogFragment.OptionsDialogFragmentListener{
     SharedPre sharedPre;
     ListView activityListView;
     ArrayAdapter<ListItem> activityAdapter;
     List<ListItem> activityList = new ArrayList<ListItem>();
     CreateActivityFragmentListener createActivityFragmentListener;
-
+    OptionsDialogFragment optionsDialog;
 //    int posChosen;
 //    String stringChosen;
 //    final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
@@ -34,6 +34,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
+
     }
 
     @Nullable
@@ -48,6 +49,9 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityListView = (ListView)view.findViewById(R.id.listView);
         activityListView.setAdapter(activityAdapter);
 
+        optionsDialog = new OptionsDialogFragment();
+        optionsDialog.listener = this;
+
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -57,25 +61,11 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                OptionsDialogFragment optionsDialog = new OptionsDialogFragment();
                 optionsDialog.show(getFragmentManager(), "Options");
-                return false;
+                return true;
             }
         });
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try
-        {
-            createActivityFragmentListener = (CreateActivityFragmentListener)getActivity();
-        }
-        catch (ClassCastException e)
-        {
-            throw new ClassCastException(getActivity().toString() + " must implement CreateActivityFragmentListener");
-        }
     }
 
     @Override
@@ -103,6 +93,15 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     @Override
     public void enteredText(String text) {
         activityAdapter.add(new ListItem(text));
+    }
+
+    @Override
+    public void getChoice(int pos) {
+        if(pos == 0)
+            Toast.makeText(getActivity(), "0" + pos, Toast.LENGTH_SHORT).show();
+        if(pos == 1)
+            Toast.makeText(getActivity(), "1" + pos, Toast.LENGTH_SHORT).show();
+
     }
 
     public interface CreateActivityFragmentListener {

@@ -1,6 +1,5 @@
 package com.example.eandreje.androidapp;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -15,10 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener {
     ArrayAdapter<DocItem> adapter;

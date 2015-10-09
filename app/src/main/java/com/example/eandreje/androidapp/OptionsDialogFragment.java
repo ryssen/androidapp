@@ -1,7 +1,9 @@
 package com.example.eandreje.androidapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.VoiceInteractor;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,10 +18,19 @@ import java.util.ArrayList;
 
 public class OptionsDialogFragment extends android.support.v4.app.DialogFragment {
     protected final int ARRAYSIZE = 10;
-
+    public OptionsDialogFragmentListener listener;
     private ArrayList<String> optionsList;
     private ArrayAdapter<String> adapter;
     private ListView listView;
+
+    public OptionsDialogFragment(){
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @NonNull
     @Override
@@ -40,7 +51,7 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), "You clicked ", Toast.LENGTH_SHORT).show();
+                listener.getChoice(position);
             }
         });
 
@@ -52,6 +63,8 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
         builder.setPositiveButton(R.string.positive_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+
             }
         });
         Dialog dialog = builder.create();
@@ -61,10 +74,10 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
     @Override
     public void onResume() {
         super.onResume();
+    }
 
-
-
-
+    public interface OptionsDialogFragmentListener{
+        void getChoice(int pos);
     }
 }
 
