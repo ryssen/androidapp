@@ -23,7 +23,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     ListItem listItem;
     ListView listView;
     Activity context;
-    SharedPre sharedPre = new SharedPre();
+    //SharedPre sharedPre = new SharedPre();
     int key;
     int docItemID;
     CreateDocumentFragmentListener createDocumentFragmentListener;
@@ -66,13 +66,13 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         optionsDialogFragment.listener = this;
 
         listView = (ListView)view.findViewById(R.id.document_listview);
-        adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, listItem.getDocContainer());
+        //adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, listItem.getDocContainer());
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                createDocumentFragmentListener.docObjectClicked(listItem.getDocContainer().get(position));
+                //createDocumentFragmentListener.docObjectClicked(listItem.getDocContainer().get(position));
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

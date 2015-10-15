@@ -21,7 +21,7 @@ import java.util.List;
 public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    SharedPre sharedPre;
+    //SharedPre sharedPre;
     ListView activityListView;
     ArrayAdapter<ListItem> activityAdapter;
     List<ListItem> activityList = new ArrayList<ListItem>();
@@ -70,14 +70,15 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activities_layout, container, false);
         getActivity().supportInvalidateOptionsMenu();
-        sharedPre = new SharedPre();
-        context = getActivity();
-//        sharedPre.clearAllone(context);
-//        sharedPre.clearAlltwo(context);
-        sharedPre.loadListItemID(context);
-        Li_ID = sharedPre.tempLi_ID;
-        sharedPre.loadListItem(context);
-        activityList = sharedPre.tempList;
+        activityList = Queries.getActivites();
+//        sharedPre = new SharedPre();
+//        context = getActivity();
+////        sharedPre.clearAllone(context);
+////        sharedPre.clearAlltwo(context);
+//        sharedPre.loadListItemID(context);
+//        Li_ID = sharedPre.tempLi_ID;
+//        sharedPre.loadListItem(context);
+//        activityList = sharedPre.tempList;
         optionsDialogFragment = new OptionsDialogFragment();
 
 //        sharedPre.loadFromSharedPref(context);
@@ -85,7 +86,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityAdapter = new ArrayAdapter<ListItem>(getActivity(), android.R.layout.simple_list_item_1, activityList);
         activityListView = (ListView)view.findViewById(R.id.listView);
         activityListView.setAdapter(activityAdapter);
-
+        activityAdapter.notifyDataSetChanged();
         optionsDialog = new OptionsDialogFragment();
         optionsDialog.listener = this;
 
@@ -132,8 +133,8 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     //Recieved name from userinput in dialog
     @Override
     public void enteredText(String text) {
-        nameExists = false;
-        checkName(text);
+//        nameExists = false;
+//        checkName(text);
         if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists==true)
         {
             Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
@@ -141,10 +142,17 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         }
         else
         {
-            if(!changeName)
-           addItem(text);
-            if(changeName)
-                editItem(text);
+//            if(!changeName)
+//           addItem(text);
+//            if(changeName)
+//                editItem(text);
+            ListItem actToDb = new ListItem(text);
+            actToDb.save();
+            activityList = Queries.getActivites();
+            activityAdapter.clear();
+            activityAdapter.addAll(activityList);
+            //Toast.makeText(getActivity(), activityList.toString(), Toast.LENGTH_SHORT).show();
+            //activityAdapter.notifyDataSetChanged();
         }
     }
 
@@ -169,46 +177,46 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
 }
     public void UpdateAndSave()
     {
-        activityList = sharedPre.tempList;
+        //activityList = sharedPre.tempList;
         activityAdapter.clear();
         activityAdapter.addAll(activityList);
-        sharedPre.saveListItem(context, activityList);
+        //sharedPre.saveListItem(context, activityList);
     }
     public void addItem(String text)
     {
-        Li_ID++;
-        sharedPre.saveListItemID(context, Li_ID);
-        ListItem l = new ListItem(Li_ID, text);
-        activityAdapter.add(l);
-        sharedPre.addListItem(context, l);
-        UpdateAndSave();
+//        Li_ID++;
+//        sharedPre.saveListItemID(context, Li_ID);
+//        ListItem l = new ListItem(Li_ID, text);
+//        activityAdapter.add(l);
+//        sharedPre.addListItem(context, l);
+//        UpdateAndSave();
         Toast.makeText(getActivity(), text.toString() + " är tillagd", Toast.LENGTH_SHORT).show();
     }
     public void editItem(String text)
     {
-       sharedPre.editListItem(context, text, ItemClicked);
+       //sharedPre.editListItem(context, text, ItemClicked);
         UpdateAndSave();
 
     }
     public void  checkName(String text)
     {
-        for(ListItem l : activityList)
-        {
-            if (l.getName().equals(text))
-            {
-                nameExists = true;
-            }
-        }
+//        for(ListItem l : activityList)
+//        {
+//            if (l.getName().equals(text))
+//            {
+//                nameExists = true;
+//            }
+//        }
     }
     public void removeItem()
     {
 
        // context = getActivity();
-        sharedPre.removeListItem(context, ItemClicked);
-        key = ItemClicked.getId();
-        sharedPre.removeMultipleDocItems(context, key);
-        sharedPre.saveDocItem(context, sharedPre.tempListDoc);
-        UpdateAndSave();
+        //sharedPre.removeListItem(context, ItemClicked);
+        //key = ItemClicked.getId();
+//        sharedPre.removeMultipleDocItems(context, key);
+//        sharedPre.saveDocItem(context, sharedPre.tempListDoc);
+//        UpdateAndSave();
     }
 }
 
