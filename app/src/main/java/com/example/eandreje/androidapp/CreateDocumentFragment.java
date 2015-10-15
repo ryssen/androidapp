@@ -112,6 +112,10 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         {
             case R.id.add_doc_icon:
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                String title = "Lägg till ett nytt dokument";
+                Bundle bundle = new Bundle();
+                bundle.putString("addDocTitle", title);
+                defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this; //interface gets its reference
                 defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
             default:

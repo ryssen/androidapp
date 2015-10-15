@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+    android:title="add_person"
+    android:id="@+id/add_person_icon"
+    android:icon="@drawable/ic_action_name"
+    app:showAsAction="always"
+    ></item>
+
+    <item
+    android:title="add_person"
+    android:id="@+id/add_column_icon"
+    android:icon="@drawable/ic_action_column"
+    app:showAsAction="always"
+    ></item>
+
+</menu>

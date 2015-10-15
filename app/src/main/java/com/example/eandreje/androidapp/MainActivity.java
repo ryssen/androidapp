@@ -1,5 +1,6 @@
 package com.example.eandreje.androidapp;
 
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -39,8 +40,12 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
     @Override
     public void docObjectClicked(DocItem doc) {
         leftsideDocumentFragment = new LeftsideDocumentFragment().newInstance(doc);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_activity_layout, leftsideDocumentFragment)
-                .addToBackStack(null).commit();
+        rightsideDocumentFragment = new RightsideDocumentFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(documentFragment);
+        transaction.replace(R.id.left_side, leftsideDocumentFragment).addToBackStack(null);
+        transaction.replace(R.id.right_side, rightsideDocumentFragment).addToBackStack(null);
+        transaction.commit();
+
     }
 }

@@ -117,6 +117,10 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         switch (item.getItemId()) {
             case R.id.add_activity_icon:
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                String text = "Lägg till en ny aktivitet";
+                Bundle bundle = new Bundle();
+                bundle.putString("addDocTitle", text);
+                defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
 
