@@ -53,7 +53,7 @@ public class DocItem extends Model implements Parcelable {
 //
 //    public int getParentId() {return parentId;}
 //
-//    public void setName(String name){this.name = name;}
+    public void setName(String name){this.name = name;}
 //
 //    public String getName(){return name;}
 //

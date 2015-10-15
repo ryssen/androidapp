@@ -19,4 +19,12 @@ public class Queries {
                 .orderBy("Name ASC")
                 .execute();
     }
+
+    static DocItem getDocument(DocItem doc){
+        return new Select()
+                .from(DocItem.class)
+                .where(" = ?", doc.getId())
+                .executeSingle();
+    }
+
 }

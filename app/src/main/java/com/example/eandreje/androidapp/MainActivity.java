@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
         leftsideDocumentFragment = new LeftsideDocumentFragment().newInstance(doc);
         rightsideDocumentFragment = new RightsideDocumentFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
         transaction.remove(documentFragment);
         transaction.replace(R.id.left_side, leftsideDocumentFragment).addToBackStack(null);
         transaction.replace(R.id.right_side, rightsideDocumentFragment).addToBackStack(null);

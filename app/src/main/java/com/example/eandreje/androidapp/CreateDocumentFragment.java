@@ -21,8 +21,11 @@ import java.util.ArrayList;
 public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
+    private static final String DIALOG_TITLE = "Nytt namn";
+    private boolean state = false;
     ArrayAdapter<DocItem> adapter;
     ListItem listItem;
+    DocItem docClicked;
     ListView listView;
     Activity context;
     ArrayList<DocItem> docList;
@@ -53,9 +56,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public void onResume() {
         super.onResume();
         getActivity().setTitle(listItem.name);
-        docList = Queries.getDocuments(listItem);
-        adapter.clear();
-        adapter.addAll(docList);
+
     }
 
     @Nullable
@@ -64,6 +65,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         key = getArguments().getInt("key");
         View view = inflater.inflate(R.layout.document_layout, container, false);
         docList = new ArrayList<>();
+        docList = Queries.getDocuments(listItem);
         context = getActivity();
 //        sharedPre.loadDocItem(context, key);
 //        listItem.getDocContainer().clear();
@@ -73,7 +75,9 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
         listView = (ListView)view.findViewById(R.id.document_listview);
         adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, docList);
-        adapter.notifyDataSetChanged();
+
+
+        //adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -85,6 +89,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //doc = Queries.getDocument(docList.get(position));
+                docClicked = adapter.getItem(position);
                 optionsDialogFragment.show(getFragmentManager(), "docOptions");
                 return true;
             }
@@ -118,7 +124,6 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         switch (item.getItemId())
         {
             case R.id.add_doc_icon:
-
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 String title = "Lägg till ett nytt dokument";
                 Bundle bundle = new Bundle();
@@ -133,25 +138,51 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     @Override
     public void enteredText(String text) {
-        DocItem document = new DocItem(text);
-        document.parentActivity = listItem;
-        document.save();
+        if(text.toString().contentEquals("") || text.toString().contains("\n"))
+        {
+            Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
+        }
+        else
+        if(!state)
+        {
+            DocItem document = new DocItem(text);
+            document.parentActivity = listItem;
+            document.save();
+            UpdateAndSave();
+        }
+        else
+        {
+            docClicked.load(DocItem.class, docClicked.getId());
+            docClicked.name = text;
+            docClicked.save();
+            UpdateAndSave();
+            state = false;
+        }
+    }
+
+    public void UpdateAndSave()
+    {
         docList = Queries.getDocuments(listItem);
         adapter.clear();
         adapter.addAll(docList);
-        //adapter.notifyDataSetChanged();
-        //adapter.add(new DocItem(text));
     }
 
     @Override
     public void getChoice(int pos) {
     switch (pos){
         case 0:
+            state = true;
             DefaultDialogFragment docDialog = new DefaultDialogFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("addDocTitle", DIALOG_TITLE);
+            docDialog.setArguments(bundle);
             docDialog.listener = this;
             docDialog.show(getFragmentManager(), "editDocDialog");
+            break;
         case 1:
-            Toast.makeText(getActivity(), "you clicked 1", Toast.LENGTH_SHORT).show();
+            docClicked.delete();
+            UpdateAndSave();
+            break;
         default:
     }
     }

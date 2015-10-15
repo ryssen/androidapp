@@ -21,6 +21,7 @@ import java.util.List;
 public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
+    private static final String DIALOG_TITLE = "Nytt namn";
     //SharedPre sharedPre;
     ListView activityListView;
     ArrayAdapter<ListItem> activityAdapter;
@@ -28,7 +29,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     CreateActivityFragmentListener createActivityFragmentListener;
     OptionsDialogFragment optionsDialog;
     Context context;
-    ListItem ItemClicked;
+    ListItem itemClicked;
 
     OptionsDialogFragment optionsDialogFragment;
     int key;
@@ -99,7 +100,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ItemClicked = activityAdapter.getItem(position);
+                itemClicked = activityAdapter.getItem(position);
                 optionsDialog.show(getFragmentManager(), "Options");
                 return true;
             }
@@ -142,17 +143,20 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         }
         else
         {
-//            if(!changeName)
-//           addItem(text);
-//            if(changeName)
-//                editItem(text);
-            ListItem actToDb = new ListItem(text);
-            actToDb.save();
-            activityList = Queries.getActivites();
-            activityAdapter.clear();
-            activityAdapter.addAll(activityList);
-            //Toast.makeText(getActivity(), activityList.toString(), Toast.LENGTH_SHORT).show();
-            //activityAdapter.notifyDataSetChanged();
+            if(!changeName)
+            {
+                ListItem actToDb = new ListItem(text);
+                actToDb.save();
+                UpdateAndSave();
+            }
+            if(changeName)
+            {
+                itemClicked.load(ListItem.class, itemClicked.getId());
+                itemClicked.name = text;
+                itemClicked.save();
+                UpdateAndSave();
+                changeName = false;
+            }
         }
     }
 
@@ -162,26 +166,31 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
             if(pos==0)
             {
                 changeName = true;
+                Bundle bundle = new Bundle();
+                bundle.putString("addDocTitle", DIALOG_TITLE);
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 defaultDialogFragment.listener = this;
+                defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
             }
             if(pos==1)
             {
-                removeItem();
+                itemClicked.delete();
+                UpdateAndSave();
             }
     }
 
     public interface CreateActivityFragmentListener {
         void activeObject(ListItem listItem);
-}
+    }
+
     public void UpdateAndSave()
     {
-        //activityList = sharedPre.tempList;
+        activityList = Queries.getActivites();
         activityAdapter.clear();
         activityAdapter.addAll(activityList);
-        //sharedPre.saveListItem(context, activityList);
     }
+
     public void addItem(String text)
     {
 //        Li_ID++;

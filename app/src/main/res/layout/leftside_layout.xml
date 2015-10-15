@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/left_column_name"
+        android:visibility="gone"
         android:textSize="15dp"
     />
     <ListView
