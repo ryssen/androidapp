@@ -11,4 +11,12 @@ public class Queries {
                 .orderBy("Name ASC")
                 .execute();
     }
+
+    static ArrayList<DocItem> getDocuments(ListItem parent){
+        return new Select()
+                .from(DocItem.class)
+                .where("Parent = ?", parent.getId())
+                .orderBy("Name ASC")
+                .execute();
+    }
 }

@@ -16,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
@@ -23,6 +25,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     ListItem listItem;
     ListView listView;
     Activity context;
+    ArrayList<DocItem> docList;
     //SharedPre sharedPre = new SharedPre();
     int key;
     int docItemID;
@@ -49,7 +52,10 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("Dokument");
+        getActivity().setTitle(listItem.name);
+        docList = Queries.getDocuments(listItem);
+        adapter.clear();
+        adapter.addAll(docList);
     }
 
     @Nullable
@@ -57,22 +63,23 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         key = getArguments().getInt("key");
         View view = inflater.inflate(R.layout.document_layout, container, false);
+        docList = new ArrayList<>();
         context = getActivity();
 //        sharedPre.loadDocItem(context, key);
 //        listItem.getDocContainer().clear();
 //        listItem.getDocContainer().addAll(sharedPre.secTemp);
-
         optionsDialogFragment = new OptionsDialogFragment();
         optionsDialogFragment.listener = this;
 
         listView = (ListView)view.findViewById(R.id.document_listview);
-        //adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, listItem.getDocContainer());
+        adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, docList);
+        adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //createDocumentFragmentListener.docObjectClicked(listItem.getDocContainer().get(position));
+                createDocumentFragmentListener.docObjectClicked(docList.get(position));
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -111,6 +118,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         switch (item.getItemId())
         {
             case R.id.add_doc_icon:
+
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 String title = "Lägg till ett nytt dokument";
                 Bundle bundle = new Bundle();
@@ -125,7 +133,14 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     @Override
     public void enteredText(String text) {
-        adapter.add(new DocItem(text));
+        DocItem document = new DocItem(text);
+        document.parentActivity = listItem;
+        document.save();
+        docList = Queries.getDocuments(listItem);
+        adapter.clear();
+        adapter.addAll(docList);
+        //adapter.notifyDataSetChanged();
+        //adapter.add(new DocItem(text));
     }
 
     @Override

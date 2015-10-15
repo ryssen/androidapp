@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
             <meta-data android:name="AA_DB_NAME" android:value="Holder.db"/>
-            <meta-data android:name="AA_DBVERSION" android:value="1"/>
+            <meta-data android:name="AA_DBVERSION" android:value="3"/>
     </application>
 
 </manifest>

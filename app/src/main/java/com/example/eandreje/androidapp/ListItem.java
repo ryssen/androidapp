@@ -46,6 +46,9 @@ public class ListItem extends Model implements Parcelable {
 //    public List<DocItem> getDocContainer() {
 //        return docContainer;
 //    }
+    public List<DocItem> getDocuments(){
+        return getMany(DocItem.class, "Parent");
+    }
 
     @Override
     public String toString() {
