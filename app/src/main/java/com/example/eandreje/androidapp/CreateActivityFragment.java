@@ -1,5 +1,7 @@
 package com.example.eandreje.androidapp;
 
+import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,7 +23,6 @@ import java.util.List;
 public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    private static final String DIALOG_TITLE = "Nytt namn";
     //SharedPre sharedPre;
     ListView activityListView;
     ArrayAdapter<ListItem> activityAdapter;
@@ -29,7 +30,8 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     CreateActivityFragmentListener createActivityFragmentListener;
     OptionsDialogFragment optionsDialog;
     Context context;
-    ListItem itemClicked;
+    ListItem ItemClicked;
+    final String DIALOG_TITLE = "Ändra namn på ";
 
     OptionsDialogFragment optionsDialogFragment;
     int key;
@@ -54,8 +56,8 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         try
         {
             createActivityFragmentListener = (CreateActivityFragmentListener)getActivity();
@@ -100,7 +102,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                itemClicked = activityAdapter.getItem(position);
+                ItemClicked = activityAdapter.getItem(position);
                 optionsDialog.show(getFragmentManager(), "Options");
                 return true;
             }
@@ -134,28 +136,25 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     //Recieved name from userinput in dialog
     @Override
     public void enteredText(String text) {
-//        nameExists = false;
-//        checkName(text);
-        if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists==true)
-        {
+        nameExists = false;
+        checkName(text);
+        if (text.toString().contentEquals("") || text.toString().contains("\n") || nameExists == true) {
             Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
 
-        }
-        else
-        {
-            if(!changeName)
-            {
+        } else {
+            if (!changeName) {
                 ListItem actToDb = new ListItem(text);
                 actToDb.save();
                 UpdateAndSave();
             }
-            if(changeName)
-            {
-                itemClicked.load(ListItem.class, itemClicked.getId());
-                itemClicked.name = text;
-                itemClicked.save();
+            if (changeName) {
+                ItemClicked.load(ListItem.class, ItemClicked.getId());
+                ItemClicked.name = text;
+                ItemClicked.save();
+
+                Toast.makeText(getActivity(), Queries.getActivites().toString(), Toast.LENGTH_SHORT).show();
                 UpdateAndSave();
-                changeName = false;
+
             }
         }
     }
@@ -163,11 +162,13 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     @Override
     public void getChoice(int pos)
     {
-            if(pos==0)
+        if(pos==0)
             {
                 changeName = true;
+
                 Bundle bundle = new Bundle();
-                bundle.putString("addDocTitle", DIALOG_TITLE);
+                bundle.putString("addDocTitle", DIALOG_TITLE + ItemClicked.name);
+
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.setArguments(bundle);
@@ -175,15 +176,14 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
             }
             if(pos==1)
             {
-                itemClicked.delete();
+                ItemClicked.delete();
                 UpdateAndSave();
             }
     }
 
     public interface CreateActivityFragmentListener {
         void activeObject(ListItem listItem);
-    }
-
+}
     public void UpdateAndSave()
     {
         activityList = Queries.getActivites();
@@ -191,41 +191,17 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityAdapter.addAll(activityList);
     }
 
-    public void addItem(String text)
-    {
-//        Li_ID++;
-//        sharedPre.saveListItemID(context, Li_ID);
-//        ListItem l = new ListItem(Li_ID, text);
-//        activityAdapter.add(l);
-//        sharedPre.addListItem(context, l);
-//        UpdateAndSave();
-        Toast.makeText(getActivity(), text.toString() + " är tillagd", Toast.LENGTH_SHORT).show();
-    }
-    public void editItem(String text)
-    {
-       //sharedPre.editListItem(context, text, ItemClicked);
-        UpdateAndSave();
 
-    }
     public void  checkName(String text)
     {
-//        for(ListItem l : activityList)
-//        {
-//            if (l.getName().equals(text))
-//            {
-//                nameExists = true;
-//            }
-//        }
+        for(ListItem l : activityList)
+        {
+            if (l.name.equals(text))
+            {
+                nameExists = true;
+            }
+        }
     }
-    public void removeItem()
-    {
 
-       // context = getActivity();
-        //sharedPre.removeListItem(context, ItemClicked);
-        //key = ItemClicked.getId();
-//        sharedPre.removeMultipleDocItems(context, key);
-//        sharedPre.saveDocItem(context, sharedPre.tempListDoc);
-//        UpdateAndSave();
-    }
 }
 

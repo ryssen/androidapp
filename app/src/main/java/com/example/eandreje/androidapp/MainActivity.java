@@ -12,17 +12,21 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
     LeftsideDocumentFragment leftsideDocumentFragment;
     RightsideDocumentFragment rightsideDocumentFragment;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         activityFragment = new CreateActivityFragment();
 
+
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_activity_layout, activityFragment)
                 .commit();
         this.setTitle("Aktiviteter");
     }
+
+
 
     //activeObject recieves the clicked listobject(activities) which is forwarded
     //to the static newInstance method.

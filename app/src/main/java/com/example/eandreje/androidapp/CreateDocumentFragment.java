@@ -70,6 +70,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 //        sharedPre.loadDocItem(context, key);
 //        listItem.getDocContainer().clear();
 //        listItem.getDocContainer().addAll(sharedPre.secTemp);
+
         optionsDialogFragment = new OptionsDialogFragment();
         optionsDialogFragment.listener = this;
 
@@ -99,8 +100,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         try
         {
             createDocumentFragmentListener = (CreateDocumentFragmentListener)getActivity();
