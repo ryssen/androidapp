@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class LeftsideDocumentFragment extends Fragment implements CreateDocumentFragment.CreateDocumentFragmentListener{
-    DocItem document;
+    private DocItem document;
+    private String inDocTitle;
 
     public static LeftsideDocumentFragment newInstance(DocItem docItem) {
         LeftsideDocumentFragment leftsideDocumentFragment = new LeftsideDocumentFragment();
@@ -27,6 +28,13 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         document = getArguments().getParcelable("activeDocument");
+        inDocTitle = getArguments().getString("inDocTitle");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(inDocTitle);
     }
 
     @Nullable
@@ -49,9 +57,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         return super.onOptionsItemSelected(item);
     }
 
-    //clicked document from previous list of documents
     @Override
     public void docObjectClicked(DocItem doc) {
-        //Toast.makeText(getActivity(), document.getContext(), Toast.LENGTH_SHORT).show();
     }
 }

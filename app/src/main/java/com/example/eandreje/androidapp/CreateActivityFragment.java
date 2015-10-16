@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,24 +21,14 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
     private static final String DIALOG_TITLE = "Nytt namn";
-    //SharedPre sharedPre;
-    ListView activityListView;
-    ArrayAdapter<ListItem> activityAdapter;
-    List<ListItem> activityList = new ArrayList<ListItem>();
-    CreateActivityFragmentListener createActivityFragmentListener;
-    OptionsDialogFragment optionsDialog;
-    Context context;
-    ListItem itemClicked;
-
-    OptionsDialogFragment optionsDialogFragment;
-    int key;
-    int Li_ID;
-    boolean nameExists = false;
-
-//    int posChosen;
-//    String stringChosen;
-//    final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
-      private boolean changeName = false;
+    private ListView activityListView;
+    private ArrayAdapter<ListItem> activityAdapter;
+    private List<ListItem> activityList = new ArrayList<ListItem>();
+    public CreateActivityFragmentListener createActivityFragmentListener;
+    private OptionsDialogFragment optionsDialog;
+    private ListItem itemClicked;
+    private boolean nameExists = false;
+    private boolean changeName = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,26 +60,12 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activities_layout, container, false);
         getActivity().supportInvalidateOptionsMenu();
+        optionsDialog = new OptionsDialogFragment();
+        optionsDialog.listener = this;
         activityList = Queries.getActivites();
-//        sharedPre = new SharedPre();
-//        context = getActivity();
-////        sharedPre.clearAllone(context);
-////        sharedPre.clearAlltwo(context);
-//        sharedPre.loadListItemID(context);
-//        Li_ID = sharedPre.tempLi_ID;
-//        sharedPre.loadListItem(context);
-//        activityList = sharedPre.tempList;
-        optionsDialogFragment = new OptionsDialogFragment();
-
-//        sharedPre.loadFromSharedPref(context);
-//        activityList = sharedPre.tempList;
         activityAdapter = new ArrayAdapter<ListItem>(getActivity(), android.R.layout.simple_list_item_1, activityList);
         activityListView = (ListView)view.findViewById(R.id.listView);
         activityListView.setAdapter(activityAdapter);
-        activityAdapter.notifyDataSetChanged();
-        optionsDialog = new OptionsDialogFragment();
-        optionsDialog.listener = this;
-
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -125,7 +100,6 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -134,12 +108,9 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     //Recieved name from userinput in dialog
     @Override
     public void enteredText(String text) {
-//        nameExists = false;
-//        checkName(text);
-        if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists==true)
+        if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists == true)
         {
-            Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
-
+            Toast.makeText(getActivity(), "Namnet måste vara unikt, ej innehålla mellanslag eller flera rader", Toast.LENGTH_LONG).show();
         }
         else
         {
@@ -189,43 +160,6 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityList = Queries.getActivites();
         activityAdapter.clear();
         activityAdapter.addAll(activityList);
-    }
-
-    public void addItem(String text)
-    {
-//        Li_ID++;
-//        sharedPre.saveListItemID(context, Li_ID);
-//        ListItem l = new ListItem(Li_ID, text);
-//        activityAdapter.add(l);
-//        sharedPre.addListItem(context, l);
-//        UpdateAndSave();
-        Toast.makeText(getActivity(), text.toString() + " är tillagd", Toast.LENGTH_SHORT).show();
-    }
-    public void editItem(String text)
-    {
-       //sharedPre.editListItem(context, text, ItemClicked);
-        UpdateAndSave();
-
-    }
-    public void  checkName(String text)
-    {
-//        for(ListItem l : activityList)
-//        {
-//            if (l.getName().equals(text))
-//            {
-//                nameExists = true;
-//            }
-//        }
-    }
-    public void removeItem()
-    {
-
-       // context = getActivity();
-        //sharedPre.removeListItem(context, ItemClicked);
-        //key = ItemClicked.getId();
-//        sharedPre.removeMultipleDocItems(context, key);
-//        sharedPre.saveDocItem(context, sharedPre.tempListDoc);
-//        UpdateAndSave();
     }
 }
 
