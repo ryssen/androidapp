@@ -12,8 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class DefaultDialogFragment extends android.support.v4.app.DialogFragment {
-    DefaultDialogFragmentListener listener;
-    EditText textbox;
+    public DefaultDialogFragmentListener listener;
+    private EditText textbox;
 
     @NonNull
     @Override
@@ -21,10 +21,8 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflate = getActivity().getLayoutInflater();
         View view = inflate.inflate(R.layout.default_dialog, null);
-
         TextView title = (TextView)view.findViewById(R.id.add_dialog_title);
         title.setText(getArguments().getString("addDocTitle"));
-
         builder.setNegativeButton(R.string.negative_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -38,11 +36,9 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
             }
         });
         builder.setView(view);
-
         Dialog dialog = builder.create();
         textbox = (EditText)view.findViewById(R.id.dialog_editText);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
 
         return dialog;
     }

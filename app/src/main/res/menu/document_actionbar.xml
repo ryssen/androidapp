@@ -8,15 +8,10 @@
         app:showAsAction="always">
     </item>
 
-    <item android:icon="@drawable/ic_down_cloud"
-        android:title="cloudDown"
-        android:id="@+id/cloud_down_doc"
+    <item android:icon="@drawable/ic_action_cloud"
+        android:title="cloud_options"
+        android:id="@+id/second_view_cloud"
         app:showAsAction="always">
     </item>
 
-    <item android:icon="@drawable/ic_up_cloud"
-        android:title="cloudUp"
-        android:id="@+id/cloud_up_doc"
-        app:showAsAction="always">
-    </item>
 </menu>

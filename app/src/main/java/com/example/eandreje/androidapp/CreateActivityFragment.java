@@ -1,7 +1,5 @@
 package com.example.eandreje.androidapp;
 
-import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,32 +14,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    //SharedPre sharedPre;
-    ListView activityListView;
-    ArrayAdapter<ListItem> activityAdapter;
-    List<ListItem> activityList = new ArrayList<ListItem>();
-    CreateActivityFragmentListener createActivityFragmentListener;
-    OptionsDialogFragment optionsDialog;
-    Context context;
-    ListItem ItemClicked;
-    final String DIALOG_TITLE = "Ändra namn på ";
-
-    OptionsDialogFragment optionsDialogFragment;
-    int key;
-    int Li_ID;
-    boolean nameExists = false;
-
-//    int posChosen;
-//    String stringChosen;
-//    final String[] RemoveEdit = {"Ändra namn", "Ta bort aktivitet"};
-      private boolean changeName = false;
+    private static final String DIALOG_TITLE = "Nytt namn";
+    private ListView activityListView;
+    private ArrayAdapter<ListItem> activityAdapter;
+    private List<ListItem> activityList = new ArrayList<ListItem>();
+    public CreateActivityFragmentListener createActivityFragmentListener;
+    private OptionsDialogFragment optionsDialog;
+    private ListItem itemClicked;
+    private boolean nameExists = false;
+    private boolean changeName = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,8 +43,8 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try
         {
             createActivityFragmentListener = (CreateActivityFragmentListener)getActivity();
@@ -73,26 +60,12 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activities_layout, container, false);
         getActivity().supportInvalidateOptionsMenu();
+        optionsDialog = new OptionsDialogFragment();
+        optionsDialog.listener = this;
         activityList = Queries.getActivites();
-//        sharedPre = new SharedPre();
-//        context = getActivity();
-////        sharedPre.clearAllone(context);
-////        sharedPre.clearAlltwo(context);
-//        sharedPre.loadListItemID(context);
-//        Li_ID = sharedPre.tempLi_ID;
-//        sharedPre.loadListItem(context);
-//        activityList = sharedPre.tempList;
-        optionsDialogFragment = new OptionsDialogFragment();
-
-//        sharedPre.loadFromSharedPref(context);
-//        activityList = sharedPre.tempList;
         activityAdapter = new ArrayAdapter<ListItem>(getActivity(), android.R.layout.simple_list_item_1, activityList);
         activityListView = (ListView)view.findViewById(R.id.listView);
         activityListView.setAdapter(activityAdapter);
-        activityAdapter.notifyDataSetChanged();
-        optionsDialog = new OptionsDialogFragment();
-        optionsDialog.listener = this;
-
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -102,7 +75,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ItemClicked = activityAdapter.getItem(position);
+                itemClicked = activityAdapter.getItem(position);
                 optionsDialog.show(getFragmentManager(), "Options");
                 return true;
             }
@@ -127,7 +100,6 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -136,25 +108,25 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     //Recieved name from userinput in dialog
     @Override
     public void enteredText(String text) {
-        nameExists = false;
-        checkName(text);
-        if (text.toString().contentEquals("") || text.toString().contains("\n") || nameExists == true) {
-            Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
-
-        } else {
-            if (!changeName) {
+        if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists == true)
+        {
+            Toast.makeText(getActivity(), "Namnet måste vara unikt, ej innehålla mellanslag eller flera rader", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            if(!changeName)
+            {
                 ListItem actToDb = new ListItem(text);
                 actToDb.save();
                 UpdateAndSave();
             }
-            if (changeName) {
-                ItemClicked.load(ListItem.class, ItemClicked.getId());
-                ItemClicked.name = text;
-                ItemClicked.save();
-
-                Toast.makeText(getActivity(), Queries.getActivites().toString(), Toast.LENGTH_SHORT).show();
+            if(changeName)
+            {
+                itemClicked.load(ListItem.class, itemClicked.getId());
+                itemClicked.name = text;
+                itemClicked.save();
                 UpdateAndSave();
-
+                changeName = false;
             }
         }
     }
@@ -162,13 +134,11 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     @Override
     public void getChoice(int pos)
     {
-        if(pos==0)
+            if(pos==0)
             {
                 changeName = true;
-
                 Bundle bundle = new Bundle();
-                bundle.putString("addDocTitle", DIALOG_TITLE + ItemClicked.name);
-
+                bundle.putString("addDocTitle", DIALOG_TITLE);
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.setArguments(bundle);
@@ -176,32 +146,20 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
             }
             if(pos==1)
             {
-                ItemClicked.delete();
+                itemClicked.delete();
                 UpdateAndSave();
             }
     }
 
     public interface CreateActivityFragmentListener {
         void activeObject(ListItem listItem);
-}
+    }
+
     public void UpdateAndSave()
     {
         activityList = Queries.getActivites();
         activityAdapter.clear();
         activityAdapter.addAll(activityList);
     }
-
-
-    public void  checkName(String text)
-    {
-        for(ListItem l : activityList)
-        {
-            if (l.name.equals(text))
-            {
-                nameExists = true;
-            }
-        }
-    }
-
 }
 

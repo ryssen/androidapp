@@ -2,6 +2,7 @@ package com.example.eandreje.androidapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,17 +24,16 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     private static final String DIALOG_TITLE = "Nytt namn";
     private boolean state = false;
-    ArrayAdapter<DocItem> adapter;
-    ListItem listItem;
-    DocItem docClicked;
-    ListView listView;
-    Activity context;
-    ArrayList<DocItem> docList;
-    //SharedPre sharedPre = new SharedPre();
-    int key;
-    int docItemID;
-    CreateDocumentFragmentListener createDocumentFragmentListener;
-    OptionsDialogFragment optionsDialogFragment;
+    private ArrayAdapter<DocItem> adapter;
+    private ArrayList<DocItem> docList;
+
+    private ListItem listItem;
+    private DocItem docClicked;
+    private ListView listView;
+   // private Activity context;
+
+    public CreateDocumentFragmentListener createDocumentFragmentListener;
+    private OptionsDialogFragment optionsDialogFragment;
 
     //newInstance factoring method, returns a new instance of this class
     // with custom parameter
@@ -55,32 +55,22 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(listItem.name);
-
+        getActivity().setTitle(listItem.name + " - dokument");
     }
 
     @Nullable
     //@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        key = getArguments().getInt("key");
         View view = inflater.inflate(R.layout.document_layout, container, false);
         docList = new ArrayList<>();
         docList = Queries.getDocuments(listItem);
-        context = getActivity();
-//        sharedPre.loadDocItem(context, key);
-//        listItem.getDocContainer().clear();
-//        listItem.getDocContainer().addAll(sharedPre.secTemp);
 
         optionsDialogFragment = new OptionsDialogFragment();
         optionsDialogFragment.listener = this;
 
         listView = (ListView)view.findViewById(R.id.document_listview);
         adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, docList);
-
-
-        //adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -90,7 +80,6 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //doc = Queries.getDocument(docList.get(position));
                 docClicked = adapter.getItem(position);
                 optionsDialogFragment.show(getFragmentManager(), "docOptions");
                 return true;
@@ -100,8 +89,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try
         {
             createDocumentFragmentListener = (CreateDocumentFragmentListener)getActivity();
@@ -121,7 +110,6 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle presses on the action bar items
         switch (item.getItemId())
         {
             case R.id.add_doc_icon:
