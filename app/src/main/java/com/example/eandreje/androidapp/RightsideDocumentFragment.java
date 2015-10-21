@@ -26,13 +26,7 @@ public class RightsideDocumentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rightside_layout, container, false);
-        Spinner columns = (Spinner)view.findViewById(R.id.right_spinner);
-        columnList = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, columnList);
-        columns.setAdapter(adapter);
-        adapter.add("Närvaro");
-        adapter.add("Mobilnr");
-        adapter.add("Betalt");
+
 
         return view;
     }

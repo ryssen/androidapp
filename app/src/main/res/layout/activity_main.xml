@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:weightSum="100"
     android:id="@+id/main_activity_layout"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@color/main_app_background" tools:context=".MainActivity"
     >
 
