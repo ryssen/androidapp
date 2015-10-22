@@ -7,7 +7,7 @@
         android:id="@+id/person_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="100"
+        android:layout_weight="50"
         android:paddingTop="2dip"
         android:paddingBottom="3dip"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
@@ -20,5 +20,6 @@
         android:paddingTop="20dp"
         android:id="@+id/checkBox"
         android:checked="true"
+        android:layout_weight="50"
         android:layout_gravity="center_vertical" />
 </LinearLayout>

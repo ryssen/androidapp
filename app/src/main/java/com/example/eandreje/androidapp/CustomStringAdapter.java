@@ -7,11 +7,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class CustomStringAdapter extends ArrayAdapter {
-    private String name;
+import java.util.ArrayList;
 
-    public CustomStringAdapter(Context context, String[] names) {
-        super(context, R.layout.custom_row_string, names);
+public class CustomStringAdapter extends ArrayAdapter implements DefaultDialogFragment.DefaultDialogFragmentListener {
+    private String name;
+    private ArrayList<Person> nameList;
+    public CustomStringAdapterListener listener;
+
+    public CustomStringAdapter(Context context, ArrayList<Person> names, LeftsideDocumentFragment fragment) {
+        super(context, R.layout.custom_row_string);
+        listener = fragment;
+        nameList = names;
     }
 
     @Override
@@ -20,10 +26,30 @@ public class CustomStringAdapter extends ArrayAdapter {
         View view = inflater.inflate(R.layout.custom_row_string, parent, false);
         TextView textView1 = (TextView) view.findViewById(R.id.person_name);
         TextView textView2 = (TextView) view.findViewById(R.id.column_name);
-        name = (String) getItem(position);
-        textView1.setText(name);
-        textView2.setText("Ja");
+
+        textView1.setText(nameList.toString());
+        textView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.buttonPressed(v);
+            }
+        });
+        textView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.buttonPressed(v);
+            }
+        });
 
         return view;
+    }
+
+
+    @Override
+    public void enteredText(String text) {
+    }
+
+    public interface CustomStringAdapterListener{
+        void buttonPressed(View v);
     }
 }

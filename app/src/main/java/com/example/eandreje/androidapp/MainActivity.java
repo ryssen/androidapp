@@ -10,7 +10,7 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
     private CreateActivityFragment activityFragment;
     private CreateDocumentFragment documentFragment;
     private LeftsideDocumentFragment leftsideDocumentFragment;
-    private RightsideDocumentFragment rightsideDocumentFragment;
+    //private RightsideDocumentFragment rightsideDocumentFragment;
 
 
     @Override
@@ -44,12 +44,12 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
     //docObject recieves the clicked listobject(document)
     @Override
     public void docObjectClicked(DocItem doc) {
-        leftsideDocumentFragment = new LeftsideDocumentFragment().newInstance(doc);
-        rightsideDocumentFragment = new RightsideDocumentFragment();
+        leftsideDocumentFragment = LeftsideDocumentFragment.newInstance(doc);
+        //rightsideDocumentFragment = new RightsideDocumentFragment();
 
-        Bundle bundle = new Bundle();
-        bundle.putString("inDocTitle", doc.name);
-        leftsideDocumentFragment.setArguments(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("inDocTitle", doc.name);
+//        leftsideDocumentFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(documentFragment);

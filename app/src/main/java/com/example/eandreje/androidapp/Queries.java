@@ -27,6 +27,12 @@ public class Queries {
                 .where(" = ?", doc.getId())
                 .executeSingle();
     }
+    static ArrayList<Person> getPersons(ListItem parent){
+        return new Select()
+                .from(Person.class)
+                .where("Parent = ?", parent.getId())
+                .execute();
+    }
     static ArrayList<Person_DocItem> getRelation(Person person, DocItem docItem)
     {
        return new Select()
@@ -35,5 +41,6 @@ public class Queries {
                .where("Person_DocItem.docItem = ?", docItem.getId())
                .execute();
     }
+
 
 }

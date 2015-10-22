@@ -6,24 +6,22 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-
-/**
- * Created by johaerik on 2015-10-21.
- */
 @Table(name = "Person")
 public class Person extends Model implements Parcelable{
     @Column(name = "Name")
-    String name;
+    private String name;
     @Column(name = "Parent")
-    ListItem parentActivity;
+    private ListItem parentActivity;
 
     public Person(){
         super();
     }
 
-    public Person (String name)
+    public Person (String name, ListItem parent)
     {
         this.name = name;
+        this.parentActivity = parent;
+
     }
 
     @Override
