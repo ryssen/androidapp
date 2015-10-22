@@ -1,5 +1,6 @@
 package com.example.eandreje.androidapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -43,7 +44,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Activity context) {
         super.onAttach(context);
         try
         {

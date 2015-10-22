@@ -57,8 +57,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         listView = (ListView) view.findViewById(R.id.listView4);
         spinner = (Spinner) view.findViewById(R.id.spinner);
         spinnerAdapt = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerColumns);
-        boolAdapter = new CustomBoolAdapter(getContext(), names);
-        stringAdapter = new CustomStringAdapter(getContext(), names);
+        boolAdapter = new CustomBoolAdapter(getActivity(), names);
+        stringAdapter = new CustomStringAdapter(getActivity(), names);
         spinner.setAdapter(spinnerAdapt);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

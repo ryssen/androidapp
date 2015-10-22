@@ -16,14 +16,15 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        activityFragment = new CreateActivityFragment();
-
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.main_activity_layout, activityFragment)
-                .commit();
-        this.setTitle("Aktiviteter");
+        if(savedInstanceState ==null) {
+            activityFragment = new CreateActivityFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_activity_layout, activityFragment)
+                    .commit();
+            this.setTitle("Aktiviteter");
+        }
     }
 
 

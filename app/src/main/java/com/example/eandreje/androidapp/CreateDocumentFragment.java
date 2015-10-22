@@ -6,12 +6,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -89,7 +91,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Activity context) {
         super.onAttach(context);
         try
         {
@@ -120,6 +122,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this; //interface gets its reference
                 defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
+            case R.id.second_view_up_cloud:
+                listView.setBackgroundColor(Color.LTGRAY);
             default:
                 return super.onOptionsItemSelected(item);
         }

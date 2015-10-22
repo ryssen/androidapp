@@ -1,5 +1,6 @@
 package com.example.eandreje.androidapp;
 
+import com.activeandroid.Model;
 import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
@@ -25,6 +26,14 @@ public class Queries {
                 .from(DocItem.class)
                 .where(" = ?", doc.getId())
                 .executeSingle();
+    }
+    static ArrayList<Person_DocItem> getRelation(Person person, DocItem docItem)
+    {
+       return new Select()
+               .from(Person.class)
+               .innerJoin(Person_DocItem.class).on("Person.id = Person_DocItem.id")
+               .where("Person_DocItem.docItem = ?", docItem.getId())
+               .execute();
     }
 
 }
