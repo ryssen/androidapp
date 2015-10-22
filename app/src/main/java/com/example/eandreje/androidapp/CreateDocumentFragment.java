@@ -90,6 +90,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         return view;
     }
 
+
     @Override
     public void onAttach(Activity context) {
         super.onAttach(context);
