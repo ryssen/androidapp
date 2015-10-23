@@ -10,6 +10,7 @@
         android:layout_weight="50"
         android:paddingTop="2dip"
         android:textAlignment="center"
+        android:text="Anders Karlsson"
         android:paddingBottom="3dip"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
@@ -19,11 +20,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingTop="2dip"
-        android:textAlignment="center"
+        android:text="070352115"
         android:paddingBottom="3dip"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:layout_weight="50"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/column_id"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

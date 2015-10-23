@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.activeandroid.annotation.Column;
+
 import java.util.ArrayList;
 
 public class LeftsideDocumentFragment extends Fragment implements CreateDocumentFragment.CreateDocumentFragmentListener,
@@ -24,15 +26,13 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
 
     private DocItem document;
     private String inDocTitle;
-    private String[] names = {"Kalle Henriksson", "Johannes Erikssonsonson", "Erik Andrejenko"};
     private ArrayList<Person> personList;
-    private Adapter boolAdapter;
+    private CustomBoolAdapter boolAdapter;
     private CustomStringAdapter stringAdapter;
-    private ArrayAdapter spinnerAdapt;
-    private String[] spinnerColumns = {"Närvaro", "Mobilnr"};
+    private ArrayAdapter<Columns> spinnerAdapt;
+    private ArrayList<Columns> spinnerColumns;
     private ListView listView;
     private Spinner spinner;
-    ListItem listitem;
 
     public static LeftsideDocumentFragment newInstance(DocItem docItem) {
         LeftsideDocumentFragment leftsideDocumentFragment = new LeftsideDocumentFragment();
@@ -61,11 +61,11 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.leftside_layout, container, false);
         listView = (ListView) view.findViewById(R.id.listView4);
-
+        spinnerColumns = new ArrayList<>();
         personList = new ArrayList<>();
         spinner = (Spinner) view.findViewById(R.id.spinner);
         spinnerAdapt = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerColumns);
-        boolAdapter = new CustomBoolAdapter(getContext(), names);
+        //spinnerAdapt.add("hjej");
         stringAdapter = new CustomStringAdapter(getContext(), personList, this);
         spinner.setAdapter(spinnerAdapt);
 
@@ -73,12 +73,12 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(spinnerAdapt.getItem(position).toString() == "Närvaro"){
-                    listView.setAdapter((CustomBoolAdapter) boolAdapter);
+                    listView.setAdapter(boolAdapter);
 
                 }
                 else
                 {
-                    listView.setAdapter((CustomStringAdapter) stringAdapter);
+                    listView.setAdapter(stringAdapter);
                 }
             }
             @Override
@@ -105,20 +105,34 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         switch (item.getItemId())
         {
             case R.id.add_person_icon:
-                DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
-                String title = "Lägg till en ny person";
+                AddPersonDialogFragment addperson = new AddPersonDialogFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("addDocTitle", title);
-                defaultDialogFragment.setArguments(bundle);
-                defaultDialogFragment.listener = this; //interface gets its reference
-                defaultDialogFragment.show(getFragmentManager(), "newPersDialog");
-                //Toast.makeText(getActivity(), document.parentActivity.toString(), Toast.LENGTH_SHORT).show();
+                bundle.putParcelableArrayList("Columns", spinnerColumns);
+                addperson.setArguments(bundle);
+                addperson.show(getFragmentManager(), "addPerson");
+                break;
 
+//                DefaultDialogFragment appPersonDialog = new DefaultDialogFragment();
+//                String personTitle = "Lägg till en ny person";
+//                Bundle bundle = new Bundle();
+//                bundle.putString("addDocTitle", personTitle);
+//                appPersonDialog.setArguments(bundle);
+//                appPersonDialog.listener = this; //interface gets its reference
+//                appPersonDialog.show(getFragmentManager(), "newPersDialog");
+//                //Toast.makeText(getActivity(), document.parentActivity.toString(), Toast.LENGTH_SHORT).show();
             case R.id.add_column_icon:
-                //listView.setBackgroundColor(Color.LTGRAY);
+                DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                String columnTitle = "Lägg till en ny kolumn";
+                Bundle columnBundle = new Bundle();
+                columnBundle.putString("addDocTitle", columnTitle);
+                defaultDialogFragment.setArguments(columnBundle);
+                defaultDialogFragment.listener = this; //interface gets its reference
+                defaultDialogFragment.show(getFragmentManager(), "newColumnDialog");
+                break;
             default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -138,12 +152,18 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
 
     @Override
     public void enteredText(String text) {
-        Person person = new Person(text, document.parentActivity);
-        person.save();
-        personList = Queries.getPersons(document.parentActivity);
-        stringAdapter.clear();
-        stringAdapter.addAll(personList);
-        stringAdapter.notifyDataSetChanged();
+        Columns column = new Columns(text);
+        column.setParentDocument(document);
+        column.save();
+        spinnerColumns = Queries.getColumnHeaders(document);
+        spinnerAdapt.clear();
+        spinnerAdapt.addAll(spinnerColumns);
+//        Person person = new Person(text.toString(), document.parentActivity);
+//        person.save();
+//        personList = Queries.getPersons(document.parentActivity);
+//        stringAdapter.clear();
+//        stringAdapter.addAll(personList);
+//        stringAdapter.notifyDataSetChanged();
 
     }
 }

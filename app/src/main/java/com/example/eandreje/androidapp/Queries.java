@@ -33,14 +33,19 @@ public class Queries {
                 .where("Parent = ?", parent.getId())
                 .execute();
     }
-    static ArrayList<Person_DocItem> getRelation(Person person, DocItem docItem)
+    static ArrayList<Person_DocItem> getRelation(Person person, DocItem doc)
     {
        return new Select()
                .from(Person.class)
                .innerJoin(Person_DocItem.class).on("Person.id = Person_DocItem.id")
-               .where("Person_DocItem.docItem = ?", docItem.getId())
+               .where("Person_DocItem.docItem = ?", doc.getId())
                .execute();
     }
-
+    static ArrayList<Columns> getColumnHeaders(DocItem doc){
+        return new Select()
+                .from(Columns.class)
+                .where("Parent = ?", doc.getId())
+                .execute();
+    }
 
 }

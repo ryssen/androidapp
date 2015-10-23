@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 public class CustomStringAdapter extends ArrayAdapter implements DefaultDialogFragment.DefaultDialogFragmentListener {
-    private String name;
     private ArrayList<Person> nameList;
     public CustomStringAdapterListener listener;
 
@@ -27,7 +25,7 @@ public class CustomStringAdapter extends ArrayAdapter implements DefaultDialogFr
         TextView textView1 = (TextView) view.findViewById(R.id.person_name);
         TextView textView2 = (TextView) view.findViewById(R.id.column_name);
 
-        textView1.setText(nameList.toString());
+        textView1.setText(getItem(position).toString());
         textView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,7 +38,6 @@ public class CustomStringAdapter extends ArrayAdapter implements DefaultDialogFr
                 listener.buttonPressed(v);
             }
         });
-
         return view;
     }
 

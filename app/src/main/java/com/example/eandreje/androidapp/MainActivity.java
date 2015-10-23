@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
         }
     }
 
-
-
     //activeObject recieves the clicked listobject(activities) which is forwarded
     //to the static newInstance method.
     @Override
@@ -53,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(documentFragment);
-        transaction.replace(R.id.left_side, leftsideDocumentFragment).addToBackStack(null);
+        transaction.replace(R.id.main_activity_layout, leftsideDocumentFragment).addToBackStack(null);
         //transaction.replace(R.id.right_side, rightsideDocumentFragment).addToBackStack(null);
         transaction.commit();
 
