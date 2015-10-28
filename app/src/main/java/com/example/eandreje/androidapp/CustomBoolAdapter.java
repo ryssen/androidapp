@@ -5,13 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class CustomBoolAdapter extends ArrayAdapter {
-    private String name;
+import java.util.ArrayList;
 
-    public CustomBoolAdapter(Context context, String[] names) {
-        super(context, R.layout.custom_row_boolean, names);
+public class CustomBoolAdapter extends ArrayAdapter {
+    private ArrayList<ColumnContent> list;
+
+    public CustomBoolAdapter(Context context, ArrayList<ColumnContent> values, LeftsideDocumentFragment leftsideDocumentFragment) {
+        super(context, R.layout.custom_row_boolean, values);
+        list = values;
     }
 
     @Override
@@ -19,8 +23,10 @@ public class CustomBoolAdapter extends ArrayAdapter {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.custom_row_boolean, parent, false);
         TextView textView = (TextView) view.findViewById(R.id.person_name);
-        name = (String) getItem(position);
-        textView.setText(name);
+        CheckBox checkBox = (CheckBox)view.findViewById(R.id.checkbox_value);
+
+        textView.setText(list.get(position).getParentPerson().toString());
+        //if(list.get(position).)
 
         return view;
     }

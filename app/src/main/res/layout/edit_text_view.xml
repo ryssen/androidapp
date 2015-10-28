@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/person_name"
+        android:id="@+id/column_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -14,14 +14,19 @@
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"  />
-    <TextView
-        android:id="@+id/column_name"
+    <EditText
+        android:id="@+id/column_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="2dip"
         android:paddingBottom="3dip"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:layout_weight="1"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/column_id"
+        android:visibility="gone"
+        />
+
 </LinearLayout>

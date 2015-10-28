@@ -17,8 +17,13 @@ public class Person extends Model implements Parcelable{
         super();
     }
 
+    public ListItem getParentActivity() {
+        return parentActivity;
+    }
+
     public Person (String name, ListItem parent)
     {
+        super();
         this.name = name;
         this.parentActivity = parent;
 

@@ -7,9 +7,6 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-/**
- * Created by johaerik on 2015-10-22.
- */
 @Table(name="PersonDocItem")
 public class Person_DocItem extends Model implements Parcelable{
     @Column(name="Person_id")

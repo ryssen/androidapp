@@ -4,19 +4,19 @@
     android:layout_height="match_parent"
     android:focusable="false">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/default_dialog_title"
-        android:padding="10dp"
-        android:textAlignment="center"
-        android:textSize="25dp"
-        android:textColor="@color/main_text_color"/>
     <EditText
-        android:layout_width="100dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_editText"
         android:padding="10dp"
         android:layout_gravity="left"
         android:background="@android:color/transparent"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/column_dialog_checkbox"
+        android:checked="false"
+        android:padding="10dp"
+        android:text="Närvarokolumn"
+        android:layout_marginBottom="10dp"/>
 </LinearLayout>

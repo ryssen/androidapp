@@ -1,7 +1,6 @@
 package com.example.eandreje.androidapp;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    private static final String DIALOG_TITLE = "Nytt namn";
+    private static final String DIALOG_TITLE = "Lägg till nytt dokument";
     private boolean state = false;
     private ArrayAdapter<DocItem> adapter;
     private ArrayList<DocItem> docList;
@@ -113,21 +112,22 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         {
             case R.id.add_doc_icon:
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
-                String title = "Lägg till ett nytt dokument";
                 Bundle bundle = new Bundle();
-                bundle.putString("addDocTitle", title);
+                bundle.putString("addDocTitle", DIALOG_TITLE);
+                bundle.putInt("Layout", R.layout.default_dialog);
+                bundle.putInt("Caller", R.id.add_doc_icon);
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this; //interface gets its reference
                 defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
+                break;
             case R.id.second_view_up_cloud:
-                listView.setBackgroundColor(Color.LTGRAY);
             default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void enteredText(String text) {
+    public void enteredText(String text, int id, boolean checked) {
         if(text.toString().contentEquals("") || text.toString().contains("\n"))
         {
             Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
@@ -165,6 +165,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             DefaultDialogFragment docDialog = new DefaultDialogFragment();
             Bundle bundle = new Bundle();
             bundle.putString("addDocTitle", DIALOG_TITLE);
+            bundle.putInt("Layout", R.layout.default_dialog);
             docDialog.setArguments(bundle);
             docDialog.listener = this;
             docDialog.show(getFragmentManager(), "editDocDialog");

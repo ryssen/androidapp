@@ -14,10 +14,8 @@
     </style>
     <style name="CustomDialog" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
-
-
-
     </style>
+
 
 
 

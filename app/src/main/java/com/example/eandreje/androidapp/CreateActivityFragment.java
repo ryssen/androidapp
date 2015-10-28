@@ -1,7 +1,6 @@
 package com.example.eandreje.androidapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,7 @@ import java.util.List;
 public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    private static final String DIALOG_TITLE = "Nytt namn";
+    private static final String DIALOG_TITLE = "Lägg till en ny aktivitet";
     private ListView activityListView;
     private ArrayAdapter<ListItem> activityAdapter;
     private List<ListItem> activityList = new ArrayList<ListItem>();
@@ -95,9 +94,10 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         switch (item.getItemId()) {
             case R.id.add_activity_icon:
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
-                String text = "Lägg till en ny aktivitet";
                 Bundle bundle = new Bundle();
-                bundle.putString("addDocTitle", text);
+                bundle.putString("addDocTitle", DIALOG_TITLE);
+                bundle.putInt("Layout", R.layout.default_dialog);
+                bundle.putInt("Caller", R.id.add_activity_icon);
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
@@ -108,7 +108,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
 
     //Recieved name from userinput in dialog
     @Override
-    public void enteredText(String text) {
+    public void enteredText(String text, int id, boolean checked) {
         if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists == true)
         {
             Toast.makeText(getActivity(), "Namnet måste vara unikt, ej innehålla mellanslag eller flera rader", Toast.LENGTH_LONG).show();
@@ -141,6 +141,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 Bundle bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                bundle.putInt("Layout", R.layout.default_dialog);
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.show(getFragmentManager(), "dialog");

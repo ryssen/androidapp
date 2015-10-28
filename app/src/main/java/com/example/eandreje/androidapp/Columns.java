@@ -11,6 +11,22 @@ import com.activeandroid.annotation.Table;
 public class Columns extends Model implements Parcelable {
     @Column(name ="Header")
     private String header;
+    @Column(name = "Checkbox")
+    private boolean isCheckbox;
+    @Column(name = "Parent")
+    private DocItem parentDocument;
+
+    public Columns(){
+        super();
+    }
+
+    public Columns (String header, DocItem parent, Boolean bool)
+    {
+        super();
+        this.header = header;
+        this.parentDocument = parent;
+        this.isCheckbox = bool;
+    }
 
     public DocItem getParentDocument() {
         return parentDocument;
@@ -20,16 +36,9 @@ public class Columns extends Model implements Parcelable {
         this.parentDocument = parentDocument;
     }
 
-    @Column(name = "Parent")
-    private DocItem parentDocument;
 
-    public Columns(){
-        super();
-    }
-
-    public Columns (String header)
-    {
-        this.header = header;
+    public boolean isCheckbox() {
+        return isCheckbox;
     }
 
     @Override

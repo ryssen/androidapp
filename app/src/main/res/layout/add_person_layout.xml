@@ -5,9 +5,10 @@
 
     <ScrollView
         android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        >
 
         <LinearLayout
             android:id="@+id/linear1"
@@ -15,18 +16,30 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/person_dialog_title"
+                android:padding="10dp"
+                android:textSize="25dp"
+                android:textColor="@color/main_text_color"/>
             <LinearLayout
                 android:id="@+id/linear2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Namn" />
+                    android:padding="10dp"
+                    android:text="Namn"
+                    android:layout_weight="1"/>
                 <EditText
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/new_person_name"
+                    android:padding="10dp"
+                    android:layout_weight="1"/>
             </LinearLayout>
 
             <LinearLayout

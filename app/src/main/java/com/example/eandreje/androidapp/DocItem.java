@@ -20,6 +20,7 @@ public class DocItem extends Model implements Parcelable {
    }
 
     public DocItem(String name) {
+        super();
         this.name = name;
     }
 
@@ -40,5 +41,9 @@ public class DocItem extends Model implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
+    }
+
+    public ListItem getParentActivity() {
+        return parentActivity;
     }
 }

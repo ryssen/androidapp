@@ -16,6 +16,7 @@ public class ListItem extends Model implements Parcelable {
     }
 
     public ListItem(String name) {
+        super();
         this.name = name;
     }
 

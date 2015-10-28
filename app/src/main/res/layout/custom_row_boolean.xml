@@ -5,9 +5,9 @@
 
     <TextView
         android:id="@+id/person_name"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="50"
+        android:layout_weight="1"
         android:paddingTop="2dip"
         android:paddingBottom="3dip"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
@@ -15,11 +15,11 @@
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
     />
     <CheckBox
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
-        android:id="@+id/checkBox"
+        android:id="@+id/checkbox_value"
         android:checked="true"
-        android:layout_weight="50"
+        android:layout_weight="1"
         android:layout_gravity="center_vertical" />
 </LinearLayout>
