@@ -47,10 +47,17 @@ public class Queries {
                 .execute();
     }
 
-    static ArrayList<ColumnContent> getValue(DocItem doc){
+    static ArrayList<ColumnContent> fetchCellData(DocItem doc){
         return new Select()
                 .from(ColumnContent.class)
-                .where("DocItem = ?", doc.getId())
+                .where("ParentDoc = ?", doc.getId())
+                .execute();
+    }
+
+    static ArrayList<ColumnContent> fetchColumnCellData(Columns column){
+        return new Select()
+                .from(ColumnContent.class)
+                .where("ParentColumn = ?", column.getId())
                 .execute();
     }
 

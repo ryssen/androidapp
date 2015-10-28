@@ -70,7 +70,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         stringValueList = new ArrayList<>();
         spinner = (Spinner) view.findViewById(R.id.spinner);
         spinnerAdapt = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerColumns);
-        stringValueList = Queries.getValue(document);
+        //stringValueList = Queries.getValue(document);
         boolAdapter = new CustomBoolAdapter(getContext(), stringValueList, this);
         stringAdapter = new CustomStringAdapter(getContext(), stringValueList, this);
         spinner.setAdapter(spinnerAdapt);
@@ -78,10 +78,21 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spinnerColumns.get(position).isCheckbox())
+                if (spinnerColumns.get(position).isCheckbox()){
                     listView.setAdapter(boolAdapter);
+                    stringValueList = Queries.fetchColumnCellData(spinnerColumns.get(position));
+                    boolAdapter.clear();
+                    boolAdapter.addAll(stringValueList);
+                    boolAdapter.notifyDataSetChanged();
+                }
                 else
+                {
                     listView.setAdapter(stringAdapter);
+                    stringValueList = Queries.fetchColumnCellData(spinnerColumns.get(position));
+                    stringAdapter.clear();
+                    stringAdapter.addAll(stringValueList);
+                    stringAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -163,16 +174,11 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     }
 
     @Override
-    public void enteredText(String text, int id, boolean checked) {
+    public void enteredText(String text, int id) {
         switch (id)
         {
             case R.id.add_column_icon:
-                //Toast.makeText(getActivity(), "is"+checked, Toast.LENGTH_SHORT).show();
-                Columns column = new Columns(text, document, checked);
-                column.save();
-                spinnerColumns = Queries.getColumnHeaders(document);
-                spinnerAdapt.clear();
-                spinnerAdapt.addAll(spinnerColumns);
+
                 break;
 
             case R.id.add_person_icon:
@@ -184,8 +190,19 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     }
 
     @Override
+    public void enteredTextBool(String text, int caller, boolean checked) {
+        Toast.makeText(getActivity(), "is"+checked, Toast.LENGTH_SHORT).show();
+        Columns column = new Columns(text, document, checked);
+        column.save();
+        spinnerColumns = Queries.getColumnHeaders(document);
+        spinnerAdapt.clear();
+        spinnerAdapt.addAll(spinnerColumns);
+    }
+
+    @Override
     public void newPersonAdded(DocItem doc) {
-        stringValueList = Queries.getValue(doc);
+        stringValueList = Queries.fetchCellData(doc);
+        //Toast.makeText(getActivity(), "document = "+doc + doc.getId(), Toast.LENGTH_LONG).show();
         stringAdapter.clear();
         stringAdapter.addAll(stringValueList);
     }

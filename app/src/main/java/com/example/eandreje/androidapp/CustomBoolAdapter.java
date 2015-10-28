@@ -26,7 +26,7 @@ public class CustomBoolAdapter extends ArrayAdapter {
         CheckBox checkBox = (CheckBox)view.findViewById(R.id.checkbox_value);
 
         textView.setText(list.get(position).getParentPerson().toString());
-        //if(list.get(position).)
+        checkBox.setChecked(Boolean.parseBoolean(list.get(position).value));
 
         return view;
     }

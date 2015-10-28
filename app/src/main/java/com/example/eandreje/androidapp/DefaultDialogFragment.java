@@ -23,8 +23,10 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
         builder.setTitle(getArguments().getString("addDocTitle"));
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(getArguments().getInt("Layout"), null);
-        View view2 = inflater.inflate(R.layout.add_column_layout, null);
-        checkbox  = (CheckBox) view2.findViewById(R.id.column_dialog_checkbox);
+        checkbox  = (CheckBox) view.findViewById(R.id.column_dialog_checkbox);
+
+
+
         builder.setNegativeButton(R.string.negative_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -33,8 +35,10 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
         builder.setPositiveButton(R.string.positive_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.enteredText(textbox.getText().toString(), getArguments().getInt("Caller"),checkbox.isChecked());
-
+                if(getArguments().getInt("Layout") != R.layout.add_column_layout)
+                listener.enteredText(textbox.getText().toString(), getArguments().getInt("Caller"));
+                else
+                listener.enteredTextBool(textbox.getText().toString(), getArguments().getInt("Caller"),checkbox.isChecked());
             }
         });
         builder.setView(view);
@@ -47,6 +51,7 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
 
     //Communication interface
     public interface DefaultDialogFragmentListener {
-        void enteredText(String text, int id, boolean checked);
+        void enteredText(String text, int caller);
+        void enteredTextBool(String text, int caller, boolean checked);
     }
 }

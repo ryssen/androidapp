@@ -108,7 +108,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
 
     //Recieved name from userinput in dialog
     @Override
-    public void enteredText(String text, int id, boolean checked) {
+    public void enteredText(String text, int id) {
         if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists == true)
         {
             Toast.makeText(getActivity(), "Namnet måste vara unikt, ej innehålla mellanslag eller flera rader", Toast.LENGTH_LONG).show();
@@ -130,6 +130,11 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 changeName = false;
             }
         }
+    }
+
+    @Override
+    public void enteredTextBool(String text, int caller, boolean checked) {
+
     }
 
     @Override

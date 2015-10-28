@@ -33,7 +33,6 @@ public class ColumnContent extends Model implements Parcelable {
     public ColumnContent(String value, DocItem doc, Columns parent, Person person)
     {
         super();
-
         this.value = value;
         this.parentDocument = doc;
         this.parentColumn = parent;

@@ -127,7 +127,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void enteredText(String text, int id, boolean checked) {
+    public void enteredText(String text, int id) {
         if(text.toString().contentEquals("") || text.toString().contains("\n"))
         {
             Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
@@ -148,6 +148,11 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             UpdateAndSave();
             state = false;
         }
+    }
+
+    @Override
+    public void enteredTextBool(String text, int caller, boolean checked) {
+
     }
 
     public void UpdateAndSave()

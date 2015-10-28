@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class AddPersonDialogFragment extends DialogFragment{
         parent = (LinearLayout)view.findViewById(R.id.linear3);
         list = getArguments().getParcelableArrayList("Columns");
         layoutList = new ArrayList<>();
+
         for (Columns column:list)
         {
             if(column.isCheckbox())
@@ -65,14 +67,36 @@ public class AddPersonDialogFragment extends DialogFragment{
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                DocItem doc = new DocItem(getArguments().getParcelable("DocParent").toString());
+                DocItem doc = getArguments().getParcelable("DocParent");
                 EditText personName = (EditText)view.findViewById(R.id.new_person_name);
                 Person person = new Person(personName.getText().toString(), doc.getParentActivity());
                 person.save();
-                for (LinearLayout view:layoutList)
-                {
 
-                    EditText value = (EditText) view.findViewById(R.id.column_value);
+                int i = 0;
+                for (LinearLayout view:layoutList) {
+                    Columns column = list.get(i);
+                    column.save();
+
+                    if(!column.isCheckbox())
+                    {
+                        EditText value = (EditText) view.findViewById(R.id.column_value);
+                        ColumnContent cellValue = new ColumnContent(value.getText().toString(), doc, column, person);
+                        cellValue.save();
+                        i++;
+                    }
+                    else
+                    {
+                        CheckBox value = (CheckBox) view.findViewById(R.id.checkbox_column_id);
+                        String checked;
+                        if(value.isChecked())
+                            checked = "true";
+                        else
+                            checked = "false";
+                        ColumnContent cellValue = new ColumnContent(checked, doc, column, person);
+                        cellValue.save();
+                        i++;
+                    }
+
                     //ColumnContent cellValue = new ColumnContent(value.getText().toString(), doc, list.get(0), ))
 
                     //DocItem doc = new DocItem(getArguments().getParcelable("DocParent").toString());
@@ -87,8 +111,10 @@ public class AddPersonDialogFragment extends DialogFragment{
                     //Toast.makeText(getActivity(), "docname = "+value.parentDocument, Toast.LENGTH_SHORT).show();
                     //Toast.makeText(getActivity(), "Värden "+value.value+" ,"+value.parentDocument+" ,"+value.parentPerson+" ,"+value.parentColumn, Toast.LENGTH_LONG).show();
                     //Toast.makeText(getActivity(), "namn "+person+" "+person.getParentActivity(), Toast.LENGTH_LONG).show();
-                    listener.newPersonAdded(doc);
                 }
+                listener.newPersonAdded(doc);
+
+
             }
         });
         builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
