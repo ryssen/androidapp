@@ -54,6 +54,13 @@ public class Queries {
                 .execute();
     }
 
+    static ColumnContent fetchSingleCellData(int index){
+        return new Select()
+                .from(ColumnContent.class)
+                .where("ParentColumn = ?", index)
+                .executeSingle();
+    }
+
     static ArrayList<ColumnContent> fetchColumnCellData(Columns column){
         return new Select()
                 .from(ColumnContent.class)

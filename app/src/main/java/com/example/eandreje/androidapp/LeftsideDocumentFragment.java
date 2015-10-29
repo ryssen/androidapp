@@ -14,13 +14,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class LeftsideDocumentFragment extends Fragment implements CreateDocumentFragment.CreateDocumentFragmentListener,
         CustomStringAdapter.CustomStringAdapterListener, DefaultDialogFragment.DefaultDialogFragmentListener,
-        AddPersonDialogFragment.AddPersonDialogFragmentListener{
+        AddPersonDialogFragment.AddPersonDialogFragmentListener, CustomBoolAdapter.CustomBoolAdapterListener{
 
     private static final String COLUMN_TITLE = "Lägg till en kolumn";
     private static final String PERSON_TITLE = "Lägg till en deltagare";
@@ -35,6 +34,9 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     private ListView listView;
     private Spinner spinner;
     private Bundle bundle;
+    private View viewClicked;
+    private int listPos;
+    private int spinnerIndex;
 
     public static LeftsideDocumentFragment newInstance(DocItem docItem) {
         LeftsideDocumentFragment leftsideDocumentFragment = new LeftsideDocumentFragment();
@@ -78,15 +80,17 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spinnerColumns.get(position).isCheckbox()){
+                if (spinnerColumns.get(position).isCheckbox()) {
+                    //Toast.makeText(getActivity(), "position = "+position+"Id = "+id, Toast.LENGTH_SHORT).show();
+                    spinnerIndex = position;
                     listView.setAdapter(boolAdapter);
                     stringValueList = Queries.fetchColumnCellData(spinnerColumns.get(position));
                     boolAdapter.clear();
                     boolAdapter.addAll(stringValueList);
                     boolAdapter.notifyDataSetChanged();
-                }
-                else
-                {
+                } else {
+                    //Toast.makeText(getActivity(), "position = "+position+"Id = "+id, Toast.LENGTH_SHORT).show();
+                    spinnerIndex = position;
                     listView.setAdapter(stringAdapter);
                     stringValueList = Queries.fetchColumnCellData(spinnerColumns.get(position));
                     stringAdapter.clear();
@@ -100,8 +104,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
 
             }
         });
-
-        //listView.setAdapter(stringAdapter);
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -164,25 +166,31 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     }
 
     @Override
-    public void buttonPressed(View v) {
-        DefaultDialogFragment dialog = new DefaultDialogFragment();
-        Bundle bundle = new Bundle();
-        String title = "Ändra text";
-        bundle.putString("addDocTitle", title);
-        dialog.setArguments(bundle);
-        dialog.show(getFragmentManager(), "changeCustomAdaptAttr");
-    }
-
-    @Override
     public void enteredText(String text, int id) {
         switch (id)
         {
             case R.id.add_column_icon:
-
                 break;
-
             case R.id.add_person_icon:
-
+                break;
+            case R.id.person_name:
+                //Toast.makeText(getActivity(), "id = "+listPos, Toast.LENGTH_SHORT).show();
+                Person person = Person.load(Person.class, listPos+1);
+                person.setName(text);
+                person.save();
+                stringAdapter.clear();
+                stringAdapter.addAll(stringValueList);
+                break;
+                //Toast.makeText(getActivity(), "bra erik", Toast.LENGTH_SHORT).show();
+            case R.id.column_name:
+                //Toast.makeText(getActivity(), "id = "+listPos, Toast.LENGTH_SHORT).show();
+                //ColumnContent cellContent = ColumnContent.load(ColumnContent.class, spinnerIndex);
+                ColumnContent cellContent = Queries.fetchSingleCellData(spinnerIndex);
+                cellContent.setValue(text);
+                cellContent.save();
+                stringAdapter.clear();
+                stringAdapter.addAll(stringValueList);
+                //Toast.makeText(getActivity(), "bra erik", Toast.LENGTH_SHORT).show();
                 break;
             default:
         }
@@ -191,7 +199,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
 
     @Override
     public void enteredTextBool(String text, int caller, boolean checked) {
-        Toast.makeText(getActivity(), "is"+checked, Toast.LENGTH_SHORT).show();
         Columns column = new Columns(text, document, checked);
         column.save();
         spinnerColumns = Queries.getColumnHeaders(document);
@@ -202,8 +209,45 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     @Override
     public void newPersonAdded(DocItem doc) {
         stringValueList = Queries.fetchCellData(doc);
-        //Toast.makeText(getActivity(), "document = "+doc + doc.getId(), Toast.LENGTH_LONG).show();
         stringAdapter.clear();
         stringAdapter.addAll(stringValueList);
+    }
+
+    @Override
+    public void buttonPressed(View v, int position) {
+        viewClicked = v;
+        listPos = position;
+        DefaultDialogFragment dialog = new DefaultDialogFragment();
+        Bundle bundle = new Bundle();
+        String title = "Ändra text";
+        bundle.putInt("Layout", R.layout.default_dialog);
+        if(v.getId() == R.id.person_name)
+            bundle.putInt("Caller", R.id.person_name);
+        else
+            bundle.putInt("Caller", R.id.column_name);
+        bundle.putString("addDocTitle", title);
+        dialog.setArguments(bundle);
+        dialog.listener = this;
+        dialog.show(getFragmentManager(), "changeCustomAdaptAttr");
+    }
+
+    @Override
+    public void checkboxChange(View v, int position, boolean bool) {
+        viewClicked = v;
+        listPos = position;
+        DefaultDialogFragment dialog = new DefaultDialogFragment();
+        Bundle bundle = new Bundle();
+        String title = "Ändra text";
+        bundle.putInt("Layout", R.layout.default_dialog);
+        bundle.putInt("Caller", R.id.column_name);
+        bundle.putString("addDocTitle", title);
+        dialog.setArguments(bundle);
+        dialog.listener = this;
+        dialog.show(getFragmentManager(), "changeCustomAdaptAttr");
+    }
+
+    @Override
+    public void textboxClick(View v, int position) {
+
     }
 }

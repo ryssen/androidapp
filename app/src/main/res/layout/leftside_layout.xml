@@ -5,13 +5,12 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:weightSum="100">
+    android:orientation="horizontal">
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="50"
+        android:layout_weight="1"
         android:paddingTop="2dp"
         android:text="Namn"
         android:paddingBottom="3dp"
@@ -19,18 +18,17 @@
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
     <Spinner
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:paddingLeft="16dp"
-        android:layout_weight="50" />
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:layout_weight="1" />
 </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/listView4"
-        />
+        android:id="@+id/listView4" />
 </LinearLayout>
 
     <!--android:paddingStart="?android:attr/listPreferredItemPaddingStart"-->

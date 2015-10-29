@@ -44,6 +44,10 @@ public class ColumnContent extends Model implements Parcelable {
         return this.value;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Override
     public int describeContents() {
         return 0;
