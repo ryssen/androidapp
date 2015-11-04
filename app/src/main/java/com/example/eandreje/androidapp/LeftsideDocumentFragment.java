@@ -2,6 +2,7 @@ package com.example.eandreje.androidapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,13 +18,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LeftsideDocumentFragment extends Fragment implements CreateDocumentFragment.CreateDocumentFragmentListener,
         CustomStringAdapter.CustomStringAdapterListener, DefaultDialogFragment.DefaultDialogFragmentListener,
         AddPersonDialogFragment.AddPersonDialogFragmentListener, CustomBoolAdapter.CustomBoolAdapterListener,
         OptionsDialogFragment.OptionsDialogFragmentListener
     {
-
 
     private static final String COLUMN_TITLE = "Ny kolumn";
     private static final String PERSON_TITLE = "Ny deltagare";
@@ -32,11 +33,11 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
 
     private DocItem document;
     private String inDocTitle;
-    private ArrayList<ColumnContent> valueList;
+    private List<ColumnContent> valueList;
     private CustomBoolAdapter boolAdapter;
     private CustomStringAdapter stringAdapter;
     private ArrayAdapter<Columns> spinnerAdapt;
-    private ArrayList<Columns> spinnerColumns;
+    private List<Columns> spinnerColumns;
     private ListView listView;
     private long listPos;
     private Columns activeColumn;
@@ -130,7 +131,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 }
                 AddPersonDialogFragment addPerson = new AddPersonDialogFragment();
                 bundle = new Bundle();
-                bundle.putParcelableArrayList("Columns", spinnerColumns);
+                bundle.putParcelableArrayList("Columns", (ArrayList<? extends Parcelable>) spinnerColumns);
                 bundle.putInt("Layout", R.layout.add_person_layout);
                 bundle.putParcelable("DocParent", document);
                 bundle.putString("dialogTitle", PERSON_TITLE);
@@ -163,6 +164,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
             default:
         }
         return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -191,6 +193,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 cell.save();
                 updateListview();
                 break;
+                //Toast.makeText(getActivity(), "bra erik", Toast.LENGTH_SHORT).show();
             case R.id.column_name:
                 persDocItem = Queries.getPersDocRelation((int) listPos, document);
                 person = persDocItem.getPerson();
@@ -208,7 +211,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     public void enteredTextBool(String text, int caller, boolean checked) {
         Columns column = new Columns(text, document, checked);
         column.save();
-        ArrayList<PersonDocItem> persons = Queries.getPersonCell(document);
+        List<PersonDocItem> persons = Queries.getPersonCell(document);
         for (PersonDocItem pDoc : persons) {
             Person person = pDoc.getPerson();
             ColumnContent newColumn = new ColumnContent("", document, column, person);
@@ -229,6 +232,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         listPos = position;
         DefaultDialogFragment dialog = new DefaultDialogFragment();
         Bundle bundle = new Bundle();
+        String title = "Ändra text";
         bundle.putInt("Layout", R.layout.default_dialog);
 
         if(v.getId() == R.id.person_name)
@@ -301,7 +305,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
 
         @Override
         public void getDocChoice(DocItem doc) {
-             ArrayList<PersonDocItem> importList = Queries.getAllActPersons(doc);
+             List<PersonDocItem> importList = Queries.getAllActPersons(doc);
                 if(spinnerColumns != null && stringAdapter != null && boolAdapter != null)
                 {
                     for (PersonDocItem p : importList)
@@ -310,7 +314,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                         person.save();
                         PersonDocItem perDocRelation = new PersonDocItem(person, document);
                         perDocRelation.save();
-                            ArrayList<PersonDocItem> persons = Queries.getPersonCell(document);
+                            List<PersonDocItem> persons = Queries.getPersonCell(document);
                             for (PersonDocItem pDoc : persons)
                             {
                                 ColumnContent newColumn = new ColumnContent("", document, activeColumn, person);
@@ -334,3 +338,4 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 updateListview();
         }
     }
+

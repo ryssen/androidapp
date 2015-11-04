@@ -1,18 +1,20 @@
 package com.example.eandreje.androidapp;
 
+
 import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Queries {
-    static ArrayList<ListItem> getActivites(){
+    static List<ListItem> getActivites(){
         return new Select()
                 .from(ListItem.class)
                 .orderBy("Name ASC")
                 .execute();
     }
 
-    static ArrayList<DocItem> getDocuments(ListItem parent){
+    static List<DocItem> getDocuments(ListItem parent){
         return new Select()
                 .from(DocItem.class)
                 .where("Parent = ?", parent.getId())
@@ -20,12 +22,24 @@ public class Queries {
                 .execute();
     }
 
-    static ArrayList<PersonDocItem> getRelation(Person person, DocItem doc)
+    static DocItem getDocument(DocItem doc){
+        return new Select()
+                .from(DocItem.class)
+                .where(" = ?", doc.getId())
+                .executeSingle();
+    }
+    static Person getPerson(ColumnContent value){
+        return new Select()
+                .from(Person.class)
+                .where("Parent = ?", value.getId())
+                .executeSingle();
+    }
+    static List<Person> getRelation(DocItem doc)
     {
        return new Select()
                .from(Person.class)
-               .innerJoin(PersonDocItem.class).on("Person.id = PersonDocItem.id")
-               .where("PersonDocItem.docItem = ?", doc.getId())
+               .innerJoin(PersonDocItem.class).on("Person.id = Person")
+               .where("PersonDocItem.DocItem = ?", doc.getId())
                .execute();
     }
 
@@ -37,7 +51,7 @@ public class Queries {
                .executeSingle();
     }
 
-    static ArrayList<Columns> getColumnHeaders(DocItem doc){
+    static List<Columns> getColumnHeaders(DocItem doc){
         return new Select()
                 .from(Columns.class)
                 .where("Parent = ?", doc.getId())
@@ -51,21 +65,30 @@ public class Queries {
                 .executeSingle();
     }
 
-    static ArrayList<ColumnContent> fetchColumnCellData(Columns column, DocItem document){
+    static List<ColumnContent> fetchColumnCellData(Columns column, DocItem document){
         return new Select()
                 .from(ColumnContent.class)
                 .where("ParentColumn = ? and ParentDoc = ?", column.getId(), document.getId())
                 .execute();
     }
-    static ArrayList<PersonDocItem> getPersonCell(DocItem doc)
+    static List<PersonDocItem> getPersonCell(DocItem doc)
     {
         return new Select()
                 .from(PersonDocItem.class)
                 .where("DocItem = ?", doc.getId())
                 .execute();
     }
+    static ColumnContent fetchCellValueForCSV(Columns column, Person person)
+    {
+        return new Select()
+                .from(ColumnContent.class)
+                .where("ParentColumn = ? and ParentPerson = ?", column.getId(), person.getId())
+        .executeSingle();
+        //"ParentColumn = ?", column.getId(),
+    }
 
-    static ArrayList<PersonDocItem> getAllActPersons(DocItem doc)
+
+    static List<PersonDocItem> getAllActPersons(DocItem doc)
     {
         return new Select()
                 .from(PersonDocItem.class)

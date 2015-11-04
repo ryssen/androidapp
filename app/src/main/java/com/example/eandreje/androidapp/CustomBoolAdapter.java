@@ -11,12 +11,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomBoolAdapter extends ArrayAdapter {
-    private ArrayList<ColumnContent> list;
+    private List<ColumnContent> list;
     public CustomBoolAdapterListener listener;
 
-    public CustomBoolAdapter(Context context, ArrayList<ColumnContent> values, LeftsideDocumentFragment leftsideDocumentFragment) {
+    public CustomBoolAdapter(Context context, List<ColumnContent> values, LeftsideDocumentFragment leftsideDocumentFragment) {
         super(context, R.layout.custom_row_boolean, values);
         listener = leftsideDocumentFragment;
         list = values;

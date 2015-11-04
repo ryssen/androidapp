@@ -11,6 +11,11 @@ android {
         versionName "1.0"
 
     }
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+
     buildTypes {
         debug {
             // debuggable true
@@ -28,5 +33,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.0.1'
     //compile 'com.google.code.gson:gson:2.3'
-    compile files('libs/activeandroid-3.0.jar')
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }

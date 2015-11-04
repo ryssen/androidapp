@@ -1,6 +1,8 @@
 package com.example.eandreje.androidapp;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
@@ -25,11 +29,16 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     private boolean state = false;
     private ArrayAdapter<DocItem> adapter;
-    private ArrayList<DocItem> docList;
+    private List<DocItem> docList;
     private ListItem listItem;
+    private ListView listView;
     private DocItem docClicked;
+    private boolean importExport = false;
+    String exportFile;
+    public static final int requestcode =1;
     public CreateDocumentFragmentListener createDocumentFragmentListener;
     private OptionsDialogFragment optionsDialogFragment;
+    private CSV csv;
 
     //newInstance factoring method, returns a new instance of this class
     // with custom parameter
@@ -60,16 +69,24 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         View view = inflater.inflate(R.layout.document_layout, container, false);
         docList = new ArrayList<>();
         docList = Queries.getDocuments(listItem);
-
+        csv = new CSV();
         optionsDialogFragment = new OptionsDialogFragment();
         optionsDialogFragment.listener = this;
 
-        ListView listView = (ListView) view.findViewById(R.id.document_listview);
+        listView = (ListView) view.findViewById(R.id.document_listview);
         adapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, docList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                docClicked = adapter.getItem(position);
+                if (importExport)
+                {
+                    exportFile();
+                    listView.setBackgroundColor(Color.WHITE);
+                    importExport = false;
+                }
+                else
                 createDocumentFragmentListener.docObjectClicked(docList.get(position));
             }
         });
@@ -77,14 +94,15 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 docClicked = adapter.getItem(position);
-                Bundle bundle = new Bundle();
-                bundle.putString("DialogTitle", DOCLIST_TITLE);
-                bundle.putInt("Layout", R.layout.act_options_layout);
-                bundle.putInt("Caller", 0);
-                optionsDialogFragment.show(getFragmentManager(), "docOptions");
-                return true;
+                    Bundle bundle = new Bundle();
+                    bundle.putString("DialogTitle", DOCLIST_TITLE);
+                    bundle.putInt("Layout", R.layout.act_options_layout);
+                    bundle.putInt("Caller", 0);
+                    optionsDialogFragment.show(getFragmentManager(), "docOptions");
+                    return true;
             }
         });
+
         return view;
     }
 
@@ -124,6 +142,14 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
                 break;
             case R.id.second_view_up_cloud:
+                listView.setBackgroundColor(Color.LTGRAY);
+                importExport = true;
+                Toast.makeText(getActivity(), "Välj ett dokument att exportera", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.second_view_down_cloud:
+                importFile();
+                break;
+
             default:
         }
         return super.onOptionsItemSelected(item);
@@ -138,10 +164,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         else
         if(!state)
         {
-            DocItem document = new DocItem(text);
-            document.parentActivity = listItem;
-            document.save();
-            UpdateAndSave();
+            addDocument(text);
         }
         else
         {
@@ -185,6 +208,13 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         default:
     }
     }
+    public void addDocument(String name)
+    {
+        DocItem document = new DocItem(name);
+        document.parentActivity = listItem;
+        document.save();
+        UpdateAndSave();
+    }
 
     @Override
     public void getDocChoice(DocItem doc) {
@@ -194,5 +224,94 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public interface CreateDocumentFragmentListener{
         void docObjectClicked(DocItem doc);
     }
+
+    public void exportFile()
+    {
+
+        csv.writeToCSV(docClicked);
+        exportFile = csv.getCSV();
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, exportFile);
+        startActivity(shareIntent);
+
+    }
+    public void importFile()
+    {
+        Intent fileintent = new Intent(Intent.ACTION_GET_CONTENT);
+        fileintent.setType("text/plain");
+        startActivityForResult(fileintent, requestcode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data == null)
+            return;
+        String filepath = data.getData().getPath();
+        File file = new File(filepath);
+        String filename = file.getName();
+        filename = filename.replace(".txt", "");
+        addDocument(filename);
+
+
+        Toast.makeText(getActivity(), filename+".txt imported", Toast.LENGTH_SHORT).show();
+
+
+        //      TODO    Pröva att spara filen lokalt, eller ladda den direkt från dropbox.
+        //        if (requestCode == 1) {
+//                        try {
+//                            InputStreamReader inputStreamReader = new InputStreamReader(filepath);
+//                            //FileReader file = new FileReader(filepath)
+//                            BufferedReader buffer = new BufferedReader(file);
+//                            ContentValues values = new ContentValues();
+//                            String line = "";
+//                            while ((line = buffer.readLine()) != null) {
+//                                String[] str = line.split(",", 3);
+//                                String doc = str[0].toString();
+//                                DocItem document = new DocItem(doc);
+//                                document.save();
+//                            }
+//                        } catch (FileNotFoundException e) {
+//                            e.printStackTrace();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+        //FileReader file = new FileReader(filepath);
+        //         }
+
+        //      }
+
+        //   }
+
+    }
 }
+//fileName_share = adapter.getItem(position).name.toString();
+
+
+//File file = new File(fileName_share+".txt");
+//OUTPUTFILE_TEMP = fileName_share;
+//                    try
+//                    {
+//                        FileOutputStream fos = getContext().openFileOutput(OUTPUTFILE_TEMP, getContext().MODE_PRIVATE);
+//                        fos.write(exportTest.getBytes());
+//                        fos.close();
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }catch(IOException e){
+//                        e.printStackTrace();
+//                    }
+
+//                  File sharefile = new File(getContext().getFilesDir(), "OUTPUTFILE_TEMP");
+//                   sharefile.setReadable(true);
+//                  Uri ShareUri = Uri.fromFile(sharefile);
+
+
+//Uri uri = Uri.fromFile(new File(getContext().getFilesDir(), "OUTPUTFILE_TEMP"));
+//File file = new File(getContext().getFilesDir() + "/"+ OUTPUTFILE_TEMP);
+
+//                  shareIntent.putExtra(Intent.EXTRA_STREAM, ShareUri);
+//                    shareIntent.putExtra(Intent.EXTRA_TITLE, OUTPUTFILE_TEMP);
+
+//                    Intent chooseIntent = Intent.createChooser(shareIntent, "Share");
 

@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class AddPersonDialogFragment extends DialogFragment{
@@ -84,22 +85,40 @@ public class AddPersonDialogFragment extends DialogFragment{
                         String checked;
 
                         if (value.isChecked())
-                            checked = "Ja";
+                            checked = "True";
                         else
-                            checked = "Nej";
+                            checked = "False";
 
                         ColumnContent cellValue = new ColumnContent(checked, doc, column, person);
                         cellValue.save();
                         i++;
                     }
+
+                    //ColumnContent cellValue = new ColumnContent(value.getText().toString(), doc, list.get(0), ))
+
+                    //DocItem doc = new DocItem(getArguments().getParcelable("DocParent").toString());
+                    //doc.save();
+
+                    //person.save();
+                    //Columns column = new Columns();
+                    //column.save();
+                    //EditText textbox = (EditText)editTextView.findViewById(R.id.column_value);
+                    //ColumnContent value = new ColumnContent(textbox.getText().toString(), doc, column, person);
+                    //value.save();
+                    //Toast.makeText(getActivity(), "docname = "+value.parentDocument, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Värden "+value.value+" ,"+value.parentDocument+" ,"+value.parentPerson+" ,"+value.parentColumn, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(), "namn "+person+" "+person.getParentActivity(), Toast.LENGTH_LONG).show();
                 }
                 }
                 listener.newPersonAdded(doc);
+
+
             }
         });
         builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
             }
         });
 

@@ -20,7 +20,7 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getArguments().getString("addDocTitle"));
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(getArguments().getInt("Layout"), null);

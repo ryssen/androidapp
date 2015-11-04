@@ -9,12 +9,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomStringAdapter extends ArrayAdapter {
-    private ArrayList<ColumnContent> valueList;
+    private List<ColumnContent> valueList;
     public CustomStringAdapterListener listener;
 
-    public CustomStringAdapter(Context context, ArrayList<ColumnContent> values, LeftsideDocumentFragment fragment) {
+    public CustomStringAdapter(Context context, List<ColumnContent> values, LeftsideDocumentFragment fragment) {
         super(context, R.layout.custom_row_string, values);
         listener = fragment;
         valueList = values;

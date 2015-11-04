@@ -20,6 +20,22 @@ public class ListItem extends Model implements Parcelable {
         this.name = name;
     }
 
+    protected ListItem(Parcel in) {
+        name = in.readString();
+    }
+
+    public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
+        @Override
+        public ListItem createFromParcel(Parcel in) {
+            return new ListItem(in);
+        }
+
+        @Override
+        public ListItem[] newArray(int size) {
+            return new ListItem[size];
+        }
+    };
+
     @Override
     public String toString() {
         return this.name;
@@ -32,6 +48,6 @@ public class ListItem extends Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(name);
     }
 }
