@@ -21,6 +21,13 @@ public class Queries {
                 .orderBy("Name ASC")
                 .execute();
     }
+    static List<DocItem> getAdapterObjects(ListItem parent){
+        return new Select()
+                .from(Person.class)
+                .where("Parent = ?", parent.getId())
+                .orderBy("Name ASC")
+                .execute();
+    }
 
     static DocItem getDocument(DocItem doc){
         return new Select()

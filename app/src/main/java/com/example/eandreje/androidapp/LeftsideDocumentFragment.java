@@ -124,11 +124,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         switch (item.getItemId())
         {
             case R.id.add_person_icon:
-                if(spinnerColumns.size() == 0)
-                {
-                    Toast.makeText(getActivity(), "Lägg till en kolumn först", Toast.LENGTH_SHORT).show();
-                    break;
-                }
                 AddPersonDialogFragment addPerson = new AddPersonDialogFragment();
                 bundle = new Bundle();
                 bundle.putParcelableArrayList("Columns", (ArrayList<? extends Parcelable>) spinnerColumns);
