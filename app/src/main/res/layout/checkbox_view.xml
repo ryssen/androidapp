@@ -16,7 +16,6 @@
         android:id="@+id/checkbox_column_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:gravity="center"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:layout_weight="8"

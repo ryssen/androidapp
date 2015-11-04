@@ -7,11 +7,7 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity implements CreateActivityFragment.CreateActivityFragmentListener,
         CreateDocumentFragment.CreateDocumentFragmentListener
 {
-    private CreateActivityFragment activityFragment;
     private CreateDocumentFragment documentFragment;
-    private LeftsideDocumentFragment leftsideDocumentFragment;
-    //private RightsideDocumentFragment rightsideDocumentFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +15,7 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
 
         setContentView(R.layout.activity_main);
         if(savedInstanceState ==null) {
-            activityFragment = new CreateActivityFragment();
+            CreateActivityFragment activityFragment = new CreateActivityFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_activity_layout, activityFragment)
                     .commit();
@@ -32,27 +28,18 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
     @Override
     public void activeObject(ListItem listItem) {
         documentFragment = CreateDocumentFragment.newInstance(listItem);
-
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_activity_layout, documentFragment)
                 .addToBackStack(null).commit();
-        this.setTitle("Dokument");
     }
 
     //docObject recieves the clicked listobject(document)
     @Override
     public void docObjectClicked(DocItem doc) {
-        leftsideDocumentFragment = LeftsideDocumentFragment.newInstance(doc);
-        //rightsideDocumentFragment = new RightsideDocumentFragment();
-
-//        Bundle bundle = new Bundle();
-//        bundle.putString("inDocTitle", doc.name);
-//        leftsideDocumentFragment.setArguments(bundle);
-
+        LeftsideDocumentFragment leftsideDocumentFragment = LeftsideDocumentFragment.newInstance(doc);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(documentFragment);
         transaction.replace(R.id.main_activity_layout, leftsideDocumentFragment).addToBackStack(null);
-        //transaction.replace(R.id.right_side, rightsideDocumentFragment).addToBackStack(null);
         transaction.commit();
 
     }

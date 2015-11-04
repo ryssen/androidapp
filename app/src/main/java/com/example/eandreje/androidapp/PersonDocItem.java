@@ -8,20 +8,33 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 @Table(name="PersonDocItem")
-public class Person_DocItem extends Model implements Parcelable{
-    @Column(name="Person_id")
-    public Person person;
-    @Column(name="Docitem_id")
-    public DocItem docItem;
+public class PersonDocItem extends Model implements Parcelable{
+    @Column(name="Person")
+    private Person person;
+    @Column(name="DocItem")
+    private DocItem docItem;
 
-    public Person_DocItem (Person person, DocItem docItem)
+    public PersonDocItem()
+    {
+        super();
+    }
+
+    public PersonDocItem(Person person, DocItem docItem)
     {
         super();
         this.person = person;
         this.docItem = docItem;
     }
 
-        @Override
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

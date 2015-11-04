@@ -12,14 +12,13 @@
         android:paddingBottom="3dip"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    />
+        android:minHeight="?android:attr/listPreferredItemHeightSmall" />
     <CheckBox
+        android:id="@+id/checkbox_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
-        android:id="@+id/checkbox_value"
         android:checked="true"
         android:layout_weight="1"
-        android:layout_gravity="center_vertical" />
+        android:gravity="center_vertical" />
 </LinearLayout>

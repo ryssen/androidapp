@@ -21,14 +21,13 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
     private static final String DIALOG_TITLE = "Lägg till nytt dokument";
+    private static final String DOCLIST_TITLE = "Alternativ";
+
     private boolean state = false;
     private ArrayAdapter<DocItem> adapter;
     private ArrayList<DocItem> docList;
-
     private ListItem listItem;
     private DocItem docClicked;
-    private ListView listView;
-
     public CreateDocumentFragmentListener createDocumentFragmentListener;
     private OptionsDialogFragment optionsDialogFragment;
 
@@ -65,8 +64,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         optionsDialogFragment = new OptionsDialogFragment();
         optionsDialogFragment.listener = this;
 
-        listView = (ListView)view.findViewById(R.id.document_listview);
-        adapter = new ArrayAdapter<DocItem>(getActivity(), R.layout.row_layout, docList);
+        ListView listView = (ListView) view.findViewById(R.id.document_listview);
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, docList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -78,6 +77,10 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 docClicked = adapter.getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("DialogTitle", DOCLIST_TITLE);
+                bundle.putInt("Layout", R.layout.act_options_layout);
+                bundle.putInt("Caller", 0);
                 optionsDialogFragment.show(getFragmentManager(), "docOptions");
                 return true;
             }
@@ -117,7 +120,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 bundle.putInt("Layout", R.layout.default_dialog);
                 bundle.putInt("Caller", R.id.add_doc_icon);
                 defaultDialogFragment.setArguments(bundle);
-                defaultDialogFragment.listener = this; //interface gets its reference
+                defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
                 break;
             case R.id.second_view_up_cloud:
@@ -128,7 +131,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     @Override
     public void enteredText(String text, int id) {
-        if(text.toString().contentEquals("") || text.toString().contains("\n"))
+        if(text.contentEquals("") || text.contains("\n"))
         {
             Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
         }
@@ -181,6 +184,11 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             break;
         default:
     }
+    }
+
+    @Override
+    public void getDocChoice(DocItem doc) {
+
     }
 
     public interface CreateDocumentFragmentListener{

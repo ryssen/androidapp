@@ -21,13 +21,12 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
     private static final String DIALOG_TITLE = "Lägg till en ny aktivitet";
-    private ListView activityListView;
+
     private ArrayAdapter<ListItem> activityAdapter;
-    private List<ListItem> activityList = new ArrayList<ListItem>();
+    private List<ListItem> activityList = new ArrayList<>();
     public CreateActivityFragmentListener createActivityFragmentListener;
     private OptionsDialogFragment optionsDialog;
     private ListItem itemClicked;
-    private boolean nameExists = false;
     private boolean changeName = false;
 
     @Override
@@ -63,8 +62,8 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         optionsDialog = new OptionsDialogFragment();
         optionsDialog.listener = this;
         activityList = Queries.getActivites();
-        activityAdapter = new ArrayAdapter<ListItem>(getActivity(), android.R.layout.simple_list_item_1, activityList);
-        activityListView = (ListView)view.findViewById(R.id.listView);
+        activityAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, activityList);
+        ListView activityListView = (ListView) view.findViewById(R.id.listView);
         activityListView.setAdapter(activityAdapter);
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -101,15 +100,17 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
+                break;
             default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     //Recieved name from userinput in dialog
     @Override
     public void enteredText(String text, int id) {
-        if(text.toString().contentEquals("") || text.toString().contains("\n") || nameExists == true)
+        boolean nameExists = false;
+        if(text.contentEquals("") || text.contains("\n") || nameExists)
         {
             Toast.makeText(getActivity(), "Namnet måste vara unikt, ej innehålla mellanslag eller flera rader", Toast.LENGTH_LONG).show();
         }
@@ -156,6 +157,11 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 itemClicked.delete();
                 UpdateAndSave();
             }
+    }
+
+    @Override
+    public void getDocChoice(DocItem doc) {
+
     }
 
     public interface CreateActivityFragmentListener {

@@ -15,7 +15,8 @@ import android.widget.EditText;
 public class DefaultDialogFragment extends android.support.v4.app.DialogFragment {
     public DefaultDialogFragmentListener listener;
     private EditText textbox;
-    CheckBox checkbox;
+    private CheckBox checkbox;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -43,7 +44,6 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
         });
         builder.setView(view);
         Dialog dialog = builder.create();
-
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         return dialog;

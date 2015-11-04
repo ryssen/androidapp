@@ -22,14 +22,6 @@ public class ColumnContent extends Model implements Parcelable {
         super();
     }
 
-    public Person getParentPerson() {
-        return parentPerson;
-    }
-
-    public DocItem getParentDocument() {
-        return parentDocument;
-    }
-
     public ColumnContent(String value, DocItem doc, Columns parent, Person person)
     {
         super();
@@ -37,6 +29,10 @@ public class ColumnContent extends Model implements Parcelable {
         this.parentDocument = doc;
         this.parentColumn = parent;
         this.parentPerson = person;
+    }
+
+    public Person getParentPerson() {
+        return parentPerson;
     }
 
     @Override

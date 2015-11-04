@@ -28,15 +28,6 @@ public class Columns extends Model implements Parcelable {
         this.isCheckbox = bool;
     }
 
-    public DocItem getParentDocument() {
-        return parentDocument;
-    }
-
-    public void setParentDocument(DocItem parentDocument) {
-        this.parentDocument = parentDocument;
-    }
-
-
     public boolean isCheckbox() {
         return isCheckbox;
     }
@@ -53,6 +44,5 @@ public class Columns extends Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
     }
 }

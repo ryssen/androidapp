@@ -20,26 +20,23 @@ public class Queries {
                 .execute();
     }
 
-    static DocItem getDocument(DocItem doc){
-        return new Select()
-                .from(DocItem.class)
-                .where(" = ?", doc.getId())
-                .executeSingle();
-    }
-    static Person getPerson(ColumnContent value){
-        return new Select()
-                .from(Person.class)
-                .where("Parent = ?", value.getId())
-                .executeSingle();
-    }
-    static ArrayList<Person_DocItem> getRelation(Person person, DocItem doc)
+    static ArrayList<PersonDocItem> getRelation(Person person, DocItem doc)
     {
        return new Select()
                .from(Person.class)
-               .innerJoin(Person_DocItem.class).on("Person.id = Person_DocItem.id")
-               .where("Person_DocItem.docItem = ?", doc.getId())
+               .innerJoin(PersonDocItem.class).on("Person.id = PersonDocItem.id")
+               .where("PersonDocItem.docItem = ?", doc.getId())
                .execute();
     }
+
+    static PersonDocItem getPersDocRelation(int person, DocItem doc)
+    {
+       return new Select()
+               .from(PersonDocItem.class)
+               .where("Person = ? and DocItem = ?", person, doc.getId())
+               .executeSingle();
+    }
+
     static ArrayList<Columns> getColumnHeaders(DocItem doc){
         return new Select()
                 .from(Columns.class)
@@ -47,25 +44,32 @@ public class Queries {
                 .execute();
     }
 
-    static ArrayList<ColumnContent> fetchCellData(DocItem doc){
+    static ColumnContent fetchSingleCellData(Person person, Columns activeColumn, DocItem document){
         return new Select()
                 .from(ColumnContent.class)
-                .where("ParentDoc = ?", doc.getId())
-                .execute();
-    }
-
-    static ColumnContent fetchSingleCellData(int index){
-        return new Select()
-                .from(ColumnContent.class)
-                .where("ParentColumn = ?", index)
+                .where("ParentPerson = ? and ParentColumn = ? and ParentDoc = ?", person.getId(), activeColumn.getId(), document.getId())
                 .executeSingle();
     }
 
-    static ArrayList<ColumnContent> fetchColumnCellData(Columns column){
+    static ArrayList<ColumnContent> fetchColumnCellData(Columns column, DocItem document){
         return new Select()
                 .from(ColumnContent.class)
-                .where("ParentColumn = ?", column.getId())
+                .where("ParentColumn = ? and ParentDoc = ?", column.getId(), document.getId())
+                .execute();
+    }
+    static ArrayList<PersonDocItem> getPersonCell(DocItem doc)
+    {
+        return new Select()
+                .from(PersonDocItem.class)
+                .where("DocItem = ?", doc.getId())
                 .execute();
     }
 
+    static ArrayList<PersonDocItem> getAllActPersons(DocItem doc)
+    {
+        return new Select()
+                .from(PersonDocItem.class)
+                .where("DocItem = ?", doc.getId())
+                .execute();
+    }
 }

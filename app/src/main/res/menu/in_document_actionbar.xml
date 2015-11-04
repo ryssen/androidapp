@@ -3,16 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-    android:title="add_person"
+    android:title="@string/add_person"
     android:id="@+id/add_person_icon"
     android:icon="@drawable/ic_action_name"
     app:showAsAction="always"
     ></item>
 
     <item
-    android:title="add_person"
+    android:title="@string/add_column"
     android:id="@+id/add_column_icon"
     android:icon="@drawable/ic_action_column"
+    app:showAsAction="always"
+    ></item>
+
+    <item
+    android:title="add_person"
+    android:id="@+id/import_persons"
+    android:icon="@drawable/ic_action_cloud"
     app:showAsAction="always"
     ></item>
 
