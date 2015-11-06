@@ -1,17 +1,48 @@
 package com.example.eandreje.androidapp;
 
+import android.content.Intent;
+import android.content.IntentSender;
+import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.OpenFileActivityBuilder;
+
+import java.io.BufferedInputStream;
 
 public class MainActivity extends AppCompatActivity implements CreateActivityFragment.CreateActivityFragmentListener,
-        CreateDocumentFragment.CreateDocumentFragmentListener
+        CreateDocumentFragment.CreateDocumentFragmentListener, GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener
 {
     private CreateDocumentFragment documentFragment;
+    private GoogleApiClient googleApiClient;
+    private static final int REQUEST_CODE_RESOLUTION = 1;
+    private static final int REQUEST_CODE_FILE = 2;
+
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        googleApiClient = new GoogleApiClient.Builder(this)
+//                .addApi(Drive.API)
+//                .addScope(Drive.SCOPE_FILE)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .build();
 
         setContentView(R.layout.activity_main);
         if(savedInstanceState ==null) {
@@ -22,6 +53,34 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
             this.setTitle("Aktiviteter");
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (googleApiClient == null)
+        {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Drive.API)
+                    .addScope(Drive.SCOPE_FILE)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        googleApiClient.connect();
+
+    }
+
+
+    @Override
+    protected void onPause() {
+//        if(googleApiClient != null)
+//        {
+//            googleApiClient.disconnect();
+//        }
+        super.onPause();
+    }
+
+
 
     //activeObject recieves the clicked listobject(activities) which is forwarded
     //to the static newInstance method.
@@ -42,5 +101,77 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
         transaction.replace(R.id.main_activity_layout, leftsideDocumentFragment).addToBackStack(null);
         transaction.commit();
 
+    }
+
+    @Override
+    public void launchGoogleDrive() {
+
+        IntentSender i = Drive.DriveApi.newOpenFileActivityBuilder().setMimeType(new String[]{ "text/csv"}).build(googleApiClient);
+        try {
+            startIntentSenderForResult(i, REQUEST_CODE_FILE, null, 0, 0, 0);
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    switch(requestCode)
+    {
+        case REQUEST_CODE_FILE:
+
+            if (resultCode == RESULT_OK && googleApiClient.isConnected()) {
+
+                DriveId driveId = data.getParcelableExtra(OpenFileActivityBuilder.EXTRA_RESPONSE_DRIVE_ID);
+                DriveFile file = Drive.DriveApi.getFile(getGooleApiClient(), driveId);
+                Uri uri = data.getData();
+
+                //DriveApi.DriveContentsResult contentresult = file.open(getGooleApiClient(), DriveFile.MODE_READ_ONLY, null).await();
+
+                //file.open(googleApiClient, DriveFile.MODE_READ_ONLY, null).setResultCallback(contentOpenedCallback);
+                //BufferedInputStream reader = new BufferedInputStream(contentresult.getDriveContents().getInputStream());
+
+            }
+            break;
+        case REQUEST_CODE_RESOLUTION:
+            if (resultCode == RESULT_OK) {
+                googleApiClient.connect();
+            }
+            break;
+        default:
+            super.onActivityResult(requestCode, resultCode, data);
+            break;
+    }}
+
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.i(TAG, "GoogleApiClient connected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "GoogleApiClient connection suspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "GoogleApiClient connection failed: " + connectionResult.toString());
+        if(!connectionResult.hasResolution())
+        {
+            GoogleApiAvailability.getInstance().getErrorDialog(this, connectionResult.getErrorCode(),0).show();
+            return;
+        }
+        try {
+            connectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
+        }
+        catch (IntentSender.SendIntentException e) {
+            Log.e(TAG, "Exception while starting resolution activity", e);
+        }
+    }
+    public GoogleApiClient getGooleApiClient()
+    {
+        return googleApiClient;
     }
 }

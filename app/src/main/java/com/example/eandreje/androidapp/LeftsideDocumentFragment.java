@@ -173,7 +173,12 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     public void docObjectClicked(DocItem doc) {
     }
 
-    @Override
+        @Override
+        public void launchGoogleDrive() {
+
+        }
+
+        @Override
     public void enteredText(String text, int id) {
         Person person;
         PersonDocItem persDocItem;
@@ -237,6 +242,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
             bundle.putInt("Caller", R.id.person_name);
         else
             bundle.putInt("Caller", R.id.column_name);
+        bundle.putString("DialogDesc", DIALOG_ADD_PERSON);
         bundle.putString("addDocTitle", TEXTVIEW_CHANGE);
         dialog.setArguments(bundle);
         dialog.listener = this;
@@ -262,6 +268,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         bundle.putInt("Layout", R.layout.default_dialog);
         bundle.putInt("Caller", R.id.person_name);
         bundle.putString("addDocTitle", TEXTVIEW_CHANGE);
+        bundle.putString("DialogDesc", DIALOG_ADD_COLUMN);
         dialog.setArguments(bundle);
         dialog.listener = this;
         dialog.show(getFragmentManager(), "changeCustomAdaptAttr");

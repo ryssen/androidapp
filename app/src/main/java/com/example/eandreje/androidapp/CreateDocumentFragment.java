@@ -1,9 +1,15 @@
 package com.example.eandreje.androidapp;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,7 +23,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.OpenFileActivityBuilder;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +57,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     private DocItem docClicked;
     private boolean importExport = false;
     String exportFile;
-    public static final int requestcode =1;
+    private GoogleApiClient googleApiClient;
+    public static final int requestcode = 1;
     public CreateDocumentFragmentListener createDocumentFragmentListener;
     private OptionsDialogFragment optionsDialogFragment;
     private CSV csv;
@@ -47,8 +67,9 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     // with custom parameter
     public static CreateDocumentFragment newInstance(ListItem listItem){
         CreateDocumentFragment fragment = new CreateDocumentFragment();
-        Bundle bundle = new Bundle(1);
+        Bundle bundle = new Bundle();
         bundle.putParcelable("listobject", listItem);
+      //  bundle.putParcelable("googleApiClient", (Parcelable) googleApiClient);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -58,6 +79,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         listItem = getArguments().getParcelable("listobject");
+      //  googleApiClient = getArguments().getParcelable("googleApiClient");
     }
 
     @Override
@@ -115,12 +137,9 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     @Override
     public void onAttach(Activity context) {
         super.onAttach(context);
-        try
-        {
-            createDocumentFragmentListener = (CreateDocumentFragmentListener)getActivity();
-        }
-        catch (ClassCastException e)
-        {
+        try {
+            createDocumentFragmentListener = (CreateDocumentFragmentListener) getActivity();
+        } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString() + " must implement CreateActivityFragmentListener");
         }
     }
@@ -132,10 +151,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.add_doc_icon:
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 Bundle bundle = new Bundle();
@@ -153,7 +170,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 Toast.makeText(getActivity(), "Välj ett dokument för exportering", Toast.LENGTH_LONG).show();
                 break;
             case R.id.second_view_down_cloud:
-                importFile();
+                //importFile();
+                createDocumentFragmentListener.launchGoogleDrive();
                 break;
 
             default:
@@ -187,8 +205,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     }
 
-    public void UpdateAndSave()
-    {
+    public void UpdateAndSave() {
         docList = Queries.getDocuments(listItem);
         adapter.clear();
         adapter.addAll(docList);
@@ -196,28 +213,28 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     @Override
     public void getChoice(int pos) {
-    switch (pos){
-        case 0:
-            state = true;
-            DefaultDialogFragment docDialog = new DefaultDialogFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("addDocTitle", DIALOG_TITLE);
-            bundle.putString("DialogDesc", DIALOG_CHANGE_DOC_NAME);
-            bundle.putInt("Layout", R.layout.default_dialog);
-            docDialog.setArguments(bundle);
-            docDialog.listener = this;
-            docDialog.show(getFragmentManager(), "editDocDialog");
-            break;
-        case 1:
-            docClicked.delete();
-            UpdateAndSave();
-            break;
-        default:
+        switch (pos) {
+            case 0:
+                state = true;
+                DefaultDialogFragment docDialog = new DefaultDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("addDocTitle", DIALOG_TITLE);
+                bundle.putString("DialogDesc", DIALOG_CHANGE_DOC_NAME);
+                bundle.putInt("Layout", R.layout.default_dialog);
+                docDialog.setArguments(bundle);
+                docDialog.listener = this;
+                docDialog.show(getFragmentManager(), "editDocDialog");
+                break;
+            case 1:
+                docClicked.delete();
+                UpdateAndSave();
+                break;
+            default:
+        }
     }
-    }
-    public void addDocument(String name)
-    {
-        DocItem document = new DocItem(name);
+
+    public void addDocument(String text) {
+        DocItem document = new DocItem(text);
         document.parentActivity = listItem;
         document.save();
         UpdateAndSave();
@@ -228,12 +245,13 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     }
 
-    public interface CreateDocumentFragmentListener{
+    public interface CreateDocumentFragmentListener {
         void docObjectClicked(DocItem doc);
+
+        void launchGoogleDrive();
     }
 
-    public void exportFile()
-    {
+    public void exportFile() {
 
         csv.writeToCSV(docClicked);
         exportFile = csv.getCSV();
@@ -243,11 +261,27 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         startActivity(shareIntent);
 
     }
-    public void importFile()
-    {
-        Intent fileintent = new Intent(Intent.ACTION_GET_CONTENT);
-        fileintent.setType("text/plain");
-        startActivityForResult(fileintent, requestcode);
+
+
+    public void importFile() {
+//  TODO    FIXA SÅ ATT GOOGLEAPICLIENT !=NULL
+//        IntentSender i = Drive.DriveApi.newOpenFileActivityBuilder().setMimeType(new String[]{"csv/text"}).build(googleApiClient);
+//        try {
+//            getActivity().startIntentSenderForResult(i, REQUEST_CODE_SELECT, null, 0,0,0);
+//        } catch (IntentSender.SendIntentException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if(resultCode == getActivity().RESULT_OK)
+//        {
+//            DriveId driveId = (DriveId)data.getParcelableExtra(OpenFileActivityBuilder.EXTRA_RESPONSE_DRIVE_ID);
+//        }
+//    }
     }
 
     @Override
