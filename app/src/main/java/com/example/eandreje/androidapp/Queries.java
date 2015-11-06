@@ -2,6 +2,7 @@ package com.example.eandreje.androidapp;
 
 
 import com.activeandroid.query.Select;
+import com.activeandroid.util.SQLiteUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +22,6 @@ public class Queries {
                 .orderBy("Name ASC")
                 .execute();
     }
-    static List<DocItem> getAdapterObjects(ListItem parent){
-        return new Select()
-                .from(Person.class)
-                .where("Parent = ?", parent.getId())
-                .orderBy("Name ASC")
-                .execute();
-    }
 
     static DocItem getDocument(DocItem doc){
         return new Select()
@@ -35,6 +29,7 @@ public class Queries {
                 .where(" = ?", doc.getId())
                 .executeSingle();
     }
+
     static Person getPerson(ColumnContent value){
         return new Select()
                 .from(Person.class)
@@ -50,10 +45,9 @@ public class Queries {
                .execute();
     }
 
-    static PersonDocItem getPersDocRelation(int person, DocItem doc)
-    {
-       return new Select()
-               .from(PersonDocItem.class)
+    static PersonDocItem getPersDocRelation(int person, DocItem doc) {
+        return new Select()
+                .from(PersonDocItem.class)
                .where("Person = ? and DocItem = ?", person, doc.getId())
                .executeSingle();
     }
@@ -102,4 +96,5 @@ public class Queries {
                 .where("DocItem = ?", doc.getId())
                 .execute();
     }
+
 }

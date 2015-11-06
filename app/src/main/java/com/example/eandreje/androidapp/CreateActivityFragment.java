@@ -20,7 +20,11 @@ import java.util.List;
 public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    private static final String DIALOG_TITLE = "Lägg till en ny aktivitet";
+    private static final String DIALOG_TITLE = "Ny aktivitet";
+    private static final String ACTLIST_TITLE = "Alternativ";
+    private static final String DIALOG_CHANGE_DOC_NAME = "Skriv in ett nytt namn";
+    private static final String DIALOG_NEW_ACTIVITY = "Skriv in namnet på den nya aktiviteten";
+    private static final String DIALOG__ALTERNATIVE = "Ändra namn eller ta bort aktuell aktivitet";
 
     private ArrayAdapter<ListItem> activityAdapter;
     private List<ListItem> activityList = new ArrayList<>();
@@ -75,6 +79,12 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 itemClicked = activityAdapter.getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("DialogTitle", ACTLIST_TITLE);
+                bundle.putInt("Layout", R.layout.act_options_layout);
+                bundle.putString("DialogDesc", DIALOG__ALTERNATIVE);
+                bundle.putInt("Caller", 0);
+                optionsDialog.setArguments(bundle);
                 optionsDialog.show(getFragmentManager(), "Options");
                 return true;
             }
@@ -96,6 +106,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 Bundle bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
                 bundle.putInt("Layout", R.layout.default_dialog);
+                bundle.putString("DialogDesc", DIALOG_NEW_ACTIVITY);
                 bundle.putInt("Caller", R.id.add_activity_icon);
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this;
@@ -148,6 +159,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 bundle.putString("addDocTitle", DIALOG_TITLE);
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 bundle.putInt("Layout", R.layout.default_dialog);
+                bundle.putString("DialogDesc", DIALOG_CHANGE_DOC_NAME);
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.show(getFragmentManager(), "dialog");

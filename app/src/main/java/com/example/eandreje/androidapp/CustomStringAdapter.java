@@ -7,18 +7,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class CustomStringAdapter extends ArrayAdapter {
-    private List<ColumnContent> valueList;
+    private List<AdapterObjects> list;
     public CustomStringAdapterListener listener;
+    //private List<PersonDocItem> persons;
 
-    public CustomStringAdapter(Context context, List<ColumnContent> values, LeftsideDocumentFragment fragment) {
-        super(context, R.layout.custom_row_string, values);
+    public CustomStringAdapter(Context context, List<AdapterObjects> valueList, LeftsideDocumentFragment fragment) {
+        super(context, R.layout.custom_row_string, valueList);
         listener = fragment;
-        valueList = values;
+        list = valueList;
     }
 
     @Override
@@ -28,19 +27,25 @@ public class CustomStringAdapter extends ArrayAdapter {
         final TextView textView1 = (TextView) view.findViewById(R.id.person_name);
         TextView textView2 = (TextView) view.findViewById(R.id.column_name);
 
-        textView1.setText(valueList.get(position).getParentPerson().toString());
-        textView2.setText(valueList.get(position).toString());
-
+        textView1.setText(list.get(position).person.toString());
+        if(list.get(position).columnContent != null){
+            textView2.setEnabled(true);
+            textView2.setText(list.get(position).columnContent.value);
+        }
+        else
+        {
+            textView2.setEnabled(false);
+        }
         textView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.buttonPressed(v, valueList.get(position).getParentPerson().getId());
+                listener.buttonPressed(v, list.get(position).person.getId());
             }
         });
         textView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.buttonPressed(v, valueList.get(position).getParentPerson().getId());
+                listener.buttonPressed(v, list.get(position).person.getId());
             }
         });
         textView1.setOnLongClickListener(new View.OnLongClickListener() {

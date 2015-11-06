@@ -29,6 +29,10 @@ public class Person extends Model implements Parcelable{
 
     }
 
+    public void setParentActivity(ListItem parentActivity) {
+        this.parentActivity = parentActivity;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -46,5 +50,8 @@ public class Person extends Model implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
+    }
+    public ColumnContent getColumnContent(DocItem doc, Columns column){
+        return Queries.fetchSingleCellData(this, column, doc);
     }
 }

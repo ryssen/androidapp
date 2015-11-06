@@ -10,14 +10,13 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CustomBoolAdapter extends ArrayAdapter {
-    private List<ColumnContent> list;
+    private List<AdapterObjects> list;
     public CustomBoolAdapterListener listener;
 
-    public CustomBoolAdapter(Context context, List<ColumnContent> values, LeftsideDocumentFragment leftsideDocumentFragment) {
+    public CustomBoolAdapter(Context context, List<AdapterObjects> values, LeftsideDocumentFragment leftsideDocumentFragment) {
         super(context, R.layout.custom_row_boolean, values);
         listener = leftsideDocumentFragment;
         list = values;
@@ -30,18 +29,30 @@ public class CustomBoolAdapter extends ArrayAdapter {
         TextView textView = (TextView) view.findViewById(R.id.person_name);
         CheckBox checkBox = (CheckBox)view.findViewById(R.id.checkbox_value);
 
-        textView.setText(list.get(position).getParentPerson().toString());
+        textView.setText(list.get(position).person.toString());
+        if(list.get(position).columnContent != null){
+            checkBox.setEnabled(true);
+            if (list.get(position).columnContent.value != null)
+                checkBox.setChecked(Boolean.parseBoolean(list.get(position).columnContent.value));
+            else
+                checkBox.setChecked(false);
+        }
+        else
+        {
+            checkBox.setEnabled(false);
+        }
+        //checkBox.setChecked(Boolean.parseBoolean(list.get(position).columnContent.value));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.textboxClick(v, list.get(position).getParentPerson().getId());
+                listener.textboxClick(v, list.get(position).person.getId());
             }
         });
-        checkBox.setChecked(Boolean.parseBoolean(list.get(position).value));
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                listener.checkboxChange(buttonView, list.get(position).getParentPerson().getId(), isChecked);
+                listener.checkboxChange(buttonView, list.get(position).person.getId(), isChecked);
+                Toast.makeText(getContext(), ""+isChecked, Toast.LENGTH_SHORT).show();
             }
         });
         return view;

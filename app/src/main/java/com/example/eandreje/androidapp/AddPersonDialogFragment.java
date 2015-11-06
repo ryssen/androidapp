@@ -31,6 +31,8 @@ public class AddPersonDialogFragment extends DialogFragment{
         LinearLayout parent = (LinearLayout) view.findViewById(R.id.linear3);
         columnList = getArguments().getParcelableArrayList("Columns");
         layoutList = new ArrayList<>();
+        TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
+        description.setText(getArguments().getString("DialogDesc").toString());
 
         for (Columns column: columnList)
         {
@@ -67,7 +69,7 @@ public class AddPersonDialogFragment extends DialogFragment{
                 perDocRelation.save();
 
                 int i = 0;
-                if(columnList != null){
+                if(columnList.size() != 0){
                 for (LinearLayout view : layoutList) {
                     Columns column = columnList.get(i);
                     column.save();
@@ -92,26 +94,9 @@ public class AddPersonDialogFragment extends DialogFragment{
                         cellValue.save();
                         i++;
                     }
-
-                    //ColumnContent cellValue = new ColumnContent(value.getText().toString(), doc, list.get(0), ))
-
-                    //DocItem doc = new DocItem(getArguments().getParcelable("DocParent").toString());
-                    //doc.save();
-
-                    //person.save();
-                    //Columns column = new Columns();
-                    //column.save();
-                    //EditText textbox = (EditText)editTextView.findViewById(R.id.column_value);
-                    //ColumnContent value = new ColumnContent(textbox.getText().toString(), doc, column, person);
-                    //value.save();
-                    //Toast.makeText(getActivity(), "docname = "+value.parentDocument, Toast.LENGTH_SHORT).show();
-                    //Toast.makeText(getActivity(), "Värden "+value.value+" ,"+value.parentDocument+" ,"+value.parentPerson+" ,"+value.parentColumn, Toast.LENGTH_LONG).show();
-                    //Toast.makeText(getActivity(), "namn "+person+" "+person.getParentActivity(), Toast.LENGTH_LONG).show();
                 }
                 }
                 listener.newPersonAdded(doc);
-
-
             }
         });
         builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {

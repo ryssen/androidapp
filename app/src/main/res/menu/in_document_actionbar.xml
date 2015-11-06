@@ -23,4 +23,10 @@
     app:showAsAction="always"
     ></item>
 
+    <item
+    android:title="Ta bort kolumn"
+    android:id="@+id/delete_column"
+    android:icon="@drawable/ic_up_cloud"
+    app:showAsAction="never"></item>
+
 </menu>

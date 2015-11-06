@@ -29,11 +29,14 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     private static final String COLUMN_TITLE = "Ny kolumn";
     private static final String PERSON_TITLE = "Ny deltagare";
     private static final String TEXTVIEW_CHANGE = "Ändra text";
-    private static final String DOCLIST_TITLE = "Välj ett dokument för import";
+    private static final String DOCLIST_TITLE = "Importera namn";
+        private static final String DIALOG_IMPORT = "Välj ett av dokumenten för import av namn";
+        private static final String DIALOG_ADD_PERSON = "Skriv in namn och önskat kolumnvärde om tillgängligt";
+        private static final String DIALOG_ADD_COLUMN = "Skriv namn och om kolumntypen ska vara checkbox eller text";
 
-    private DocItem document;
+        private DocItem document;
     private String inDocTitle;
-    private List<ColumnContent> valueList;
+    private List<AdapterObjects> valueList;
     private CustomBoolAdapter boolAdapter;
     private CustomStringAdapter stringAdapter;
     private ArrayAdapter<Columns> spinnerAdapt;
@@ -73,7 +76,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.leftside_layout, container, false);
         listView = (ListView) view.findViewById(R.id.listView4);
-
+        valueList = new ArrayList<>();
         spinnerColumns = new ArrayList<>();
         valueList = new ArrayList<>();
         spinner = (Spinner) view.findViewById(R.id.spinner);
@@ -81,20 +84,22 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         boolAdapter = new CustomBoolAdapter(getContext(), valueList, this);
         stringAdapter = new CustomStringAdapter(getContext(), valueList, this);
         spinner.setAdapter(spinnerAdapt);
-        initListview();
+        initAdapterObjectList(valueList);
+        listView.setAdapter(stringAdapter);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (spinnerColumns.get(position).isCheckbox()) {
                     activeColumn = (Columns) spinner.getItemAtPosition(position);
+                    updateColumnData(valueList);
                     listView.setAdapter(boolAdapter);
-                    valueList = Queries.fetchColumnCellData(spinnerColumns.get(position), document);
-                    updateListview();
-                } else {
+                }
+                else
+                {
                     activeColumn = (Columns) spinner.getItemAtPosition(position);
+                    updateColumnData(valueList);
                     listView.setAdapter(stringAdapter);
-                    valueList = Queries.fetchColumnCellData(spinnerColumns.get(position), document);
-                    updateListview();
                 }
             }
 
@@ -130,6 +135,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 bundle.putInt("Layout", R.layout.add_person_layout);
                 bundle.putParcelable("DocParent", document);
                 bundle.putString("dialogTitle", PERSON_TITLE);
+                bundle.putString("DialogDesc", DIALOG_ADD_PERSON);
                 bundle.putInt("Caller", R.id.add_person_icon);
                 addPerson.setArguments(bundle);
                 addPerson.listener = this;
@@ -141,6 +147,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 bundle.putString("addDocTitle", COLUMN_TITLE);
                 bundle.putInt("Layout", R.layout.add_column_layout);
                 bundle.putInt("Caller", R.id.add_column_icon);
+                bundle.putString("DialogDesc", DIALOG_ADD_COLUMN);
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "newColumnDialog");
@@ -149,6 +156,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 OptionsDialogFragment chooseDoc = new OptionsDialogFragment();
                 bundle = new Bundle();
                 bundle.putString("DialogTitle", DOCLIST_TITLE);
+                bundle.putString("DialogDesc", DIALOG_IMPORT);
                 bundle.putInt("Layout", R.layout.act_options_layout);
                 bundle.putInt("Caller", R.id.import_persons);
                 bundle.putParcelable("ParentAct", document.getParentActivity());
@@ -159,7 +167,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
             default:
         }
         return super.onOptionsItemSelected(item);
-
     }
 
     @Override
@@ -188,7 +195,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 cell.save();
                 updateListview();
                 break;
-                //Toast.makeText(getActivity(), "bra erik", Toast.LENGTH_SHORT).show();
             case R.id.column_name:
                 persDocItem = Queries.getPersDocRelation((int) listPos, document);
                 person = persDocItem.getPerson();
@@ -199,7 +205,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 break;
             default:
         }
-
     }
 
     @Override
@@ -227,14 +232,11 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         listPos = position;
         DefaultDialogFragment dialog = new DefaultDialogFragment();
         Bundle bundle = new Bundle();
-        String title = "Ändra text";
         bundle.putInt("Layout", R.layout.default_dialog);
-
         if(v.getId() == R.id.person_name)
             bundle.putInt("Caller", R.id.person_name);
         else
             bundle.putInt("Caller", R.id.column_name);
-
         bundle.putString("addDocTitle", TEXTVIEW_CHANGE);
         dialog.setArguments(bundle);
         dialog.listener = this;
@@ -249,7 +251,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         ColumnContent cell = Queries.fetchSingleCellData(person, activeColumn, document);
         cell.setValue(String.valueOf(bool));
         cell.save();
-        updateListview();
+        initAdapterObjectList(valueList);
     }
 
     @Override
@@ -285,12 +287,9 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         }
     }
     private void updateListview(){
-        if(activeColumn != null)
-            valueList = Queries.fetchColumnCellData(activeColumn, document);
-        boolAdapter.clear();
-        boolAdapter.addAll(valueList);
-        stringAdapter.clear();
-        stringAdapter.addAll(valueList);
+        initAdapterObjectList(valueList);
+        boolAdapter.notifyDataSetChanged();
+        stringAdapter.notifyDataSetChanged();
     }
 
         @Override
@@ -316,21 +315,30 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                                 newColumn.save();
                             }
                     }
-
-
-                        /*if(spinnerColumns.size() != 0){
-                            for (PersonDocItem pDoc : persons)
-                            {
-                                //Person aPerson = pDoc.getPerson();
-                                ColumnContent newColumn = new ColumnContent("", document, activeColumn, person);
-                                newColumn.save();
-                            }
-                        }*/
-                    }
-
+                }
                 else
                     Toast.makeText(getActivity(), "Listan är inte tom", Toast.LENGTH_SHORT).show();
                 updateListview();
         }
+
+    public void initAdapterObjectList(List adapterObjects) {
+        adapterObjects.clear();
+        List<PersonDocItem> persons = Queries.getPersonCell(document);
+        for (PersonDocItem pDI:persons)
+        {
+            AdapterObjects newObject = new AdapterObjects();
+            newObject.person = pDI.getPerson();
+            if(activeColumn != null)
+                newObject.columnContent = newObject.person.getColumnContent(document, activeColumn);
+            adapterObjects.add(newObject);
+        }
+    }
+
+        public void updateColumnData(List<AdapterObjects> adapterObjects) {
+        for (AdapterObjects aO:adapterObjects)
+        {
+            aO.columnContent = Queries.fetchSingleCellData(aO.person, activeColumn, document);
+        }
+    }
     }
 

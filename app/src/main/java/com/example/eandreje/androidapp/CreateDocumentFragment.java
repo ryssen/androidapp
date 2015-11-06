@@ -24,8 +24,11 @@ import java.util.List;
 public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    private static final String DIALOG_TITLE = "Lägg till nytt dokument";
+    private static final String DIALOG_TITLE = "Nytt dokument";
     private static final String DOCLIST_TITLE = "Alternativ";
+    private static final String DIALOG_CHANGE_DOC_NAME = "Skriv in ett nytt namn";
+    private static final String DIALOG_NEW_DOC = "Skriv in namnet på det nya dokumentet";
+    private static final String DIALOG_ALTERNATIVE = "Ändra namn eller ta bort aktuellt dokument";
 
     private boolean state = false;
     private ArrayAdapter<DocItem> adapter;
@@ -94,12 +97,14 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 docClicked = adapter.getItem(position);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("DialogTitle", DOCLIST_TITLE);
-                    bundle.putInt("Layout", R.layout.act_options_layout);
-                    bundle.putInt("Caller", 0);
-                    optionsDialogFragment.show(getFragmentManager(), "docOptions");
-                    return true;
+                Bundle bundle = new Bundle();
+                bundle.putString("DialogTitle", DOCLIST_TITLE);
+                bundle.putString("DialogDesc", DIALOG_ALTERNATIVE);
+                bundle.putInt("Layout", R.layout.act_options_layout);
+                bundle.putInt("Caller", 0);
+                optionsDialogFragment.setArguments(bundle);
+                optionsDialogFragment.show(getFragmentManager(), "docOptions");
+                return true;
             }
         });
 
@@ -135,6 +140,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
+                bundle.putString("DialogDesc", DIALOG_NEW_DOC);
                 bundle.putInt("Layout", R.layout.default_dialog);
                 bundle.putInt("Caller", R.id.add_doc_icon);
                 defaultDialogFragment.setArguments(bundle);
@@ -144,7 +150,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             case R.id.second_view_up_cloud:
                 listView.setBackgroundColor(Color.LTGRAY);
                 importExport = true;
-                Toast.makeText(getActivity(), "Välj ett dokument att exportera", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Välj ett dokument för exportering", Toast.LENGTH_LONG).show();
                 break;
             case R.id.second_view_down_cloud:
                 importFile();
@@ -159,7 +165,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public void enteredText(String text, int id) {
         if(text.contentEquals("") || text.contains("\n"))
         {
-            Toast.makeText(getActivity(), "Aktiviteten måste vara unik, ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Dokumentnamnet får innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
         }
         else
         if(!state)
@@ -196,6 +202,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             DefaultDialogFragment docDialog = new DefaultDialogFragment();
             Bundle bundle = new Bundle();
             bundle.putString("addDocTitle", DIALOG_TITLE);
+            bundle.putString("DialogDesc", DIALOG_CHANGE_DOC_NAME);
             bundle.putInt("Layout", R.layout.default_dialog);
             docDialog.setArguments(bundle);
             docDialog.listener = this;
