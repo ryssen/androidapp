@@ -33,7 +33,8 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflate = getActivity().getLayoutInflater();
         View view = inflate.inflate(R.layout.act_options_layout, null);
-        builder.setTitle(getArguments().getString("DialogTitle"));
+        if(getArguments().getString("DialogTitle") != null)
+            builder.setTitle(getArguments().getString("DialogTitle"));
         ListView listView = (ListView) view.findViewById(R.id.listView3);
         ArrayList<String> optionsList = new ArrayList<>();
         docList = new ArrayList<>();
@@ -41,23 +42,25 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
         final ArrayAdapter<DocItem> docAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, docList);
 
         TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
-        description.setText(getArguments().getString("DialogDesc").toString());
-
+        if(getArguments().getString("DialogDesc") != null)
+            description.setText(getArguments().getString("DialogDesc"));
         builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
         });
 
-        if(getArguments().getInt("Caller") == R.id.import_persons)
-        {
+        if(getArguments().getInt("Caller") == R.id.import_persons) {
             docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct"));
             listView.setAdapter(docAdapter);
             docAdapter.clear();
             docAdapter.addAll(docList);
         }
-        else
-        {
+        else if (getArguments().getInt("Caller") == R.id.listView) {
+            optionsList.add("Ta bort rad");
+            listView.setAdapter(adapter);
+        }
+        else{
             optionsList.add("Ändra namn");
             optionsList.add("Ta bort rad");
             listView.setAdapter(adapter);

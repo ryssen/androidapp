@@ -41,18 +41,23 @@ public class CustomBoolAdapter extends ArrayAdapter {
         {
             checkBox.setEnabled(false);
         }
-        //checkBox.setChecked(Boolean.parseBoolean(list.get(position).columnContent.value));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.textboxClick(v, list.get(position).person.getId());
             }
         });
+        textView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                return true;
+            }
+        });
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 listener.checkboxChange(buttonView, list.get(position).person.getId(), isChecked);
-                Toast.makeText(getContext(), ""+isChecked, Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -61,5 +66,6 @@ public class CustomBoolAdapter extends ArrayAdapter {
     public interface CustomBoolAdapterListener{
         void checkboxChange(View v, Long position, boolean bool);
         void textboxClick(View v, Long position);
+        void deletePersonBool(View v, Long position);
     }
 }

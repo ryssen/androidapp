@@ -51,7 +51,7 @@ public class CustomStringAdapter extends ArrayAdapter {
         textView1.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                listener.deletePersonString(v, list.get(position).person.getId());
                 return true;
             }
         });
@@ -60,5 +60,6 @@ public class CustomStringAdapter extends ArrayAdapter {
 
     public interface CustomStringAdapterListener{
         void buttonPressed(View v, Long position);
+        void deletePersonString(View v, Long position);
     }
 }

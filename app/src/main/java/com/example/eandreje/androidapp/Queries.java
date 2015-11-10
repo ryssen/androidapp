@@ -1,10 +1,10 @@
 package com.example.eandreje.androidapp;
 
-
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.activeandroid.util.SQLiteUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Queries {
@@ -97,4 +97,43 @@ public class Queries {
                 .execute();
     }
 
+    static void deleteColumn(Columns column)
+    {
+            new Delete()
+                    .from(Columns.class)
+                    .where("Id = ?", column.getId())
+                    .execute();
+    }
+
+    static void deleteColumnValues(Columns column)
+    {
+            new Delete()
+                    .from(ColumnContent.class)
+                    .where("ParentColumn = ?", column.getId())
+                    .execute();
+    }
+
+    static void deleteInPersonClass(Long id)
+    {
+            new Delete()
+                    .from(Person.class)
+                    .where("Id = ?", id)
+                    .execute();
+    }
+
+    static void deleteInDocItemClass(PersonDocItem personDoc)
+    {
+            new Delete()
+                    .from(PersonDocItem.class)
+                    .where("Person = ?", personDoc.getPerson().getId())
+                    .execute();
+    }
+
+    static void deleteInColumnContent(PersonDocItem personDoc)
+    {
+            new Delete()
+                    .from(ColumnContent.class)
+                    .where("ParentPerson = ?", personDoc.getPerson().getId())
+                    .execute();
+    }
 }
