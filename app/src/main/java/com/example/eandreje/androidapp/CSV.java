@@ -43,28 +43,28 @@ public class CSV
         personList = Queries.getRelation(doc);
         StringBuilder toCSVstringbuilder = new StringBuilder("Name;");
         //      TODO    Snygga till parsning med en stringbuilder ist flr en String
-        //toCSV = "Namn;";
+
         for (Columns c : columnList)
         {
-            //toCSV = toCSV + c.toString()+";";
+
             toCSVstringbuilder.append(c.toString() +";");
 
         }
-        //toCSV = toCSV + "\n";
+
         toCSVstringbuilder.append("\n");
         for(Person p : personList)
         {
             columncontent = new ColumnContent();
-            //toCSV = toCSV + p.toString() +";";
+
             toCSVstringbuilder.append(p.toString() + ";");
             for (Columns c : columnList)
             {
                 columncontent = Queries.fetchCellValueForCSV(c,p);
                 toCSVstringbuilder.append(columncontent.toString() +";");
-                //toCSV = toCSV + columncontent.toString()+";";
+
             }
             toCSVstringbuilder.append("\n");
-            //toCSV = toCSV + "\n";
+
         }
         toCSV = toCSVstringbuilder.toString();
         return toCSV;

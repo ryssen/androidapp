@@ -12,21 +12,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveApi;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.DriveResource;
-import com.google.android.gms.drive.MetadataChangeSet;
-import com.google.android.gms.drive.OpenFileActivityBuilder;
+//import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.GoogleApiAvailability;
+//import com.google.android.gms.common.api.GoogleApiClient;
+//import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+//import com.google.android.gms.common.api.PendingResult;
+//import com.google.android.gms.common.api.ResultCallback;
+//import com.google.android.gms.drive.Drive;
+//import com.google.android.gms.drive.DriveApi;
+//import com.google.android.gms.drive.DriveContents;
+//import com.google.android.gms.drive.DriveFile;
+//import com.google.android.gms.drive.DriveFolder;
+//import com.google.android.gms.drive.DriveId;
+//import com.google.android.gms.drive.DriveResource;
+//import com.google.android.gms.drive.MetadataChangeSet;
+//import com.google.android.gms.drive.OpenFileActivityBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
         CreateDocumentFragment.CreateDocumentFragmentListener
 {
     private CreateDocumentFragment documentFragment;
-    private GoogleApiClient googleApiClient;
+   // private GoogleApiClient googleApiClient;
     private static final int REQUEST_CODE_RESOLUTION = 1;
     private static final int REQUEST_CODE_FILE = 2;
     private String EXISTING_FILE_ID = "CAESHDBCMFc3TzZQRUxtcTRUakl3VnpaWFduTmtUSGMY3A0g_OXH6Z5SKAA";
-    DriveId driveId;
+  //  DriveId driveId;
 
 
     private static final String TAG = "MainActivity";

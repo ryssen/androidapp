@@ -12,6 +12,9 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,10 +26,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.OpenFileActivityBuilder;
+//import com.google.android.gms.common.api.GoogleApiClient;
+//import com.google.android.gms.drive.Drive;
+//import com.google.android.gms.drive.DriveId;
+//import com.google.android.gms.drive.OpenFileActivityBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -59,7 +62,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     private DocItem docClicked;
     private boolean importExport = false;
     String exportCSV;
-    private GoogleApiClient googleApiClient;
+   // private GoogleApiClient googleApiClient;
     public static final int requestcode = 1;
     public CreateDocumentFragmentListener createDocumentFragmentListener;
     private OptionsDialogFragment optionsDialogFragment;
@@ -262,6 +265,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         //exportFile = csv.getCSV();
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         String title = getResources().getString(R.string.export_choice);
+        SpannableString bluespannable = new SpannableString(title);
+        bluespannable.setSpan(new ForegroundColorSpan(Color.BLUE), 0, title.length(), 0);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, exportCSV);
         startActivity(Intent.createChooser(shareIntent, title));
