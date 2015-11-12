@@ -36,57 +36,66 @@ public class CSV
     private List<Person> personList = new ArrayList<>();
     private String toCSV;
 
-    public void writeToCSV(DocItem doc)
+    public String writeToCSV(DocItem doc)
     {
 
         columnList = Queries.getColumnHeaders(doc);
         personList = Queries.getRelation(doc);
-        toCSV = "Namn;";
+        StringBuilder toCSVstringbuilder = new StringBuilder("Name;");
+        //      TODO    Snygga till parsning med en stringbuilder ist flr en String
+        //toCSV = "Namn;";
         for (Columns c : columnList)
         {
-            toCSV = toCSV + c.toString()+";";
+            //toCSV = toCSV + c.toString()+";";
+            toCSVstringbuilder.append(c.toString() +";");
+
         }
-        toCSV = toCSV + "\n";
+        //toCSV = toCSV + "\n";
+        toCSVstringbuilder.append("\n");
         for(Person p : personList)
         {
             columncontent = new ColumnContent();
-            toCSV = toCSV + p.toString() +";";
+            //toCSV = toCSV + p.toString() +";";
+            toCSVstringbuilder.append(p.toString() + ";");
             for (Columns c : columnList)
             {
                 columncontent = Queries.fetchCellValueForCSV(c,p);
-                toCSV = toCSV + columncontent.toString()+";";
+                toCSVstringbuilder.append(columncontent.toString() +";");
+                //toCSV = toCSV + columncontent.toString()+";";
             }
-            toCSV = toCSV + "\n";
+            toCSVstringbuilder.append("\n");
+            //toCSV = toCSV + "\n";
         }
-
+        toCSV = toCSVstringbuilder.toString();
+        return toCSV;
     }
-    public void readFromCSV(Uri uri, DocItem doc, Context context)
-    {
-        BufferedReader buffer;
-        FileOutputStream fos;
-        try
-        {
-            buffer = new BufferedReader(new InputStreamReader(context.getContentResolver().openInputStream(uri)));
-            String line="";
-            int count =0;
-            while((line  = buffer.readLine()) !=null)
-            {
-                String[] str = line.split(";");
-                String temp = str[count].toString();
-                //Columns col = new Columns(temp, doc,);
-            }
-
-
-        }
-
-
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
+//    public void readFromCSV(Uri uri, DocItem doc, Context context)
+//    {
+//        BufferedReader buffer;
+//        FileOutputStream fos;
+//        try
+//        {
+//            buffer = new BufferedReader(new InputStreamReader(context.getContentResolver().openInputStream(uri)));
+//            String line="";
+//            int count =0;
+//            while((line  = buffer.readLine()) !=null)
+//            {
+//                String[] str = line.split(";");
+//                String temp = str[count].toString();
+//                //Columns col = new Columns(temp, doc,);
+//            }
+//
+//
+//        }
+//
+//
+//        catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 //    public void fromXlsxToCSV(File file, DocItem doc)
 //    {
 //        StringBuffer cellvalue = new StringBuffer();

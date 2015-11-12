@@ -48,6 +48,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     private static final String DIALOG_CHANGE_DOC_NAME = "Skriv in ett nytt namn";
     private static final String DIALOG_NEW_DOC = "Skriv in namnet på det nya dokumentet";
     private static final String DIALOG_ALTERNATIVE = "Ändra namn eller ta bort aktuellt dokument";
+    private static final String DIALOG_EXPORT_TITLE = "Exportera dokument";
+    private static final String DIALOG_EXPORT_DISC = "Välj ett dokument att exportera";
 
     private boolean state = false;
     private ArrayAdapter<DocItem> adapter;
@@ -56,7 +58,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     private ListView listView;
     private DocItem docClicked;
     private boolean importExport = false;
-    String exportFile;
+    String exportCSV;
     private GoogleApiClient googleApiClient;
     public static final int requestcode = 1;
     public CreateDocumentFragmentListener createDocumentFragmentListener;
@@ -105,13 +107,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 docClicked = adapter.getItem(position);
-                if (importExport)
-                {
-                    exportFile();
-                    listView.setBackgroundColor(Color.WHITE);
-                    importExport = false;
-                }
-                else
+
                 createDocumentFragmentListener.docObjectClicked(docList.get(position));
             }
         });
@@ -152,10 +148,11 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Bundle bundle;
         switch (item.getItemId()) {
             case R.id.add_doc_icon:
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
-                Bundle bundle = new Bundle();
+                bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
                 bundle.putString("DialogDesc", DIALOG_NEW_DOC);
                 bundle.putInt("Layout", R.layout.default_dialog);
@@ -165,13 +162,20 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
                 break;
             case R.id.second_view_up_cloud:
-                listView.setBackgroundColor(Color.LTGRAY);
-                importExport = true;
-                Toast.makeText(getActivity(), "Välj ett dokument för exportering", Toast.LENGTH_LONG).show();
+                OptionsDialogFragment choosedocExport = new OptionsDialogFragment();
+                bundle = new Bundle();
+                bundle.putString("DialogTitle", DIALOG_EXPORT_TITLE);
+                bundle.putString("DialogDesc", DIALOG_EXPORT_DISC);
+                bundle.putInt("Layout", R.layout.act_options_layout);
+                bundle.putInt("Caller", R.id.second_view_up_cloud);
+                bundle.putParcelable("ParentAct_export", listItem);
+                choosedocExport.setArguments(bundle);
+                choosedocExport.listener = this;
+                choosedocExport.show(getFragmentManager(), "ExportDoc");
+
                 break;
             case R.id.second_view_down_cloud:
-                //importFile();
-                createDocumentFragmentListener.launchGoogleDrive();
+               // createDocumentFragmentListener.launchGoogleDrive();
                 break;
 
             default:
@@ -241,24 +245,28 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void getDocChoice(DocItem doc) {
-
+    public void getDocChoice(DocItem doc)
+    {
+        exportFile(doc);
     }
 
     public interface CreateDocumentFragmentListener {
         void docObjectClicked(DocItem doc);
 
-        void launchGoogleDrive();
+       // void launchGoogleDrive();
     }
 
-    public void exportFile() {
+    public void exportFile(DocItem doc) {
 
-        csv.writeToCSV(docClicked);
-        exportFile = csv.getCSV();
+        exportCSV = csv.writeToCSV(doc);
+        //exportFile = csv.getCSV();
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        String title = getResources().getString(R.string.export_choice);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, exportFile);
-        startActivity(shareIntent);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, exportCSV);
+        startActivity(Intent.createChooser(shareIntent, title));
+
+        //      TODO testa att skapa en chooser.
 
     }
 

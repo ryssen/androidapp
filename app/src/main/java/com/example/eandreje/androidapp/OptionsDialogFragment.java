@@ -56,6 +56,13 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
             docAdapter.clear();
             docAdapter.addAll(docList);
         }
+        else if(getArguments().getInt("Caller") == R.id.second_view_up_cloud)
+        {
+            docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct_export"));
+            listView.setAdapter(docAdapter);
+            docAdapter.clear();
+            docAdapter.addAll(docList);
+        }
         else
         {
             optionsList.add("Ändra namn");
@@ -67,6 +74,8 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (getArguments().getInt("Caller") == R.id.import_persons)
+                    listener.getDocChoice(docList.get(position));
+                else if(getArguments().getInt("Caller")== R.id.second_view_up_cloud)
                     listener.getDocChoice(docList.get(position));
                 else
                     listener.getChoice(position);

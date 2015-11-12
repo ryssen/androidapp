@@ -173,10 +173,10 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     public void docObjectClicked(DocItem doc) {
     }
 
-        @Override
-        public void launchGoogleDrive() {
-
-        }
+//        @Override
+//        public void launchGoogleDrive() {
+//
+//        }
 
         @Override
     public void enteredText(String text, int id) {
