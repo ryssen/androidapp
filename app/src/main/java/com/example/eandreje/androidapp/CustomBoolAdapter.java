@@ -50,7 +50,7 @@ public class CustomBoolAdapter extends ArrayAdapter {
         textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
+                listener.deletePersonBool(v, list.get(position).person.getId());
                 return true;
             }
         });

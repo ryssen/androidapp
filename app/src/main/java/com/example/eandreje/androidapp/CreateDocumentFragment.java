@@ -215,6 +215,10 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public void getChoice(int pos) {
         switch (pos) {
             case 0:
+                docClicked.delete();
+                UpdateAndSave();
+                break;
+            case 1:
                 state = true;
                 DefaultDialogFragment docDialog = new DefaultDialogFragment();
                 Bundle bundle = new Bundle();
@@ -224,10 +228,6 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 docDialog.setArguments(bundle);
                 docDialog.listener = this;
                 docDialog.show(getFragmentManager(), "editDocDialog");
-                break;
-            case 1:
-                docClicked.delete();
-                UpdateAndSave();
                 break;
             default:
         }

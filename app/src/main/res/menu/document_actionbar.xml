@@ -2,21 +2,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
-    <item android:icon="@drawable/ic_add_activity"
-        android:title="add"
+    <item
+        android:title="Nytt dokument"
+        android:icon="@drawable/ic_add"
         android:id="@+id/add_doc_icon"
         app:showAsAction="always">
     </item>
 
-    <item android:icon="@drawable/ic_up_cloud"
-        android:title="cloud_options"
+    <item
+        android:title="Exportera"
+        android:icon="@drawable/ic_export"
         android:id="@+id/second_view_up_cloud"
         app:showAsAction="always">
     </item>
-    <item android:icon="@drawable/ic_down_cloud"
+    <item
         android:title="cloud_options"
+        android:icon="@drawable/ic_down_cloud"
         android:id="@+id/second_view_down_cloud"
-        app:showAsAction="always">
+        app:showAsAction="never">
     </item>
 
 </menu>

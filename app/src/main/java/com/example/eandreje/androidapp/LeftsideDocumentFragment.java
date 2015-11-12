@@ -34,6 +34,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     private static final String DIALOG_ADD_COLUMN = "Skriv namn och om kolumntypen ska vara checkbox eller text";
     private static final String DIALOG_RENAME_COLUMN = "Nytt namn på kolumn";
     private static final String DELETE_TITLE = "Alternativ";
+    private static final String DIALOG_DELETE = "Ta bort aktuell rad";
 
     private DocItem document;
     private String inDocTitle;
@@ -182,6 +183,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                     Queries.deleteColumnValues(activeColumn);
                     Queries.deleteColumn(activeColumn);
                     updateColumnData(valueList);
+                    updateListview();
                 }
                 else
                     Toast.makeText(getContext(), "Listan med kolumner är tom", Toast.LENGTH_SHORT).show();
@@ -212,9 +214,12 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     switch (id)
     {
         case R.id.add_column_icon:
+            if(text.equals("")){
+                Toast.makeText(getContext(), "Ett namnfält får ej vara tomt", Toast.LENGTH_SHORT).show();
+            }
             break;
         case R.id.add_person_icon:
-            if(!text.equals("")){
+            if(text.equals("")){
                 Toast.makeText(getContext(), "Ett namnfält får ej vara tomt", Toast.LENGTH_SHORT).show();
             }
             break;
@@ -293,18 +298,42 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     }
 
     @Override
+    public void getChoice(int pos) {
+        switch (pos){
+            case 0:
+                Queries.deleteInColumnContent(activeObject);
+                Queries.deleteInDocItemClass(activeObject);
+                Queries.deleteInPersonClass(activeObject);
+                updateListview();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
     public void deletePersonBool(View v, Long position) {
+        activeObject = position;
+        OptionsDialogFragment chooseDoc = new OptionsDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("DialogTitle", DELETE_TITLE);
+        bundle.putString("DialogDesc", DIALOG_DELETE);
+        bundle.putInt("Layout", R.layout.act_options_layout);
+        bundle.putInt("Caller", R.id.listView);
+        chooseDoc.setArguments(bundle);
+        chooseDoc.listener = this;
+        chooseDoc.show(getFragmentManager(), "DocListChoose");
     }
 
     @Override
     public void deletePersonString(View v, Long position) {
+        activeObject = position;
         OptionsDialogFragment chooseDoc = new OptionsDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString("DialogTitle", DELETE_TITLE);
-        //bundle.putString("DialogDesc", DIALOG_IMPORT);
+        bundle.putString("DialogDesc", DIALOG_DELETE);
         bundle.putInt("Layout", R.layout.act_options_layout);
         bundle.putInt("Caller", R.id.listView);
-        //bundle.putParcelable("ParentAct", document.getParentActivity());
         chooseDoc.setArguments(bundle);
         chooseDoc.listener = this;
         chooseDoc.show(getFragmentManager(), "DocListChoose");
@@ -359,11 +388,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         boolAdapter.notifyDataSetChanged();
         stringAdapter.notifyDataSetChanged();
     }
-
-    @Override
-    public void getChoice(int pos) {
-        Queries.deleteInPersonClass((long)pos);
-        }
 
     @Override
     public void getDocChoice(DocItem doc) {

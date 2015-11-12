@@ -61,8 +61,8 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
             listView.setAdapter(adapter);
         }
         else{
-            optionsList.add("Ändra namn");
             optionsList.add("Ta bort rad");
+            optionsList.add("Ändra namn");
             listView.setAdapter(adapter);
         }
 

@@ -121,19 +121,19 @@ public class Queries {
                     .execute();
     }
 
-    static void deleteInDocItemClass(PersonDocItem personDoc)
+    static void deleteInDocItemClass(Long id)
     {
             new Delete()
                     .from(PersonDocItem.class)
-                    .where("Person = ?", personDoc.getPerson().getId())
+                    .where("Person = ?", id)
                     .execute();
     }
 
-    static void deleteInColumnContent(PersonDocItem personDoc)
+    static void deleteInColumnContent(long id)
     {
             new Delete()
                     .from(ColumnContent.class)
-                    .where("ParentPerson = ?", personDoc.getPerson().getId())
+                    .where("ParentPerson = ?", id)
                     .execute();
     }
 }

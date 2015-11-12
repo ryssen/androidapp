@@ -152,8 +152,12 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     @Override
     public void getChoice(int pos)
     {
-            if(pos==0)
-            {
+        switch (pos){
+            case 0:
+                itemClicked.delete();
+                UpdateAndSave();
+                break;
+            case 1:
                 changeName = true;
                 Bundle bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
@@ -163,11 +167,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.listener = this;
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
-            }
-            if(pos==1)
-            {
-                itemClicked.delete();
-                UpdateAndSave();
+                break;
             }
     }
 
@@ -180,8 +180,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         void activeObject(ListItem listItem);
     }
 
-    public void UpdateAndSave()
-    {
+    public void UpdateAndSave() {
         activityList = Queries.getActivites();
         activityAdapter.clear();
         activityAdapter.addAll(activityList);
