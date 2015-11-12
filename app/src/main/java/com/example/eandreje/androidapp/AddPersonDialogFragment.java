@@ -61,8 +61,10 @@ public class AddPersonDialogFragment extends DialogFragment{
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 DocItem doc = getArguments().getParcelable("DocParent");
                 EditText personName = (EditText) view.findViewById(R.id.new_person_name);
+                //
                 Person person = new Person(personName.getText().toString(), doc.getParentActivity());
                 person.save();
                 PersonDocItem perDocRelation = new PersonDocItem(person, doc);

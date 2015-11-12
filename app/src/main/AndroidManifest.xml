@@ -7,9 +7,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme">
 
-        >
         <uses-permission android:name="android.permission.GET_ACCOUNTS" />
         <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
         <uses-permission android:name="android.permission.INTERNET" />
@@ -19,22 +18,15 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
-
             <intent-filter>
-
                 <action android:name="com.google.android.apps.drive.DRIVE_OPEN" />
                 <data android:mimeType="application/vnd.google-apps.drive-sdk.849434417387" />
                 <data android:mimeType="text/csv" />
-
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
-            <meta-data android:name="com.google.android.apps.drive.APP_ID" android:value="id=849434417387" />
-
+            <meta-data android:name="com.google.android.apps.drive.APP_ID" android:value="@string/drivekey" />
             <meta-data android:name="AA_DB_NAME" android:value="Holder.db"/>
             <meta-data android:name="AA_DBVERSION" android:value="2"/>
     </application>

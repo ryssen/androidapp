@@ -2,7 +2,7 @@
     <string name="header_activities">Aktiviteter</string>
     <string name="create_activity_text">Ny aktivitet</string>
     <string name="activity_button">Lägg till</string>
-    <string name="add_activity_title">Lägg till aktivitet</string>
+    <string name="add_activity_title">Ny aktivitet</string>
     <string name="doc_list_title">Dokument</string>
     <string name="app_name">Närvaroappen</string>
     <string name="action_settings">b</string>
@@ -14,6 +14,7 @@
     <string name="add_doc_dialog_title">Lägg till nytt dokument</string>
     <string name="add_column">Ny kolumn</string>
     <string name="add_person">Ny deltagare</string>
+    <string name="drivekey">id=849434417387</string>
     <string name="export_choice">Dela via</string>
 
 </resources>

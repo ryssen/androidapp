@@ -36,6 +36,6 @@ dependencies {
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 //    compile 'org.apache.poi:poi:3.9'
 //    compile 'org.apache.poi:poi-ooxml:3.9'
-    compile 'com.google.android.gms:play-services-drive:8.1.0'
+    compile 'com.google.android.gms:play-services:8.3.0'
 
 }
