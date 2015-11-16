@@ -215,9 +215,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     switch (id)
     {
         case R.id.add_column_icon:
-            if(text.equals("")){
-                Toast.makeText(getContext(), "Ett namnfält får ej vara tomt", Toast.LENGTH_SHORT).show();
-            }
             break;
         case R.id.add_person_icon:
             if(text.equals("")){
@@ -235,11 +232,14 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
             break;
         case R.id.person_name:
             if(!text.equals("")){
-                persDocItem = Queries.getPersDocRelation((int) activeObject, document);
+                persDocItem = Queries.getPersDocRelation(activeObject, document);
                 person = persDocItem.getPerson();
-                cell = Queries.fetchSingleCellData(person, activeColumn, document);
-                cell.parentPerson.setName(text);
-                cell.save();
+                //cell = Queries.fetchSingleCellData(person, activeColumn, document);
+                //cell.parentPerson.setName(text);
+                //cell.save();
+                persDocItem = Queries.getPersDocRelation(activeObject, document);
+                persDocItem.getPerson().setName(text);
+                persDocItem.getPerson().save();
                 updateListview();
             }
             else
@@ -247,7 +247,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
             break;
         case R.id.column_name:
             if(!text.equals("")){
-                persDocItem = Queries.getPersDocRelation((int) activeObject, document);
+                persDocItem = Queries.getPersDocRelation(activeObject, document);
                 person = persDocItem.getPerson();
                 cell = Queries.fetchSingleCellData(person, activeColumn, document);
                 cell.setValue(text);
@@ -263,6 +263,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
 
     @Override
     public void enteredTextBool(String text, int caller, boolean checked) {
+        if(!text.equals("")){
         Columns column = new Columns(text, document, checked);
         column.save();
         List<PersonDocItem> persons = Queries.getPersonCell(document);
@@ -274,6 +275,10 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         spinnerColumns = Queries.getColumnHeaders(document);
         spinnerAdapt.clear();
         spinnerAdapt.addAll(spinnerColumns);
+        }
+        else{
+            Toast.makeText(getContext(), "Ett namnfält får ej vara tomt", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -343,7 +348,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     @Override
     public void checkboxChange(View v, Long position, boolean bool) {
         activeObject = position;
-        PersonDocItem persDocItem = Queries.getPersDocRelation((int) activeObject, document);
+        PersonDocItem persDocItem = Queries.getPersDocRelation(activeObject, document);
         Person person = persDocItem.getPerson();
         ColumnContent cell = Queries.fetchSingleCellData(person, activeColumn, document);
         cell.setValue(String.valueOf(bool));

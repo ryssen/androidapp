@@ -16,5 +16,6 @@
     <string name="add_person">Ny deltagare</string>
     <string name="drivekey">id=849434417387</string>
     <string name="export_choice">Dela via</string>
+    <string name="left_column_name">Namn</string>
 
 </resources>

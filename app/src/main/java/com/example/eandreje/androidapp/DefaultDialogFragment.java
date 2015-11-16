@@ -28,7 +28,7 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
         checkbox  = (CheckBox) view.findViewById(R.id.column_dialog_checkbox);
         textbox = (EditText)view.findViewById(R.id.dialog_editText);
         TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
-        description.setText(getArguments().getString("DialogDesc").toString());
+        description.setText(getArguments().getString("DialogDesc"));
 
         builder.setNegativeButton(R.string.negative_answer_dialog, new DialogInterface.OnClickListener() {
             @Override

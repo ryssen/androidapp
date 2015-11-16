@@ -6,19 +6,15 @@
     <TextView
         android:id="@+id/person_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingTop="2dip"
-        android:paddingBottom="3dip"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall" />
+        android:padding="16dp"
+        android:textColor="@android:color/black" />
     <CheckBox
         android:id="@+id/checkbox_value"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="20dp"
+        android:layout_height="match_parent"
         android:checked="true"
-        android:layout_weight="1"
-        android:gravity="center_vertical" />
+        android:layout_weight="1"/>
 </LinearLayout>

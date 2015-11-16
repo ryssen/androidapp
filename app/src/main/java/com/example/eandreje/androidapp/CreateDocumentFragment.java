@@ -222,7 +222,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public void getChoice(int pos) {
         switch (pos) {
             case 0:
-                docClicked.delete();
+                //docClicked.delete();
                 UpdateAndSave();
                 break;
             case 1:
@@ -296,6 +296,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 //        }
 //    }
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

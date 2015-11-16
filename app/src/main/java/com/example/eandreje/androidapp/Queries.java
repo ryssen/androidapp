@@ -30,10 +30,10 @@ public class Queries {
                 .executeSingle();
     }
 
-    static Person getPerson(ColumnContent value){
+    static PersonDocItem getPerson(Long id, DocItem doc){
         return new Select()
-                .from(Person.class)
-                .where("Parent = ?", value.getId())
+                .from(PersonDocItem.class)
+                .where("id = ?", doc.getId())
                 .executeSingle();
     }
     static List<Person> getRelation(DocItem doc)
@@ -45,10 +45,10 @@ public class Queries {
                .execute();
     }
 
-    static PersonDocItem getPersDocRelation(int person, DocItem doc) {
+    static PersonDocItem getPersDocRelation(Long id, DocItem doc) {
         return new Select()
                 .from(PersonDocItem.class)
-               .where("Person = ? and DocItem = ?", person, doc.getId())
+               .where("Person = ? and DocItem = ?", id, doc.getId())
                .executeSingle();
     }
 

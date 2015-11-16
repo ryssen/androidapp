@@ -32,7 +32,7 @@ public class AddPersonDialogFragment extends DialogFragment{
         columnList = getArguments().getParcelableArrayList("Columns");
         layoutList = new ArrayList<>();
         TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
-        description.setText(getArguments().getString("DialogDesc").toString());
+        description.setText(getArguments().getString("DialogDesc"));
 
         for (Columns column: columnList)
         {

@@ -66,7 +66,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         optionsDialog = new OptionsDialogFragment();
         optionsDialog.listener = this;
         activityList = Queries.getActivites();
-        activityAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, activityList);
+        activityAdapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, activityList);
         ListView activityListView = (ListView) view.findViewById(R.id.listView);
         activityListView.setAdapter(activityAdapter);
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -154,6 +154,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     {
         switch (pos){
             case 0:
+                //itemClicked.delete();
                 itemClicked.delete();
                 UpdateAndSave();
                 break;

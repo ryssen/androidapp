@@ -11,17 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingTop="2dp"
-        android:text="Namn"
-        android:paddingBottom="3dp"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:text="@string/left_column_name"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:gravity="center_vertical" />
     <Spinner
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/spinner"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_weight="1" />
 </LinearLayout>
 
@@ -30,6 +31,3 @@
         android:layout_height="match_parent"
         android:id="@+id/listView4" />
 </LinearLayout>
-
-    <!--android:paddingStart="?android:attr/listPreferredItemPaddingStart"-->
-    <!--android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"-->

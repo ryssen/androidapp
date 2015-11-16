@@ -11,16 +11,16 @@
         <LinearLayout
             android:id="@+id/linear1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/default_dialog_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:textAlignment="center"
-                android:textSize="15dp"
-                android:textColor="@color/row_text_color"/>
+                android:textColor="@android:color/black"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"/>
             <LinearLayout
                 android:id="@+id/linear2"
                 android:layout_width="match_parent"
@@ -28,13 +28,16 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
                     android:text="Namn"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_weight="1"/>
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/new_person_name"
                     android:padding="10dp"
                     android:layout_weight="1"/>
@@ -42,7 +45,7 @@
             <LinearLayout
                 android:id="@+id/linear3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="bottom"
                 android:orientation="vertical"
                 android:layout_weight="1">
