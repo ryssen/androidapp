@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -39,64 +40,54 @@ public class AddPersonDialogFragment extends DialogFragment{
             if(column.isCheckbox())
             {
                 View checkboxView = inflater.inflate(R.layout.checkbox_view, parent, false);
-                TextView id = (TextView) checkboxView.findViewById(R.id.column_id);
                 TextView name = (TextView) checkboxView.findViewById(R.id.column_name);
                 name.setText(column.toString());
-                id.setText(column.getId().toString());
                 layoutList.add((LinearLayout) checkboxView);
                 parent.addView(checkboxView);
             }
             else
             {
                 View editTextView = inflater.inflate(R.layout.edit_text_view, parent, false);
-                TextView id = (TextView) editTextView.findViewById(R.id.column_id);
                 TextView name = (TextView) editTextView.findViewById(R.id.column_name);
                 name.setText(column.toString());
-                id.setText(column.getId().toString());
                 layoutList.add((LinearLayout) editTextView);
                 parent.addView(editTextView);
             }
-       }
-
+        }
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 DocItem doc = getArguments().getParcelable("DocParent");
                 EditText personName = (EditText) view.findViewById(R.id.new_person_name);
-                //
                 Person person = new Person(personName.getText().toString(), doc.getParentActivity());
                 person.save();
                 PersonDocItem perDocRelation = new PersonDocItem(person, doc);
                 perDocRelation.save();
 
                 int i = 0;
-                if(columnList.size() != 0){
-                for (LinearLayout view : layoutList) {
-                    Columns column = columnList.get(i);
-                    column.save();
+                if (columnList.size() != 0) {
+                    for (LinearLayout view : layoutList) {
+                        Columns column = columnList.get(i);
+                        column.save();
+                        if (!column.isCheckbox()) {
+                            EditText value = (EditText) view.findViewById(R.id.column_value);
+                            ColumnContent cellValue = new ColumnContent(value.getText().toString(), doc, column, person);
+                            cellValue.save();
+                            i++;
+                        } else {
+                            CheckBox value = (CheckBox) view.findViewById(R.id.checkbox_column_id);
+                            String checked;
 
-                    if (!column.isCheckbox()) {
-                        EditText value = (EditText) view.findViewById(R.id.column_value);
-                        ColumnContent cellValue = new ColumnContent(value.getText().toString(), doc, column, person);
-                        cellValue.save();
-                        i++;
+                            if (value.isChecked())
+                                checked = "true";
+                            else
+                                checked = "false";
+
+                            ColumnContent cellValue = new ColumnContent(checked, doc, column, person);
+                            cellValue.save();
+                            i++;
+                        }
                     }
-                    else
-                    {
-                        CheckBox value = (CheckBox) view.findViewById(R.id.checkbox_column_id);
-                        String checked;
-
-                        if (value.isChecked())
-                            checked = "True";
-                        else
-                            checked = "False";
-
-                        ColumnContent cellValue = new ColumnContent(checked, doc, column, person);
-                        cellValue.save();
-                        i++;
-                    }
-                }
                 }
                 listener.newPersonAdded(doc);
             }
@@ -104,14 +95,13 @@ public class AddPersonDialogFragment extends DialogFragment{
         builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-            }
+        }
         });
-
         builder.setView(view);
-        return builder.create();
+        Dialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        return dialog;
     }
-
     public interface AddPersonDialogFragmentListener{
         void newPersonAdded(DocItem doc);
     }

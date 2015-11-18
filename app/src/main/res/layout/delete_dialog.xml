@@ -6,10 +6,7 @@
         android:id="@+id/default_dialog_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="5dp"
+        android:textSize="16sp"
         android:textColor="@color/row_text_color"/>
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView3" />
 </LinearLayout>

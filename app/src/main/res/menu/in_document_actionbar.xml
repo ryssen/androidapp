@@ -5,31 +5,28 @@
     <item
     android:title="@string/add_person"
     android:id="@+id/add_person_icon"
-        android:icon="@drawable/ic_add_person"
-    app:showAsAction="always"
-    ></item>
-
+    android:icon="@drawable/ic_add_person"
+    app:showAsAction="ifRoom" />
     <item
     android:title="@string/add_column"
     android:id="@+id/add_column_icon"
     android:icon="@drawable/ic_add_column"
-    app:showAsAction="always"
-    ></item>
-
+    app:showAsAction="ifRoom"/>
     <item
-    android:title="Importera namn"
-    android:id="@+id/import_persons"
-    app:showAsAction="collapseActionView"
-    ></item>
-
-    <item
-    android:title="Ta bort kolumn"
+    android:title="@string/menu_remove_column"
     android:id="@+id/delete_column"
-    app:showAsAction="collapseActionView"></item>
-
+    app:showAsAction="collapseActionView"/>
     <item
-    android:title="Ändra kolumnnamn"
+    android:title="@string/menu_rename_column"
     android:id="@+id/rename_column"
-    app:showAsAction="collapseActionView"></item>
+    app:showAsAction="collapseActionView"/>
+    <item
+    android:title="@string/menu_import_names"
+    android:id="@+id/import_persons"
+    app:showAsAction="collapseActionView" />
+    <item
+    android:title="@string/menu_import_persons_columns"
+    android:id="@+id/import_persons_columns"
+    app:showAsAction="collapseActionView" />
 
 </menu>

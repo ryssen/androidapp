@@ -38,16 +38,21 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
         builder.setPositiveButton(R.string.positive_answer_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (getArguments().getInt("Layout") != R.layout.add_column_layout)
-                    listener.enteredText(textbox.getText().toString(), getArguments().getInt("Caller"));
-                else
-                    listener.enteredTextBool(textbox.getText().toString(), getArguments().getInt("Caller"), checkbox.isChecked());
-            }
-        });
+                switch (getArguments().getInt("Caller")){
+                    case R.id.add_column_icon:
+                        listener.enteredTextBool(textbox.getText().toString(), getArguments().getInt("Caller"), checkbox.isChecked());
+                        break;
+                    case R.id.delete_column:
+                        listener.onDeleteRequest(getArguments().getInt("Caller"));
+                        break;
+                    default:
+                        listener.enteredText(textbox.getText().toString(), getArguments().getInt("Caller"));
+                        break;
+                }
+        }});
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
         return dialog;
     }
 
@@ -55,5 +60,6 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
     public interface DefaultDialogFragmentListener {
         void enteredText(String text, int caller);
         void enteredTextBool(String text, int caller, boolean checked);
+        void onDeleteRequest(int caller);
     }
 }

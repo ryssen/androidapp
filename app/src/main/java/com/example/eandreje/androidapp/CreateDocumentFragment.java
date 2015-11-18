@@ -110,7 +110,6 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 docClicked = adapter.getItem(position);
-
                 createDocumentFragmentListener.docObjectClicked(docList.get(position));
             }
         });
@@ -177,10 +176,6 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 choosedocExport.show(getFragmentManager(), "ExportDoc");
 
                 break;
-            case R.id.second_view_down_cloud:
-               // createDocumentFragmentListener.launchGoogleDrive();
-                break;
-
             default:
         }
         return super.onOptionsItemSelected(item);
@@ -212,6 +207,11 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     }
 
+    @Override
+    public void onDeleteRequest(int caller) {
+
+    }
+
     public void UpdateAndSave() {
         docList = Queries.getDocuments(listItem);
         adapter.clear();
@@ -222,10 +222,6 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public void getChoice(int pos) {
         switch (pos) {
             case 0:
-                //docClicked.delete();
-                UpdateAndSave();
-                break;
-            case 1:
                 state = true;
                 DefaultDialogFragment docDialog = new DefaultDialogFragment();
                 Bundle bundle = new Bundle();
@@ -235,6 +231,10 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 docDialog.setArguments(bundle);
                 docDialog.listener = this;
                 docDialog.show(getFragmentManager(), "editDocDialog");
+                break;
+            case 1:
+                //docClicked.delete();
+                UpdateAndSave();
                 break;
             default:
         }
@@ -248,9 +248,14 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void getDocChoice(DocItem doc)
+    public void importPers(DocItem doc)
     {
         exportFile(doc);
+    }
+
+    @Override
+    public void importPersCol(DocItem doc) {
+
     }
 
     public interface CreateDocumentFragmentListener {

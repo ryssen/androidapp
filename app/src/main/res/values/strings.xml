@@ -17,5 +17,8 @@
     <string name="drivekey">id=849434417387</string>
     <string name="export_choice">Dela via</string>
     <string name="left_column_name">Namn</string>
-
+    <string name="menu_remove_column">Ta bort kolumn</string>
+    <string name="menu_import_names">Importera namn</string>
+    <string name="menu_rename_column">Ändra namn på kolumn</string>
+    <string name="menu_import_persons_columns">Importera namn och kolumner</string>
 </resources>

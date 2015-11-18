@@ -15,11 +15,5 @@
         android:id="@+id/second_view_up_cloud"
         app:showAsAction="always">
     </item>
-    <item
-        android:title="cloud_options"
-        android:icon="@drawable/ic_down_cloud"
-        android:id="@+id/second_view_down_cloud"
-        app:showAsAction="never">
-    </item>
 
 </menu>

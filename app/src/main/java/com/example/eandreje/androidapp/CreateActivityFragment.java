@@ -146,7 +146,10 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
 
     @Override
     public void enteredTextBool(String text, int caller, boolean checked) {
+    }
 
+    @Override
+    public void onDeleteRequest(int caller) {
     }
 
     @Override
@@ -154,11 +157,6 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     {
         switch (pos){
             case 0:
-                //itemClicked.delete();
-                itemClicked.delete();
-                UpdateAndSave();
-                break;
-            case 1:
                 changeName = true;
                 Bundle bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
@@ -169,11 +167,20 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
                 break;
+            case 1:
+                //itemClicked.delete();
+                itemClicked.delete();
+                UpdateAndSave();
+                break;
             }
     }
 
     @Override
-    public void getDocChoice(DocItem doc) {
+    public void importPers(DocItem doc) {
+    }
+
+    @Override
+    public void importPersCol(DocItem doc) {
 
     }
 

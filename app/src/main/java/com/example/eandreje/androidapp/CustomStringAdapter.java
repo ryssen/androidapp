@@ -12,7 +12,6 @@ import java.util.List;
 public class CustomStringAdapter extends ArrayAdapter {
     private List<AdapterObjects> list;
     public CustomStringAdapterListener listener;
-    //private List<PersonDocItem> persons;
 
     public CustomStringAdapter(Context context, List<AdapterObjects> valueList, LeftsideDocumentFragment fragment) {
         super(context, R.layout.custom_row_string, valueList);
@@ -24,7 +23,7 @@ public class CustomStringAdapter extends ArrayAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.custom_row_string, parent, false);
-        final TextView textView1 = (TextView) view.findViewById(R.id.person_name);
+        TextView textView1 = (TextView) view.findViewById(R.id.person_name);
         TextView textView2 = (TextView) view.findViewById(R.id.column_name);
 
         textView1.setText(list.get(position).person.toString());

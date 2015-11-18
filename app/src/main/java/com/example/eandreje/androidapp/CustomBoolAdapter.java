@@ -8,8 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.List;
 
 public class CustomBoolAdapter extends ArrayAdapter {
@@ -27,19 +25,21 @@ public class CustomBoolAdapter extends ArrayAdapter {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.custom_row_boolean, parent, false);
         TextView textView = (TextView) view.findViewById(R.id.person_name);
-        CheckBox checkBox = (CheckBox)view.findViewById(R.id.checkbox_value);
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox_value);
 
         textView.setText(list.get(position).person.toString());
         if(list.get(position).columnContent != null){
-            checkBox.setEnabled(true);
-            if (list.get(position).columnContent.value != null)
+            checkBox.setVisibility(View.VISIBLE);
+            if(list.get(position).columnContent.value.equals("")){
+                list.get(position).columnContent.setValue("true");
+                list.get(position).columnContent.save();
                 checkBox.setChecked(Boolean.parseBoolean(list.get(position).columnContent.value));
+            }
             else
-                checkBox.setChecked(false);
+                checkBox.setChecked(Boolean.parseBoolean(list.get(position).columnContent.value));
         }
-        else
-        {
-            checkBox.setEnabled(false);
+        else {
+            checkBox.setVisibility(View.INVISIBLE);
         }
         textView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,10 +1,7 @@
 package com.example.eandreje.androidapp;
 
-import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
-import com.activeandroid.util.SQLiteUtils;
-
 import java.util.List;
 
 public class Queries {
@@ -89,7 +86,7 @@ public class Queries {
     }
 
 
-    static List<PersonDocItem> getAllActPersons(DocItem doc)
+    static List<PersonDocItem> getAllDocPersons(DocItem doc)
     {
         return new Select()
                 .from(PersonDocItem.class)

@@ -1,5 +1,6 @@
 package com.example.eandreje.androidapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -11,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,70 +30,88 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflate = getActivity().getLayoutInflater();
         View view = inflate.inflate(R.layout.act_options_layout, null);
-        if(getArguments().getString("DialogTitle") != null)
-            builder.setTitle(getArguments().getString("DialogTitle"));
+
+        docList = new ArrayList<>();
         ListView listView = (ListView) view.findViewById(R.id.listView3);
         ArrayList<String> optionsList = new ArrayList<>();
-        docList = new ArrayList<>();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, optionsList);
-        final ArrayAdapter<DocItem> docAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, docList);
+        ArrayAdapter<DocItem> docAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, docList);
+        final TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
-        if(getArguments().getString("DialogDesc") != null)
+        if(getArguments().getString("DialogTitle") != null && getArguments().getString("DialogDesc") != null) {
+            builder.setTitle(getArguments().getString("DialogTitle"));
             description.setText(getArguments().getString("DialogDesc"));
-        builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-
-        if(getArguments().getInt("Caller") == R.id.import_persons) {
-            docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct"));
-            listView.setAdapter(docAdapter);
-            docAdapter.clear();
-            docAdapter.addAll(docList);
         }
-        else if (getArguments().getInt("Caller") == R.id.listView) {
-            optionsList.add("Ta bort rad");
-            listView.setAdapter(adapter);
+//        builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//            }
+//        });
+        switch (getArguments().getInt("Caller")){
+            case R.id.listView:
+                optionsList.add("Radera");
+                listView.setAdapter(adapter);
+                break;
+            case R.id.second_view_up_cloud:
+                docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct_export"));
+                listView.setAdapter(docAdapter);
+                docAdapter.clear();
+                docAdapter.addAll(docList);
+                break;
+            case R.id.import_persons:
+                docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct"));
+                DocItem doc1 = getArguments().getParcelable("ActiveDoc");
+                docList.remove(doc1);
+                listView.setAdapter(docAdapter);
+                docAdapter.clear();
+                docAdapter.addAll(docList);
+                break;
+            case R.id.import_persons_columns:
+                docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct"));
+                DocItem doc2 = getArguments().getParcelable("ActiveDoc");
+                docList.remove(doc2);
+                listView.setAdapter(docAdapter);
+                docAdapter.clear();
+                docAdapter.addAll(docList);
+                break;
+            default:
+                optionsList.add("Ändra namn");
+                optionsList.add("Radera");
+                listView.setAdapter(adapter);
+                break;
         }
-        else if(getArguments().getInt("Caller") == R.id.second_view_up_cloud)
-        {
-            docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct_export"));
-            listView.setAdapter(docAdapter);
-            docAdapter.clear();
-            docAdapter.addAll(docList);
-        }
-        else
-        {
-            optionsList.add("Ändra namn");
-            optionsList.add("Ta bort rad");
-            listView.setAdapter(adapter);
-        }
-       
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (getArguments().getInt("Caller") == R.id.import_persons)
-                    listener.getDocChoice(docList.get(position));
-                else if(getArguments().getInt("Caller")== R.id.second_view_up_cloud)
-                    listener.getDocChoice(docList.get(position));
-                else
-                    listener.getChoice(position);
-                dismiss();
-            }
-        });
+                switch (getArguments().getInt("Caller")) {
+                    case R.id.import_persons:
+                        listener.importPers(docList.get(position));
+                        dismiss();
+                        break;
+                    case R.id.second_view_up_cloud:
+                        listener.importPers(docList.get(position));
+                        dismiss();
+                        break;
+                    case R.id.import_persons_columns:
+                        listener.importPersCol(docList.get(position));
+                        dismiss();
+                        break;
+                    default:
+                        listener.getChoice(position);
+                        dismiss();
+                        break;
+                }
+            }});
         builder.setView(view);
         return builder.create();
     }
-
     public interface OptionsDialogFragmentListener{
         void getChoice(int pos);
-        void getDocChoice(DocItem doc);
+        void importPers(DocItem doc);
+        void importPersCol(DocItem doc);
     }
 }
 

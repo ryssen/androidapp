@@ -28,6 +28,10 @@ public class Columns extends Model implements Parcelable {
         this.isCheckbox = bool;
     }
 
+    public void setParentDocument(DocItem parentDocument) {
+        this.parentDocument = parentDocument;
+    }
+
     public void setHeader(String header) {
         this.header = header;
     }

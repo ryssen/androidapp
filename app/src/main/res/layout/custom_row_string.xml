@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
     <TextView
         android:id="@+id/person_name"
         android:layout_width="match_parent"
@@ -19,10 +18,4 @@
         android:textColor="@android:color/black"
         android:gravity="center_vertical"
         android:layout_weight="1"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/column_id"
-        android:visibility="gone"
-        />
 </LinearLayout>
