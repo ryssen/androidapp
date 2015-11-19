@@ -296,8 +296,9 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
 
     @Override
     public void onDeleteRequest(int caller) {
-        Queries.deleteColumnValues(activeColumn);
-        Queries.deleteColumn(activeColumn);
+        //Queries.deleteColumnValues(activeColumn);
+        //Queries.deleteColumn(activeColumn);
+        activeColumn.delete();
         spinnerColumns = Queries.getColumnHeaders(document);
         spinnerAdapt.clear();
         spinnerAdapt.addAll(spinnerColumns);
@@ -330,13 +331,15 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     @Override
     public void getChoice(int pos) {
         switch (pos){
-            case 0:
-                Queries.deleteInColumnContent(activeObject);
-                Queries.deleteInDocItemClass(activeObject);
-                Queries.deleteInPersonClass(activeObject);
-                updateListview();
-                break;
             default:
+//                Queries.deleteInColumnContent(activeObject);
+//                Queries.deleteInDocItemClass(activeObject);
+//                Queries.deleteInPersonClass(activeObject);
+                //activeColumn.delete();
+                Queries.getPersDocRelation(activeObject, document).getPerson().delete();
+                updateListview();
+
+
                 break;
         }
     }

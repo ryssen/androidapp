@@ -10,7 +10,7 @@ import com.activeandroid.annotation.Table;
 public class Person extends Model implements Parcelable{
     @Column(name = "Name")
     private String name;
-    @Column(name = "Parent")
+    @Column(name = "Parent", onDelete = Column.ForeignKeyAction.CASCADE)
     private ListItem parentActivity;
 
     public Person(){

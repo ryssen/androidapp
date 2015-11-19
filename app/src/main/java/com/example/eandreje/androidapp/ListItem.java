@@ -8,7 +8,7 @@ import com.activeandroid.annotation.Table;
 
 @Table(name = "Activities")
 public class ListItem extends Model implements Parcelable {
-    @Column(name = "Name", onDelete = Column.ForeignKeyAction.CASCADE)
+    @Column(name = "Name")
     String name;
 
     public ListItem( ){

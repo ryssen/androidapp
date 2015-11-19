@@ -13,7 +13,7 @@ public class Columns extends Model implements Parcelable {
     private String header;
     @Column(name = "Checkbox")
     private boolean isCheckbox;
-    @Column(name = "Parent")
+    @Column(name = "Parent", onDelete = Column.ForeignKeyAction.CASCADE)
     private DocItem parentDocument;
 
     public Columns(){

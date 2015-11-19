@@ -9,9 +9,9 @@ import com.activeandroid.annotation.Table;
 
 @Table(name="PersonDocItem")
 public class PersonDocItem extends Model implements Parcelable{
-    @Column(name="Person")
+    @Column(name="Person", onDelete = Column.ForeignKeyAction.CASCADE)
     private Person person;
-    @Column(name="DocItem")
+    @Column(name="DocItem", onDelete = Column.ForeignKeyAction.CASCADE)
     private DocItem docItem;
 
     public PersonDocItem()

@@ -233,7 +233,11 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 docDialog.show(getFragmentManager(), "editDocDialog");
                 break;
             case 1:
-                //docClicked.delete();
+                List<Person> list = Queries.getRelation(docClicked);
+                for (Person p:list) {
+                    p.delete();
+                }
+                docClicked.delete();
                 UpdateAndSave();
                 break;
             default:

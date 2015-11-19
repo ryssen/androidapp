@@ -11,11 +11,11 @@ import com.activeandroid.annotation.Table;
 public class ColumnContent extends Model implements Parcelable {
     @Column(name = "Value")
     String value;
-    @Column(name = "ParentDoc")
+    @Column(name = "ParentDoc", onDelete = Column.ForeignKeyAction.CASCADE)
     DocItem parentDocument;
-    @Column(name = "ParentColumn")
+    @Column(name = "ParentColumn", onDelete = Column.ForeignKeyAction.CASCADE)
     Columns parentColumn;
-    @Column(name = "ParentPerson")
+    @Column(name = "ParentPerson", onDelete = Column.ForeignKeyAction.CASCADE)
     Person parentPerson;
 
     public ColumnContent(){

@@ -33,6 +33,7 @@ public class Queries {
                 .where("id = ?", doc.getId())
                 .executeSingle();
     }
+
     static List<Person> getRelation(DocItem doc)
     {
        return new Select()
@@ -41,6 +42,17 @@ public class Queries {
                .where("PersonDocItem.DocItem = ?", doc.getId())
                .execute();
     }
+
+    static void delete(DocItem doc)
+    {
+        new Delete()
+               .from(Person.class)
+               .innerJoin(PersonDocItem.class).on("Person.id = Person")
+               .where("PersonDocItem.DocItem = ?", doc.getId())
+               .execute();
+    }
+
+
 
     static PersonDocItem getPersDocRelation(Long id, DocItem doc) {
         return new Select()
@@ -89,6 +101,14 @@ public class Queries {
     static List<PersonDocItem> getAllDocPersons(DocItem doc)
     {
         return new Select()
+                .from(PersonDocItem.class)
+                .where("DocItem = ?", doc.getId())
+                .execute();
+    }
+
+    static void deletePersonInDoc(DocItem doc)
+    {
+        new Delete()
                 .from(PersonDocItem.class)
                 .where("DocItem = ?", doc.getId())
                 .execute();
