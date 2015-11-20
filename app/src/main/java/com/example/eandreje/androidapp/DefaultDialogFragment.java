@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,9 +19,18 @@ public class DefaultDialogFragment extends android.support.v4.app.DialogFragment
     private EditText textbox;
     private CheckBox checkbox;
 
+//    @Override
+//     public void onDestroyView() {
+//        if(getDialog() != null && getRetainInstance())
+//            getDialog().setDismissMessage(null);
+//        super.onDestroyView();
+//    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+//        this.setRetainInstance(true);
+        listener = (DefaultDialogFragmentListener) getTargetFragment();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getArguments().getString("addDocTitle"));
         LayoutInflater inflater = getActivity().getLayoutInflater();

@@ -54,6 +54,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     private static final String DIALOG_EXPORT_TITLE = "Exportera dokument";
     private static final String DIALOG_EXPORT_DISC = "Välj ett dokument att exportera";
 
+    private static final int DOCUMENT_CODE = 2;
+
     private boolean state = false;
     private ArrayAdapter<DocItem> adapter;
     private List<DocItem> docList;
@@ -80,6 +82,25 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("Event", getArguments().getParcelable("listobject"));
+        outState.putParcelable("ActiveDoc", docClicked);
+        outState.putBoolean("State", state);
+        //outState.putParcelable("ActiveColumn", activeColumn);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if(savedInstanceState != null){
+            listItem = savedInstanceState.getParcelable("Event");
+            docClicked = savedInstanceState.getParcelable("ActiveDoc");
+            state = savedInstanceState.getBoolean("State");
+        }
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -101,7 +122,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         docList = Queries.getDocuments(listItem);
         csv = new CSV();
         optionsDialogFragment = new OptionsDialogFragment();
-        optionsDialogFragment.listener = this;
+        optionsDialogFragment.setTargetFragment(this, DOCUMENT_CODE);
+        //.listener = this;
 
         listView = (ListView) view.findViewById(R.id.document_listview);
         adapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, docList);
@@ -160,7 +182,9 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 bundle.putInt("Layout", R.layout.default_dialog);
                 bundle.putInt("Caller", R.id.add_doc_icon);
                 defaultDialogFragment.setArguments(bundle);
-                defaultDialogFragment.listener = this;
+                defaultDialogFragment.setTargetFragment(this, DOCUMENT_CODE);
+
+                //defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
                 break;
             case R.id.second_view_up_cloud:
@@ -172,7 +196,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 bundle.putInt("Caller", R.id.second_view_up_cloud);
                 bundle.putParcelable("ParentAct_export", listItem);
                 choosedocExport.setArguments(bundle);
-                choosedocExport.listener = this;
+                choosedocExport.setTargetFragment(this, DOCUMENT_CODE);
+                //choosedocExport.listener = this;
                 choosedocExport.show(getFragmentManager(), "ExportDoc");
 
                 break;
@@ -229,7 +254,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 bundle.putString("DialogDesc", DIALOG_CHANGE_DOC_NAME);
                 bundle.putInt("Layout", R.layout.default_dialog);
                 docDialog.setArguments(bundle);
-                docDialog.listener = this;
+                docDialog.setTargetFragment(this, DOCUMENT_CODE);
+                //docDialog.listener = this;
                 docDialog.show(getFragmentManager(), "editDocDialog");
                 break;
             case 1:

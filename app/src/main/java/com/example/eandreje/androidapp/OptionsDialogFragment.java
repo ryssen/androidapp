@@ -22,6 +22,13 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
     public OptionsDialogFragment(){
     }
 
+//    @Override
+//    public void onDestroyView() {
+//        if(getDialog() != null && getRetainInstance())
+//            getDialog().setDismissMessage(null);
+//        super.onDestroyView();
+//    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +37,8 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        //this.setRetainInstance(true);
+        listener = (OptionsDialogFragmentListener) getTargetFragment();
         LayoutInflater inflate = getActivity().getLayoutInflater();
         View view = inflate.inflate(R.layout.act_options_layout, null);
 

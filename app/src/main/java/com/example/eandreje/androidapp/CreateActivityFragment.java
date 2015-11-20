@@ -26,12 +26,29 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     private static final String DIALOG_NEW_ACTIVITY = "Skriv in namnet på den nya aktiviteten";
     private static final String DIALOG__ALTERNATIVE = "Ändra namn eller ta bort aktuell aktivitet";
 
+    private static final int ACTIVITY_CODE = 2;
+
     private ArrayAdapter<ListItem> activityAdapter;
     private List<ListItem> activityList = new ArrayList<>();
     public CreateActivityFragmentListener createActivityFragmentListener;
     private OptionsDialogFragment optionsDialog;
     private ListItem itemClicked;
     private boolean changeName = false;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("ActiveEvent", itemClicked);
+        //outState.putParcelable("ActiveColumn", activeColumn);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if(savedInstanceState != null){
+            itemClicked = savedInstanceState.getParcelable("ActiveEvent");
+        }
+        super.onViewStateRestored(savedInstanceState);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +81,8 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         View view = inflater.inflate(R.layout.activities_layout, container, false);
         getActivity().supportInvalidateOptionsMenu();
         optionsDialog = new OptionsDialogFragment();
-        optionsDialog.listener = this;
+        optionsDialog.setTargetFragment(this, ACTIVITY_CODE);
+        //optionsDialog.listener = this;
         activityList = Queries.getActivites();
         activityAdapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, activityList);
         ListView activityListView = (ListView) view.findViewById(R.id.listView);
@@ -109,7 +127,8 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 bundle.putString("DialogDesc", DIALOG_NEW_ACTIVITY);
                 bundle.putInt("Caller", R.id.add_activity_icon);
                 defaultDialogFragment.setArguments(bundle);
-                defaultDialogFragment.listener = this;
+                //defaultDialogFragment.listener = this;
+                defaultDialogFragment.setTargetFragment(this, ACTIVITY_CODE);
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
                 break;
             default:
@@ -163,12 +182,12 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
                 bundle.putInt("Layout", R.layout.default_dialog);
                 bundle.putString("DialogDesc", DIALOG_CHANGE_DOC_NAME);
-                defaultDialogFragment.listener = this;
+                //defaultDialogFragment.listener = this;
+                defaultDialogFragment.setTargetFragment(this, ACTIVITY_CODE);
                 defaultDialogFragment.setArguments(bundle);
                 defaultDialogFragment.show(getFragmentManager(), "dialog");
                 break;
             case 1:
-                //itemClicked.delete();
                 itemClicked.delete();
                 UpdateAndSave();
                 break;

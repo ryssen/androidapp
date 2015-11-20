@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,6 +49,15 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
 
     private static final String TAG = "MainActivity";
 
+    private DocItem activeObject;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("ParentAct", activeObject);
+        super.onSaveInstanceState(outState);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
 //                .build();
 
         setContentView(R.layout.activity_main);
-        if(savedInstanceState ==null) {
+        if(savedInstanceState == null) {
             CreateActivityFragment activityFragment = new CreateActivityFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_activity_layout, activityFragment)
@@ -109,11 +119,11 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
     //docObject recieves the clicked listobject(document)
     @Override
     public void docObjectClicked(DocItem doc) {
+        activeObject = doc;
         LeftsideDocumentFragment leftsideDocumentFragment = LeftsideDocumentFragment.newInstance(doc);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.remove(documentFragment);
-        transaction.replace(R.id.main_activity_layout, leftsideDocumentFragment).addToBackStack(null);
-        transaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_activity_layout, leftsideDocumentFragment)
+                .addToBackStack(null).commit();
 
     }
 

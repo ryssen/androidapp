@@ -36,6 +36,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     private static final String DIALOG_DELETE = "Ta bort aktuell rad?";
     private static final String DIALOG_DELETE_COLUMN = "Ta bort aktuell kolumn och all tillhörande data?";
 
+    private static final int ADD_PERSON_CODE = 3;
+
     private DocItem document;
     private String inDocTitle;
     private List<AdapterObjects> valueList;
@@ -47,7 +49,6 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     private long activeObject;
     private Columns activeColumn;
     private Spinner spinner;
-    private View view;
 
     public static LeftsideDocumentFragment newInstance(DocItem docItem) {
         LeftsideDocumentFragment leftsideDocumentFragment = new LeftsideDocumentFragment();
@@ -55,6 +56,25 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         bundle.putParcelable("activeDocument", docItem);
         leftsideDocumentFragment.setArguments(bundle);
         return leftsideDocumentFragment;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("Document", getArguments().getParcelable("activeDocument"));
+        outState.putLong("ActiveObject", activeObject);
+        //outState.putParcelable("ActiveColumn", activeColumn);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if(savedInstanceState != null){
+            document = savedInstanceState.getParcelable("activeDocument");
+            activeObject = savedInstanceState.getLong("ActiveObject");
+        }
+
+        //activeColumn = savedInstanceState.getParcelable("ActiveColumn");
+        super.onViewStateRestored(savedInstanceState);
     }
 
     @Override
@@ -77,7 +97,7 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    view = inflater.inflate(R.layout.leftside_layout, container, false);
+    View view = inflater.inflate(R.layout.leftside_layout, container, false);
     listView = (ListView) view.findViewById(R.id.listView4);
     valueList = new ArrayList<>();
     spinnerColumns = new ArrayList<>();
@@ -139,7 +159,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 bundle.putString("DialogDesc", DIALOG_ADD_PERSON);
                 bundle.putInt("Caller", R.id.add_person_icon);
                 addPerson.setArguments(bundle);
-                addPerson.listener = this;
+                //addPerson.listener = this;
+                addPerson.setTargetFragment(this, ADD_PERSON_CODE );
                 addPerson.show(getFragmentManager(), "addPerson");
                 break;
             case R.id.add_column_icon:
@@ -150,7 +171,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 bundle.putInt("Caller", R.id.add_column_icon);
                 bundle.putString("DialogDesc", DIALOG_ADD_COLUMN);
                 defaultDialogFragment.setArguments(bundle);
-                defaultDialogFragment.listener = this;
+                defaultDialogFragment.setTargetFragment(this, ADD_PERSON_CODE);
+                //defaultDialogFragment.listener = this;
                 defaultDialogFragment.show(getFragmentManager(), "newColumnDialog");
                 break;
             case R.id.rename_column:
@@ -162,7 +184,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                     bundle.putInt("Caller", R.id.rename_column);
                     bundle.putString("DialogDesc", DIALOG_RENAME_COLUMN);
                     defaultDialogFragment.setArguments(bundle);
-                    defaultDialogFragment.listener = this;
+                    defaultDialogFragment.setTargetFragment(this, ADD_PERSON_CODE);
+                    //defaultDialogFragment.listener = this;
                     defaultDialogFragment.show(getFragmentManager(), "newColumnDialog");
                 }
                 else
@@ -178,7 +201,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 bundle.putParcelable("ParentAct", document.getParentActivity());
                 bundle.putParcelable("ActiveDoc", document);
                 chooseDoc.setArguments(bundle);
-                chooseDoc.listener = this;
+                chooseDoc.setTargetFragment(this, ADD_PERSON_CODE );
+                //chooseDoc.listener = this;
                 chooseDoc.show(getFragmentManager(), "DocListChoose");
                 break;
             case R.id.import_persons_columns:
@@ -191,7 +215,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                 bundle.putParcelable("ParentAct", document.getParentActivity());
                 bundle.putParcelable("ActiveDoc", document);
                 doc.setArguments(bundle);
-                doc.listener = this;
+                doc.setTargetFragment(this, ADD_PERSON_CODE );
+                //doc.listener = this;
                 doc.show(getFragmentManager(), "DocListChoose");
                 break;
             case R.id.delete_column:
@@ -203,7 +228,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
                     bundle.putInt("Caller", R.id.delete_column);
                     bundle.putString("DialogDesc", DIALOG_DELETE_COLUMN);
                     defaultDialogFragment.setArguments(bundle);
-                    defaultDialogFragment.listener = this;
+                    defaultDialogFragment.setTargetFragment(this, ADD_PERSON_CODE);
+                    //defaultDialogFragment.listener = this;
                     defaultDialogFragment.show(getFragmentManager(), "DeleteDialog");
                 }
                 else{
@@ -324,7 +350,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         bundle.putString("DialogDesc", DIALOG_ADD_PERSON);
         bundle.putString("addDocTitle", TEXTVIEW_CHANGE);
         dialog.setArguments(bundle);
-        dialog.listener = this;
+        dialog.setTargetFragment(this, ADD_PERSON_CODE);
+        //dialog.listener = this;
         dialog.show(getFragmentManager(), "changeCustomAdaptAttr");
     }
 
@@ -378,6 +405,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         spinnerAdapt.clear();
         spinnerAdapt.addAll(spinnerColumns);
         importPers(doc);
+        updateColumnData(valueList);
+        initListview();
         updateListview();
     }
 
@@ -391,7 +420,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         bundle.putInt("Layout", R.layout.act_options_layout);
         bundle.putInt("Caller", R.id.listView);
         chooseDoc.setArguments(bundle);
-        chooseDoc.listener = this;
+        chooseDoc.setTargetFragment(this, ADD_PERSON_CODE);
+        //chooseDoc.listener = this;
         chooseDoc.show(getFragmentManager(), "DocListChoose");
     }
 
@@ -405,7 +435,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         bundle.putInt("Layout", R.layout.act_options_layout);
         bundle.putInt("Caller", R.id.listView);
         chooseDoc.setArguments(bundle);
-        chooseDoc.listener = this;
+        chooseDoc.setTargetFragment(this, ADD_PERSON_CODE);
+        //chooseDoc.listener = this;
         chooseDoc.show(getFragmentManager(), "DocListChoose");
     }
 
@@ -430,7 +461,8 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         bundle.putString("addDocTitle", TEXTVIEW_CHANGE);
         bundle.putString("DialogDesc", DIALOG_IMPORT);
         dialog.setArguments(bundle);
-        dialog.listener = this;
+        dialog.setTargetFragment(this, ADD_PERSON_CODE);
+        //dialog.listener = this;
         dialog.show(getFragmentManager(), "changeCustomAdaptAttr");
     }
 
