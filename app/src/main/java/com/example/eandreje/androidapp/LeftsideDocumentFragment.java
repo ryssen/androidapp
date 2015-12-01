@@ -378,12 +378,13 @@ public class LeftsideDocumentFragment extends Fragment implements CreateDocument
         {
             for (PersonDocItem p : importList)
             {
-                Person person = new Person(p.getPerson().toString(), document.getParentActivity());
-                person.save();
-                PersonDocItem perDocRelation = new PersonDocItem(person, document);
+//                Person person = p.getPerson();
+//                person.save();
+                //new Person(p.getPerson().toString(), document.getParentActivity());
+                PersonDocItem perDocRelation = new PersonDocItem(p.getPerson(), document);
                 perDocRelation.save();
                 for (Columns col:spinnerColumns) {
-                    ColumnContent newColumn = new ColumnContent("", document, col, person);
+                    ColumnContent newColumn = new ColumnContent("", document, col, p.getPerson());
                     newColumn.save();
                 }
             }

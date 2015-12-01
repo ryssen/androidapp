@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,6 +134,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 docClicked = adapter.getItem(position);
+
                 createDocumentFragmentListener.docObjectClicked(docList.get(position));
             }
         });
@@ -296,112 +299,57 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
 
     public void exportFile(DocItem doc) {
 
-        exportCSV = csv.writeToCSV(doc);
-        //exportFile = csv.getCSV();
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        String title = getResources().getString(R.string.export_choice);
-        SpannableString bluespannable = new SpannableString(title);
-        bluespannable.setSpan(new ForegroundColorSpan(Color.BLUE), 0, title.length(), 0);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, exportCSV);
-        startActivity(Intent.createChooser(shareIntent, title));
+        String exportCSV = csv.writeToCSV(doc);
 
-        //      TODO testa att skapa en chooser.
+        if (checkStringSize(exportCSV) == true) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            String title = "Dela " + doc.name + " via";
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, exportCSV);
 
+            if (shareIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                startActivity(Intent.createChooser(shareIntent, title));
+            } else {
+                Toast.makeText(getContext(), "Det finns ingen installarad applikation som kan ta emot innehållet", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Ladda ner t.ex. Dropbox, Google Drive eller OneDrive för att kunna exportera", Toast.LENGTH_LONG).show();
+            }
+        } else
+            Toast.makeText(getContext(), "Filen är för stor och kan inte exporteras", Toast.LENGTH_SHORT).show();
     }
 
+    public boolean checkStringSize(String csv) {
+        int size = 0;
+        boolean sizeOK = true;
+        try {
+            final byte[] utf8bytes = csv.getBytes("UTF-8");
+            size = utf8bytes.length;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (size > 800000) {
+            Toast.makeText(getContext(), "Filstorleken är 0,8MB av max 1 MB", Toast.LENGTH_SHORT).show();
+        } else if (size > 900000) {
+            sizeOK = false;
+        }
+        return sizeOK;
+    }
+}
 
-    public void importFile() {
-//  TODO    FIXA SÅ ATT GOOGLEAPICLIENT !=NULL
-//        IntentSender i = Drive.DriveApi.newOpenFileActivityBuilder().setMimeType(new String[]{"csv/text"}).build(googleApiClient);
-//        try {
-//            getActivity().startIntentSenderForResult(i, REQUEST_CODE_SELECT, null, 0,0,0);
-//        } catch (IntentSender.SendIntentException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
+//
 //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
+//        if (data == null)
+//            return;
+//        String filepath = data.getData().getPath();
+//        File file = new File(filepath);
+//        String filename = file.getName();
+//        filename = filename.replace(".txt", "");
+//        addDocument(filename);
 //
-//        if(resultCode == getActivity().RESULT_OK)
-//        {
-//            DriveId driveId = (DriveId)data.getParcelableExtra(OpenFileActivityBuilder.EXTRA_RESPONSE_DRIVE_ID);
-//        }
-//    }
-    }
+//
+//        Toast.makeText(getActivity(), filename+".txt imported", Toast.LENGTH_SHORT).show();
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data == null)
-            return;
-        String filepath = data.getData().getPath();
-        File file = new File(filepath);
-        String filename = file.getName();
-        filename = filename.replace(".txt", "");
-        addDocument(filename);
 
-
-        Toast.makeText(getActivity(), filename+".txt imported", Toast.LENGTH_SHORT).show();
-
-
-        //      TODO    Pröva att spara filen lokalt, eller ladda den direkt från dropbox.
-        //        if (requestCode == 1) {
-//                        try {
-//                            InputStreamReader inputStreamReader = new InputStreamReader(filepath);
-//                            //FileReader file = new FileReader(filepath)
-//                            BufferedReader buffer = new BufferedReader(file);
-//                            ContentValues values = new ContentValues();
-//                            String line = "";
-//                            while ((line = buffer.readLine()) != null) {
-//                                String[] str = line.split(",", 3);
-//                                String doc = str[0].toString();
-//                                DocItem document = new DocItem(doc);
-//                                document.save();
-//                            }
-//                        } catch (FileNotFoundException e) {
-//                            e.printStackTrace();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-        //FileReader file = new FileReader(filepath);
-        //         }
-
-        //      }
-
-        //   }
-
-    }
-}
-//fileName_share = adapter.getItem(position).name.toString();
-
-
-//File file = new File(fileName_share+".txt");
-//OUTPUTFILE_TEMP = fileName_share;
-//                    try
-//                    {
-//                        FileOutputStream fos = getContext().openFileOutput(OUTPUTFILE_TEMP, getContext().MODE_PRIVATE);
-//                        fos.write(exportTest.getBytes());
-//                        fos.close();
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }catch(IOException e){
-//                        e.printStackTrace();
-//                    }
-
-//                  File sharefile = new File(getContext().getFilesDir(), "OUTPUTFILE_TEMP");
-//                   sharefile.setReadable(true);
-//                  Uri ShareUri = Uri.fromFile(sharefile);
-
-
-//Uri uri = Uri.fromFile(new File(getContext().getFilesDir(), "OUTPUTFILE_TEMP"));
-//File file = new File(getContext().getFilesDir() + "/"+ OUTPUTFILE_TEMP);
-
-//                  shareIntent.putExtra(Intent.EXTRA_STREAM, ShareUri);
-//                    shareIntent.putExtra(Intent.EXTRA_TITLE, OUTPUTFILE_TEMP);
-
-//                    Intent chooseIntent = Intent.createChooser(shareIntent, "Share");
 

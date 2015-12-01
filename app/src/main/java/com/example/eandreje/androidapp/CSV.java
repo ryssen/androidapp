@@ -60,7 +60,21 @@ public class CSV
             for (Columns c : columnList)
             {
                 columncontent = Queries.fetchCellValueForCSV(c,p);
-                toCSVstringbuilder.append(columncontent.toString() +";");
+                if (columncontent != null)
+                {
+                    if (columncontent.equals("true"))
+                    {
+                        columncontent.value = "Ja";
+                    }
+                    else if (columncontent.equals("false"))
+                    {
+                        columncontent.value = "Nej";
+                    }
+
+                    toCSVstringbuilder.append(columncontent.value.toString() + ";");
+                }
+                else
+                    toCSVstringbuilder.append(";");
 
             }
             toCSVstringbuilder.append("\n");
@@ -69,56 +83,5 @@ public class CSV
         toCSV = toCSVstringbuilder.toString();
         return toCSV;
     }
-//    public void readFromCSV(Uri uri, DocItem doc, Context context)
-//    {
-//        BufferedReader buffer;
-//        FileOutputStream fos;
-//        try
-//        {
-//            buffer = new BufferedReader(new InputStreamReader(context.getContentResolver().openInputStream(uri)));
-//            String line="";
-//            int count =0;
-//            while((line  = buffer.readLine()) !=null)
-//            {
-//                String[] str = line.split(";");
-//                String temp = str[count].toString();
-//                //Columns col = new Columns(temp, doc,);
-//            }
-//
-//
-//        }
-//
-//
-//        catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-//    public void fromXlsxToCSV(File file, DocItem doc)
-//    {
-//        StringBuffer cellvalue = new StringBuffer();
-//
-//        try
-//        {
-//            FileOutputStream fos = new FileOutputStream(file);
-//            XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(file));
-//            XSSFSheet sheet = workbook.getSheetAt(0);
-//
-//            Row row;
-//            Cell cell;
-//            Iterator<Row> rowIterator = sheet.iterator();
-//
-//        }
-//        catch (Exception e)
-//        {
-//
-//        }
-//
-//    }
-    public String getCSV()
-    {
-        return toCSV;
-    }
+
 }

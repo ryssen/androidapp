@@ -1,6 +1,5 @@
 package com.example.eandreje.androidapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -12,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +21,6 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
 
     public OptionsDialogFragment(){
     }
-
-//    @Override
-//    public void onDestroyView() {
-//        if(getDialog() != null && getRetainInstance())
-//            getDialog().setDismissMessage(null);
-//        super.onDestroyView();
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,6 +110,7 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
         builder.setView(view);
         return builder.create();
     }
+
     public interface OptionsDialogFragmentListener{
         void getChoice(int pos);
         void importPers(DocItem doc);
