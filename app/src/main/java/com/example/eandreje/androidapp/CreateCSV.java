@@ -1,20 +1,6 @@
 package com.example.eandreje.androidapp;
 
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.net.Uri;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 //import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -29,18 +15,18 @@ import java.util.List;
 /**
  * Created by johaerik on 2015-10-29.
  */
-public class CSV
+public class CreateCSV
 {
-    private ColumnContent columncontent;
+    private CellValue columncontent;
     private List<Columns> columnList = new ArrayList<>();
-    private List<Person> personList = new ArrayList<>();
+    private List<Attendant> attendantList = new ArrayList<>();
     private String toCSV;
 
-    public String writeToCSV(DocItem doc)
+    public String writeToCSV(Event doc)
     {
 
         columnList = Queries.getColumnHeaders(doc);
-        personList = Queries.getRelation(doc);
+        attendantList = Queries.getRelation(doc);
         StringBuilder toCSVstringbuilder = new StringBuilder("Name;");
         //      TODO    Snygga till parsning med en stringbuilder ist flr en String
 
@@ -52,9 +38,9 @@ public class CSV
         }
 
         toCSVstringbuilder.append("\n");
-        for(Person p : personList)
+        for(Attendant p : attendantList)
         {
-            columncontent = new ColumnContent();
+            columncontent = new CellValue();
 
             toCSVstringbuilder.append(p.toString() + ";");
             for (Columns c : columnList)

@@ -4,10 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 
-public class AddPersonDialogFragment extends DialogFragment{
+public class AddAttendantDialogFragment extends DialogFragment{
     public AddPersonDialogFragmentListener listener;
     private ArrayList<Columns> columnList;
     private ArrayList<LinearLayout> layoutList;
@@ -59,11 +57,11 @@ public class AddPersonDialogFragment extends DialogFragment{
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                DocItem doc = getArguments().getParcelable("DocParent");
+                Event doc = getArguments().getParcelable("DocParent");
                 EditText personName = (EditText) view.findViewById(R.id.new_person_name);
-                Person person = new Person(personName.getText().toString(), doc.getParentActivity());
-                person.save();
-                PersonDocItem perDocRelation = new PersonDocItem(person, doc);
+                Attendant attendant = new Attendant(personName.getText().toString(), doc.getParentCategory());
+                attendant.save();
+                AttendantEvent perDocRelation = new AttendantEvent(attendant, doc);
                 perDocRelation.save();
 
                 int i = 0;
@@ -73,7 +71,7 @@ public class AddPersonDialogFragment extends DialogFragment{
                         column.save();
                         if (!column.isCheckbox()) {
                             EditText value = (EditText) view.findViewById(R.id.column_value);
-                            ColumnContent cellValue = new ColumnContent(value.getText().toString(), doc, column, person);
+                            CellValue cellValue = new CellValue(value.getText().toString(), doc, column, attendant);
                             cellValue.save();
                             i++;
                         } else {
@@ -85,7 +83,7 @@ public class AddPersonDialogFragment extends DialogFragment{
                             else
                                 checked = "false";
 
-                            ColumnContent cellValue = new ColumnContent(checked, doc, column, person);
+                            CellValue cellValue = new CellValue(checked, doc, column, attendant);
                             cellValue.save();
                             i++;
                         }
@@ -105,6 +103,6 @@ public class AddPersonDialogFragment extends DialogFragment{
         return dialog;
     }
     public interface AddPersonDialogFragmentListener{
-        void newPersonAdded(DocItem doc);
+        void newPersonAdded(Event doc);
     }
 }

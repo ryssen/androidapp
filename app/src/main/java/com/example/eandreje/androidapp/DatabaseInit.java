@@ -9,8 +9,5 @@ public class DatabaseInit extends Application {
         super.onCreate();
         ActiveAndroid.initialize(this);
         ActiveAndroid.getDatabase().setForeignKeyConstraintsEnabled(true);
-
     }
-
-
 }

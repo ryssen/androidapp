@@ -6,31 +6,31 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "Person")
-public class Person extends Model implements Parcelable{
+@Table(name = "AttendantTable")
+public class Attendant extends Model implements Parcelable{
     @Column(name = "Name")
     private String name;
-    @Column(name = "Parent", onDelete = Column.ForeignKeyAction.CASCADE)
-    private ListItem parentActivity;
+    @Column(name = "ParentCategory", onDelete = Column.ForeignKeyAction.CASCADE)
+    private Category parentCategory;
 
-    public Person(){
+    public Attendant(){
         super();
     }
 
-    public ListItem getParentActivity() {
-        return parentActivity;
+    public Category getParentCategory() {
+        return parentCategory;
     }
 
-    public Person (String name, ListItem parent)
+    public Attendant(String name, Category parent)
     {
         super();
         this.name = name;
-        this.parentActivity = parent;
+        this.parentCategory = parent;
 
     }
 
-    public void setParentActivity(ListItem parentActivity) {
-        this.parentActivity = parentActivity;
+    public void setParentCategory(Category parentCategory) {
+        this.parentCategory = parentCategory;
     }
 
     public void setName(String name) {
@@ -51,7 +51,7 @@ public class Person extends Model implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
 
     }
-    public ColumnContent getColumnContent(DocItem doc, Columns column){
-        return Queries.fetchSingleCellData(this, column, doc);
+    public CellValue getColumnContent(Event doc, Columns column){
+        return Queries.getSingleCellValue(this, column, doc);
     }
 }

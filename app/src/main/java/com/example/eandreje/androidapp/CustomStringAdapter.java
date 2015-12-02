@@ -6,14 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import java.util.List;
 
 public class CustomStringAdapter extends ArrayAdapter {
-    private List<AdapterObjects> list;
+    private List<AdapterObject> list;
     public CustomStringAdapterListener listener;
 
-    public CustomStringAdapter(Context context, List<AdapterObjects> valueList, LeftsideDocumentFragment fragment) {
+    public CustomStringAdapter(Context context, List<AdapterObject> valueList, PresenceFragment fragment) {
         super(context, R.layout.custom_row_string, valueList);
         listener = fragment;
         list = valueList;
@@ -26,10 +26,10 @@ public class CustomStringAdapter extends ArrayAdapter {
         TextView textView1 = (TextView) view.findViewById(R.id.person_name);
         TextView textView2 = (TextView) view.findViewById(R.id.column_name);
 
-        textView1.setText(list.get(position).person.toString());
-        if(list.get(position).columnContent != null){
+        textView1.setText(list.get(position).attendant.toString());
+        if(list.get(position).cellValue != null){
             textView2.setEnabled(true);
-            textView2.setText(list.get(position).columnContent.value);
+            textView2.setText(list.get(position).cellValue.value);
         }
         else
         {
@@ -38,19 +38,19 @@ public class CustomStringAdapter extends ArrayAdapter {
         textView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.buttonPressed(v, list.get(position).person.getId());
+                listener.buttonPressed(v, list.get(position).attendant.getId());
             }
         });
         textView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.buttonPressed(v, list.get(position).person.getId());
+                listener.buttonPressed(v, list.get(position).attendant.getId());
             }
         });
         textView1.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                listener.deletePersonString(v, list.get(position).person.getId());
+                listener.deletePersonString(v, list.get(position).attendant.getId());
                 return true;
             }
         });

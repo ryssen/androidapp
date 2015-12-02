@@ -7,19 +7,19 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "Documents")
-public class DocItem extends Model implements Parcelable {
+@Table(name = "EventTable")
+public class Event extends Model implements Parcelable {
 
     @Column(name = "Name")
     String name;
-    @Column(name = "Parent", onDelete = Column.ForeignKeyAction.CASCADE)
-    ListItem parentActivity;
+    @Column(name = "ParentCategory", onDelete = Column.ForeignKeyAction.CASCADE)
+    Category parentCategory;
 
-   public DocItem(){
+   public Event(){
        super();
    }
 
-    public DocItem(String name) {
+    public Event(String name) {
         super();
         this.name = name;
     }
@@ -43,7 +43,7 @@ public class DocItem extends Model implements Parcelable {
 
     }
 
-    public ListItem getParentActivity() {
-        return parentActivity;
+    public Category getParentCategory() {
+        return parentCategory;
     }
 }

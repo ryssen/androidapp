@@ -1,17 +1,7 @@
 package com.example.eandreje.androidapp;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentSender;
-import android.net.Uri;
-import android.os.ParcelFileDescriptor;
-import android.os.PersistableBundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 //import com.google.android.gms.common.ConnectionResult;
 //import com.google.android.gms.common.GoogleApiAvailability;
@@ -29,18 +19,11 @@ import android.widget.Toast;
 //import com.google.android.gms.drive.MetadataChangeSet;
 //import com.google.android.gms.drive.OpenFileActivityBuilder;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
-public class MainActivity extends AppCompatActivity implements CreateActivityFragment.CreateActivityFragmentListener,
-        CreateDocumentFragment.CreateDocumentFragmentListener
+public class MainActivity extends AppCompatActivity implements CategoryFragment.CategoryFragmentListener,
+        EventFragment.CreateDocumentFragmentListener
 {
-    private CreateDocumentFragment documentFragment;
-   // private GoogleApiClient googleApiClient;
+    // private GoogleApiClient googleApiClient;
     private static final int REQUEST_CODE_RESOLUTION = 1;
     private static final int REQUEST_CODE_FILE = 2;
     private String EXISTING_FILE_ID = "CAESHDBCMFc3TzZQRUxtcTRUakl3VnpaWFduTmtUSGMY3A0g_OXH6Z5SKAA";
@@ -49,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
 
     private static final String TAG = "MainActivity";
 
-    private DocItem activeObject;
+    private Event activeObject;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -70,11 +53,10 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
 
         setContentView(R.layout.activity_main);
         if(savedInstanceState == null) {
-            CreateActivityFragment activityFragment = new CreateActivityFragment();
+            CategoryFragment categoryFragment = new CategoryFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_activity_layout, activityFragment)
+                    .add(R.id.main_activity_layout, categoryFragment)
                     .commit();
-            this.setTitle("Aktiviteter");
         }
     }
 
@@ -109,20 +91,20 @@ public class MainActivity extends AppCompatActivity implements CreateActivityFra
     //activeObject recieves the clicked listobject(activities) which is forwarded
     //to the static newInstance method.
     @Override
-    public void activeObject(ListItem listItem) {
-        documentFragment = CreateDocumentFragment.newInstance(listItem);
+    public void activeObject(Category category) {
+        EventFragment eventFragment = EventFragment.newInstance(category);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_activity_layout, documentFragment)
+                .replace(R.id.main_activity_layout, eventFragment)
                 .addToBackStack(null).commit();
     }
 
     //docObject recieves the clicked listobject(document)
     @Override
-    public void docObjectClicked(DocItem doc) {
-        activeObject = doc;
-        LeftsideDocumentFragment leftsideDocumentFragment = LeftsideDocumentFragment.newInstance(doc);
+    public void docObjectClicked(Event event) {
+        activeObject = event;
+        PresenceFragment presenceFragment = PresenceFragment.newInstance(event);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_activity_layout, leftsideDocumentFragment)
+                .replace(R.id.main_activity_layout, presenceFragment)
                 .addToBackStack(null).commit();
 
     }

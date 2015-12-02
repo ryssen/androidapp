@@ -7,29 +7,29 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name="Columns")
+@Table(name="ColumnsTable")
 public class Columns extends Model implements Parcelable {
     @Column(name ="Header")
     private String header;
     @Column(name = "Checkbox")
     private boolean isCheckbox;
-    @Column(name = "Parent", onDelete = Column.ForeignKeyAction.CASCADE)
-    private DocItem parentDocument;
+    @Column(name = "ParentEvent", onDelete = Column.ForeignKeyAction.CASCADE)
+    private Event parentEvent;
 
     public Columns(){
         super();
     }
 
-    public Columns (String header, DocItem parent, Boolean bool)
+    public Columns (String header, Event parent, Boolean bool)
     {
         super();
         this.header = header;
-        this.parentDocument = parent;
+        this.parentEvent = parent;
         this.isCheckbox = bool;
     }
 
-    public void setParentDocument(DocItem parentDocument) {
-        this.parentDocument = parentDocument;
+    public void setParentEvent(Event parentEvent) {
+        this.parentEvent = parentEvent;
     }
 
     public void setHeader(String header) {

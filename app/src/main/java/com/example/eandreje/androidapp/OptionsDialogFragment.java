@@ -2,7 +2,6 @@ package com.example.eandreje.androidapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -17,7 +16,7 @@ import java.util.List;
 
 public class OptionsDialogFragment extends android.support.v4.app.DialogFragment {
     public OptionsDialogFragmentListener listener;
-    private List<DocItem> docList;
+    private List<Event> docList;
 
     public OptionsDialogFragment(){
     }
@@ -39,7 +38,7 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
         ListView listView = (ListView) view.findViewById(R.id.listView3);
         ArrayList<String> optionsList = new ArrayList<>();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, optionsList);
-        ArrayAdapter<DocItem> docAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, docList);
+        ArrayAdapter<Event> docAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, docList);
         final TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -58,22 +57,22 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
                 listView.setAdapter(adapter);
                 break;
             case R.id.second_view_up_cloud:
-                docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct_export"));
+                docList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct_export"));
                 listView.setAdapter(docAdapter);
                 docAdapter.clear();
                 docAdapter.addAll(docList);
                 break;
             case R.id.import_persons:
-                docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct"));
-                DocItem doc1 = getArguments().getParcelable("ActiveDoc");
+                docList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct"));
+                Event doc1 = getArguments().getParcelable("ActiveDoc");
                 docList.remove(doc1);
                 listView.setAdapter(docAdapter);
                 docAdapter.clear();
                 docAdapter.addAll(docList);
                 break;
             case R.id.import_persons_columns:
-                docList = Queries.getDocuments((ListItem) getArguments().getParcelable("ParentAct"));
-                DocItem doc2 = getArguments().getParcelable("ActiveDoc");
+                docList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct"));
+                Event doc2 = getArguments().getParcelable("ActiveDoc");
                 docList.remove(doc2);
                 listView.setAdapter(docAdapter);
                 docAdapter.clear();
@@ -113,8 +112,8 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
 
     public interface OptionsDialogFragmentListener{
         void getChoice(int pos);
-        void importPers(DocItem doc);
-        void importPersCol(DocItem doc);
+        void importPers(Event doc);
+        void importPersCol(Event doc);
     }
 }
 

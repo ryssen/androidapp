@@ -7,32 +7,32 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "ColumnContent")
-public class ColumnContent extends Model implements Parcelable {
+@Table(name = "CellValueTable")
+public class CellValue extends Model implements Parcelable {
     @Column(name = "Value")
     String value;
-    @Column(name = "ParentDoc", onDelete = Column.ForeignKeyAction.CASCADE)
-    DocItem parentDocument;
+    @Column(name = "ParentEvent", onDelete = Column.ForeignKeyAction.CASCADE)
+    Event parentEvent;
     @Column(name = "ParentColumn", onDelete = Column.ForeignKeyAction.CASCADE)
     Columns parentColumn;
-    @Column(name = "ParentPerson", onDelete = Column.ForeignKeyAction.CASCADE)
-    Person parentPerson;
+    @Column(name = "ParentAttendant", onDelete = Column.ForeignKeyAction.CASCADE)
+    Attendant parentAttendant;
 
-    public ColumnContent(){
+    public CellValue(){
         super();
     }
 
-    public ColumnContent(String value, DocItem doc, Columns parent, Person person)
+    public CellValue(String value, Event event, Columns parent, Attendant attendant)
     {
         super();
         this.value = value;
-        this.parentDocument = doc;
+        this.parentEvent = event;
         this.parentColumn = parent;
-        this.parentPerson = person;
+        this.parentAttendant = attendant;
     }
 
-    public Person getParentPerson() {
-        return parentPerson;
+    public Attendant getParentAttendant() {
+        return parentAttendant;
     }
 
     @Override

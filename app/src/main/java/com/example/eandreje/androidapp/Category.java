@@ -6,33 +6,33 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-@Table(name = "Activities")
-public class ListItem extends Model implements Parcelable {
+@Table(name = "CategoryTable")
+public class Category extends Model implements Parcelable {
     @Column(name = "Name")
     String name;
 
-    public ListItem( ){
+    public Category(){
         super();
     }
 
-    public ListItem(String name) {
+    public Category(String name) {
         super();
         this.name = name;
     }
 
-    protected ListItem(Parcel in) {
+    protected Category(Parcel in) {
         name = in.readString();
     }
 
-    public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
+    public static final Creator<Category> CREATOR = new Creator<Category>() {
         @Override
-        public ListItem createFromParcel(Parcel in) {
-            return new ListItem(in);
+        public Category createFromParcel(Parcel in) {
+            return new Category(in);
         }
 
         @Override
-        public ListItem[] newArray(int size) {
-            return new ListItem[size];
+        public Category[] newArray(int size) {
+            return new Category[size];
         }
     };
 

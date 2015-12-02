@@ -17,22 +17,22 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateActivityFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
+public class CategoryFragment extends Fragment implements InputDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    private static final String DIALOG_TITLE = "Ny aktivitet";
-    private static final String ACTLIST_TITLE = "Alternativ";
-    private static final String DIALOG_CHANGE_DOC_NAME = "Skriv in ett nytt namn";
-    private static final String DIALOG_NEW_ACTIVITY = "Skriv in namnet på den nya aktiviteten";
-    private static final String DIALOG__ALTERNATIVE = "Ändra namn eller ta bort aktuell aktivitet";
+    private static final String DIALOG_TITLE = "Ny kategori";
+    private static final String CATLIST_TITLE = "Alternativ";
+    private static final String DIALOG_CHANGE_CAT_NAME = "Skriv in ett nytt namn";
+    private static final String DIALOG_NEW_CATEGORY = "Skriv in namnet på den nya kategorin";
+    private static final String DIALOG__ALTERNATIVE = "Ändra namn eller ta bort aktuell kategori";
 
     private static final int ACTIVITY_CODE = 2;
 
-    private ArrayAdapter<ListItem> activityAdapter;
-    private List<ListItem> activityList = new ArrayList<>();
-    public CreateActivityFragmentListener createActivityFragmentListener;
+    private ArrayAdapter<Category> categoryArrayAdapter;
+    private List<Category> categoryList = new ArrayList<>();
+    public CategoryFragmentListener categoryFragmentListener;
     private OptionsDialogFragment optionsDialog;
-    private ListItem itemClicked;
+    private Category itemClicked;
     private boolean changeName = false;
 
     @Override
@@ -59,7 +59,7 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("Aktiviteter");
+        getActivity().setTitle("Kategorier");
     }
 
     @Override
@@ -67,11 +67,11 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         super.onAttach(context);
         try
         {
-            createActivityFragmentListener = (CreateActivityFragmentListener)getActivity();
+            categoryFragmentListener = (CategoryFragmentListener)getActivity();
         }
         catch (ClassCastException e)
         {
-            throw new ClassCastException(context.toString() + " must implement CreateActivityFragmentListener");
+            throw new ClassCastException(context.toString() + " must implement CategoryFragmentListener");
         }
     }
 
@@ -83,22 +83,22 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         optionsDialog = new OptionsDialogFragment();
         optionsDialog.setTargetFragment(this, ACTIVITY_CODE);
         //optionsDialog.listener = this;
-        activityList = Queries.getActivites();
-        activityAdapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, activityList);
+        categoryList = Queries.getCategories();
+        categoryArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, categoryList);
         ListView activityListView = (ListView) view.findViewById(R.id.listView);
-        activityListView.setAdapter(activityAdapter);
+        activityListView.setAdapter(categoryArrayAdapter);
         activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                createActivityFragmentListener.activeObject(activityList.get(position));
+                categoryFragmentListener.activeObject(categoryList.get(position));
             }
         });
         activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                itemClicked = activityAdapter.getItem(position);
+                itemClicked = categoryArrayAdapter.getItem(position);
                 Bundle bundle = new Bundle();
-                bundle.putString("DialogTitle", ACTLIST_TITLE);
+                bundle.putString("DialogTitle", CATLIST_TITLE);
                 bundle.putInt("Layout", R.layout.act_options_layout);
                 bundle.putString("DialogDesc", DIALOG__ALTERNATIVE);
                 bundle.putInt("Caller", 0);
@@ -120,16 +120,16 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_activity_icon:
-                DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                InputDialogFragment inputDialogFragment = new InputDialogFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
                 bundle.putInt("Layout", R.layout.default_dialog);
-                bundle.putString("DialogDesc", DIALOG_NEW_ACTIVITY);
+                bundle.putString("DialogDesc", DIALOG_NEW_CATEGORY);
                 bundle.putInt("Caller", R.id.add_activity_icon);
-                defaultDialogFragment.setArguments(bundle);
-                //defaultDialogFragment.listener = this;
-                defaultDialogFragment.setTargetFragment(this, ACTIVITY_CODE);
-                defaultDialogFragment.show(getFragmentManager(), "dialog");
+                inputDialogFragment.setArguments(bundle);
+                //inputDialogFragment.listener = this;
+                inputDialogFragment.setTargetFragment(this, ACTIVITY_CODE);
+                inputDialogFragment.show(getFragmentManager(), "dialog");
                 break;
             default:
         }
@@ -148,13 +148,13 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
         {
             if(!changeName)
             {
-                ListItem actToDb = new ListItem(text);
+                Category actToDb = new Category(text);
                 actToDb.save();
                 UpdateAndSave();
             }
             if(changeName)
             {
-                itemClicked.load(ListItem.class, itemClicked.getId());
+                itemClicked.load(Category.class, itemClicked.getId());
                 itemClicked.name = text;
                 itemClicked.save();
                 UpdateAndSave();
@@ -179,13 +179,13 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
                 changeName = true;
                 Bundle bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
-                DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                InputDialogFragment inputDialogFragment = new InputDialogFragment();
                 bundle.putInt("Layout", R.layout.default_dialog);
-                bundle.putString("DialogDesc", DIALOG_CHANGE_DOC_NAME);
-                //defaultDialogFragment.listener = this;
-                defaultDialogFragment.setTargetFragment(this, ACTIVITY_CODE);
-                defaultDialogFragment.setArguments(bundle);
-                defaultDialogFragment.show(getFragmentManager(), "dialog");
+                bundle.putString("DialogDesc", DIALOG_CHANGE_CAT_NAME);
+                //inputDialogFragment.listener = this;
+                inputDialogFragment.setTargetFragment(this, ACTIVITY_CODE);
+                inputDialogFragment.setArguments(bundle);
+                inputDialogFragment.show(getFragmentManager(), "dialog");
                 break;
             case 1:
                 itemClicked.delete();
@@ -195,22 +195,22 @@ public class CreateActivityFragment extends Fragment implements DefaultDialogFra
     }
 
     @Override
-    public void importPers(DocItem doc) {
+    public void importPers(Event doc) {
     }
 
     @Override
-    public void importPersCol(DocItem doc) {
+    public void importPersCol(Event doc) {
 
     }
 
-    public interface CreateActivityFragmentListener {
-        void activeObject(ListItem listItem);
+    public interface CategoryFragmentListener {
+        void activeObject(Category category);
     }
 
     public void UpdateAndSave() {
-        activityList = Queries.getActivites();
-        activityAdapter.clear();
-        activityAdapter.addAll(activityList);
+        categoryList = Queries.getCategories();
+        categoryArrayAdapter.clear();
+        categoryArrayAdapter.addAll(categoryList);
     }
 }
 

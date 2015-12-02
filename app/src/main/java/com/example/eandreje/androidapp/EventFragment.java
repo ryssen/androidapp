@@ -1,21 +1,10 @@
 package com.example.eandreje.androidapp;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,52 +21,43 @@ import android.widget.Toast;
 //import com.google.android.gms.drive.DriveId;
 //import com.google.android.gms.drive.OpenFileActivityBuilder;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateDocumentFragment extends Fragment implements DefaultDialogFragment.DefaultDialogFragmentListener,
+public class EventFragment extends Fragment implements InputDialogFragment.DefaultDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
-    private static final String DIALOG_TITLE = "Nytt dokument";
+    private static final String DIALOG_TITLE = "Nytt event";
     private static final String DOCLIST_TITLE = "Alternativ";
-    private static final String DIALOG_CHANGE_DOC_NAME = "Skriv in ett nytt namn";
-    private static final String DIALOG_NEW_DOC = "Skriv in namnet på det nya dokumentet";
-    private static final String DIALOG_ALTERNATIVE = "Ändra namn eller ta bort aktuellt dokument";
-    private static final String DIALOG_EXPORT_TITLE = "Exportera dokument";
-    private static final String DIALOG_EXPORT_DISC = "Välj ett dokument att exportera";
+    private static final String DIALOG_CHANGE_EVENT_NAME = "Skriv in ett nytt namn";
+    private static final String DIALOG_NEW_EVENT = "Skriv in namnet på nytt event";
+    private static final String DIALOG_ALTERNATIVE = "Ändra namn eller ta bort aktuellt event";
+    private static final String DIALOG_EXPORT_TITLE = "Exportera event";
+    private static final String DIALOG_EXPORT_DISC = "Välj ett event att exportera";
 
     private static final int DOCUMENT_CODE = 2;
 
     private boolean state = false;
-    private ArrayAdapter<DocItem> adapter;
-    private List<DocItem> docList;
-    private ListItem listItem;
+    private ArrayAdapter<Event> adapter;
+    private List<Event> eventList;
+    private Category category;
     private ListView listView;
-    private DocItem docClicked;
+    private Event eventClicked;
     private boolean importExport = false;
     String exportCSV;
    // private GoogleApiClient googleApiClient;
     public static final int requestcode = 1;
     public CreateDocumentFragmentListener createDocumentFragmentListener;
     private OptionsDialogFragment optionsDialogFragment;
-    private CSV csv;
+    private CreateCSV createCsv;
 
     //newInstance factoring method, returns a new instance of this class
     // with custom parameter
-    public static CreateDocumentFragment newInstance(ListItem listItem){
-        CreateDocumentFragment fragment = new CreateDocumentFragment();
+    public static EventFragment newInstance(Category category){
+        EventFragment fragment = new EventFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("listobject", listItem);
+        bundle.putParcelable("listobject", category);
       //  bundle.putParcelable("googleApiClient", (Parcelable) googleApiClient);
         fragment.setArguments(bundle);
         return fragment;
@@ -86,7 +66,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable("Event", getArguments().getParcelable("listobject"));
-        outState.putParcelable("ActiveDoc", docClicked);
+        outState.putParcelable("ActiveDoc", eventClicked);
         outState.putBoolean("State", state);
         //outState.putParcelable("ActiveColumn", activeColumn);
         super.onSaveInstanceState(outState);
@@ -95,8 +75,8 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         if(savedInstanceState != null){
-            listItem = savedInstanceState.getParcelable("Event");
-            docClicked = savedInstanceState.getParcelable("ActiveDoc");
+            category = savedInstanceState.getParcelable("Event");
+            eventClicked = savedInstanceState.getParcelable("ActiveDoc");
             state = savedInstanceState.getBoolean("State");
         }
         super.onViewStateRestored(savedInstanceState);
@@ -106,42 +86,42 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listItem = getArguments().getParcelable("listobject");
+        category = getArguments().getParcelable("listobject");
       //  googleApiClient = getArguments().getParcelable("googleApiClient");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(listItem.name);
+        getActivity().setTitle(category.name);
     }
 
     @Nullable
     //@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.document_layout, container, false);
-        docList = new ArrayList<>();
-        docList = Queries.getDocuments(listItem);
-        csv = new CSV();
+        eventList = new ArrayList<>();
+        eventList = Queries.getEvents(category);
+        createCsv = new CreateCSV();
         optionsDialogFragment = new OptionsDialogFragment();
         optionsDialogFragment.setTargetFragment(this, DOCUMENT_CODE);
         //.listener = this;
 
         listView = (ListView) view.findViewById(R.id.document_listview);
-        adapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, docList);
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, eventList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                docClicked = adapter.getItem(position);
+                eventClicked = adapter.getItem(position);
 
-                createDocumentFragmentListener.docObjectClicked(docList.get(position));
+                createDocumentFragmentListener.docObjectClicked(eventList.get(position));
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                docClicked = adapter.getItem(position);
+                eventClicked = adapter.getItem(position);
                 Bundle bundle = new Bundle();
                 bundle.putString("DialogTitle", DOCLIST_TITLE);
                 bundle.putString("DialogDesc", DIALOG_ALTERNATIVE);
@@ -163,7 +143,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         try {
             createDocumentFragmentListener = (CreateDocumentFragmentListener) getActivity();
         } catch (ClassCastException e) {
-            throw new ClassCastException(getActivity().toString() + " must implement CreateActivityFragmentListener");
+            throw new ClassCastException(getActivity().toString() + " must implement CategoryFragmentListener");
         }
     }
 
@@ -178,17 +158,17 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         Bundle bundle;
         switch (item.getItemId()) {
             case R.id.add_doc_icon:
-                DefaultDialogFragment defaultDialogFragment = new DefaultDialogFragment();
+                InputDialogFragment inputDialogFragment = new InputDialogFragment();
                 bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
-                bundle.putString("DialogDesc", DIALOG_NEW_DOC);
+                bundle.putString("DialogDesc", DIALOG_NEW_EVENT);
                 bundle.putInt("Layout", R.layout.default_dialog);
                 bundle.putInt("Caller", R.id.add_doc_icon);
-                defaultDialogFragment.setArguments(bundle);
-                defaultDialogFragment.setTargetFragment(this, DOCUMENT_CODE);
+                inputDialogFragment.setArguments(bundle);
+                inputDialogFragment.setTargetFragment(this, DOCUMENT_CODE);
 
-                //defaultDialogFragment.listener = this;
-                defaultDialogFragment.show(getFragmentManager(), "NewDocDialog");
+                //inputDialogFragment.listener = this;
+                inputDialogFragment.show(getFragmentManager(), "NewDocDialog");
                 break;
             case R.id.second_view_up_cloud:
                 OptionsDialogFragment choosedocExport = new OptionsDialogFragment();
@@ -197,7 +177,7 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 bundle.putString("DialogDesc", DIALOG_EXPORT_DISC);
                 bundle.putInt("Layout", R.layout.act_options_layout);
                 bundle.putInt("Caller", R.id.second_view_up_cloud);
-                bundle.putParcelable("ParentAct_export", listItem);
+                bundle.putParcelable("ParentAct_export", category);
                 choosedocExport.setArguments(bundle);
                 choosedocExport.setTargetFragment(this, DOCUMENT_CODE);
                 //choosedocExport.listener = this;
@@ -222,9 +202,9 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         }
         else
         {
-            docClicked.load(DocItem.class, docClicked.getId());
-            docClicked.name = text;
-            docClicked.save();
+            eventClicked.load(Event.class, eventClicked.getId());
+            eventClicked.name = text;
+            eventClicked.save();
             UpdateAndSave();
             state = false;
         }
@@ -241,9 +221,9 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     public void UpdateAndSave() {
-        docList = Queries.getDocuments(listItem);
+        eventList = Queries.getEvents(category);
         adapter.clear();
-        adapter.addAll(docList);
+        adapter.addAll(eventList);
     }
 
     @Override
@@ -251,10 +231,10 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
         switch (pos) {
             case 0:
                 state = true;
-                DefaultDialogFragment docDialog = new DefaultDialogFragment();
+                InputDialogFragment docDialog = new InputDialogFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("addDocTitle", DIALOG_TITLE);
-                bundle.putString("DialogDesc", DIALOG_CHANGE_DOC_NAME);
+                bundle.putString("DialogDesc", DIALOG_CHANGE_EVENT_NAME);
                 bundle.putInt("Layout", R.layout.default_dialog);
                 docDialog.setArguments(bundle);
                 docDialog.setTargetFragment(this, DOCUMENT_CODE);
@@ -262,11 +242,11 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
                 docDialog.show(getFragmentManager(), "editDocDialog");
                 break;
             case 1:
-                List<Person> list = Queries.getRelation(docClicked);
-                for (Person p:list) {
+                List<Attendant> list = Queries.getRelation(eventClicked);
+                for (Attendant p:list) {
                     p.delete();
                 }
-                docClicked.delete();
+                eventClicked.delete();
                 UpdateAndSave();
                 break;
             default:
@@ -274,32 +254,32 @@ public class CreateDocumentFragment extends Fragment implements DefaultDialogFra
     }
 
     public void addDocument(String text) {
-        DocItem document = new DocItem(text);
-        document.parentActivity = listItem;
+        Event document = new Event(text);
+        document.parentCategory = category;
         document.save();
         UpdateAndSave();
     }
 
     @Override
-    public void importPers(DocItem doc)
+    public void importPers(Event doc)
     {
         exportFile(doc);
     }
 
     @Override
-    public void importPersCol(DocItem doc) {
+    public void importPersCol(Event doc) {
 
     }
 
     public interface CreateDocumentFragmentListener {
-        void docObjectClicked(DocItem doc);
+        void docObjectClicked(Event doc);
 
        // void launchGoogleDrive();
     }
 
-    public void exportFile(DocItem doc) {
+    public void exportFile(Event doc) {
 
-        String exportCSV = csv.writeToCSV(doc);
+        String exportCSV = createCsv.writeToCSV(doc);
 
         if (checkStringSize(exportCSV) == true) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
