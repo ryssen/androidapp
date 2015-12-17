@@ -326,21 +326,17 @@ public class PresenceFragment extends Fragment implements EventFragment.CreateDo
 
     @Override
     public void onDeleteRequest(int caller) {
-        //Queries.deleteColumnValues(activeColumn);
-        //Queries.deleteColumn(activeColumn);
         activeColumn.delete();
         spinnerColumns = Queries.getColumnHeaders(event);
         spinnerAdapt.clear();
         spinnerAdapt.addAll(spinnerColumns);
-
-        //updateListview();
-//        initAdapterObjectList(valueList, event);
+        if(spinnerColumns.size() != 0){
+            activeColumn = spinnerColumns.get(0);
+        }
         updateColumnData(valueList);
-
         initListview();
-//        updateListview();
-
-
+        boolAdapter.notifyDataSetChanged();
+        stringAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -519,6 +515,7 @@ public class PresenceFragment extends Fragment implements EventFragment.CreateDo
     public void updateColumnData(List<AdapterObject> adapterObjects) {
     for (AdapterObject aO:adapterObjects)
     {
+
         aO.cellValue = Queries.getSingleCellValue(aO.attendant, activeColumn, event);
     }
     }
