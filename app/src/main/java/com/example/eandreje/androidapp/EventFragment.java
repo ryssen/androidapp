@@ -25,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventFragment extends Fragment implements InputDialogFragment.DefaultDialogFragmentListener,
+public class EventFragment extends Fragment implements InputDialogFragment.InputDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
     private static final String DIALOG_TITLE = "Nytt event";
@@ -48,7 +48,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Defau
     String exportCSV;
    // private GoogleApiClient googleApiClient;
     public static final int requestcode = 1;
-    public CreateDocumentFragmentListener createDocumentFragmentListener;
+    public EventFragmentListener eventFragmentListener;
     private OptionsDialogFragment optionsDialogFragment;
     private CreateCSV createCsv;
 
@@ -115,7 +115,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Defau
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 eventClicked = adapter.getItem(position);
 
-                createDocumentFragmentListener.docObjectClicked(eventList.get(position));
+                eventFragmentListener.eventObjectClicked(eventList.get(position));
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -141,7 +141,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Defau
     public void onAttach(Activity context) {
         super.onAttach(context);
         try {
-            createDocumentFragmentListener = (CreateDocumentFragmentListener) getActivity();
+            eventFragmentListener = (EventFragmentListener) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString() + " must implement CategoryFragmentListener");
         }
@@ -271,10 +271,8 @@ public class EventFragment extends Fragment implements InputDialogFragment.Defau
 
     }
 
-    public interface CreateDocumentFragmentListener {
-        void docObjectClicked(Event doc);
-
-       // void launchGoogleDrive();
+    public interface EventFragmentListener {
+        void eventObjectClicked(Event event);
     }
 
     public void exportFile(Event doc) {

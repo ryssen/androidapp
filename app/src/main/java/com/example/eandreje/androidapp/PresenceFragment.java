@@ -19,8 +19,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PresenceFragment extends Fragment implements EventFragment.CreateDocumentFragmentListener,
-        CustomStringAdapter.CustomStringAdapterListener, InputDialogFragment.DefaultDialogFragmentListener,
+public class PresenceFragment extends Fragment implements EventFragment.EventFragmentListener,
+        CustomStringAdapter.CustomStringAdapterListener, InputDialogFragment.InputDialogFragmentListener,
         AddAttendantDialogFragment.AddPersonDialogFragmentListener, CustomBoolAdapter.CustomBoolAdapterListener,
         OptionsDialogFragment.OptionsDialogFragmentListener {
 
@@ -246,7 +246,7 @@ public class PresenceFragment extends Fragment implements EventFragment.CreateDo
     }
 
     @Override
-    public void docObjectClicked(Event doc) {
+    public void eventObjectClicked(Event doc) {
     }
 
     @Override
@@ -476,7 +476,7 @@ public class PresenceFragment extends Fragment implements EventFragment.CreateDo
 
     private void initListview(){
         if(spinnerColumns.size() != 0){
-            if(spinnerColumns.get(0).isCheckbox()){
+            if(activeColumn.isCheckbox()){
                 listView.setAdapter(boolAdapter);
                 boolAdapter.notifyDataSetChanged();
             }

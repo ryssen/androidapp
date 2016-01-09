@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryFragment extends Fragment implements InputDialogFragment.DefaultDialogFragmentListener,
+public class CategoryFragment extends Fragment implements InputDialogFragment.InputDialogFragmentListener,
         OptionsDialogFragment.OptionsDialogFragmentListener{
 
     private static final String DIALOG_TITLE = "Ny kategori";
@@ -85,15 +85,15 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.De
         //optionsDialog.listener = this;
         categoryList = Queries.getCategories();
         categoryArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, categoryList);
-        ListView activityListView = (ListView) view.findViewById(R.id.listView);
-        activityListView.setAdapter(categoryArrayAdapter);
-        activityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView categoryListView = (ListView) view.findViewById(R.id.listView);
+        categoryListView.setAdapter(categoryArrayAdapter);
+        categoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 categoryFragmentListener.activeObject(categoryList.get(position));
             }
         });
-        activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        categoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 itemClicked = categoryArrayAdapter.getItem(position);
@@ -211,6 +211,10 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.De
         categoryList = Queries.getCategories();
         categoryArrayAdapter.clear();
         categoryArrayAdapter.addAll(categoryList);
+    }
+
+    public void overViewLayout(AdapterObject list){
+
     }
 }
 

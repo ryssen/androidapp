@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,15 +14,14 @@ import android.widget.TextView;
 
 
 public class InputDialogFragment extends android.support.v4.app.DialogFragment {
-    public DefaultDialogFragmentListener listener;
+    public InputDialogFragmentListener listener;
     private EditText textbox;
     private CheckBox checkbox;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        this.setRetainInstance(true);
-        listener = (DefaultDialogFragmentListener) getTargetFragment();
+        listener = (InputDialogFragmentListener) getTargetFragment();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getArguments().getString("addDocTitle"));
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -60,7 +58,7 @@ public class InputDialogFragment extends android.support.v4.app.DialogFragment {
     }
 
     //Communication interface
-    public interface DefaultDialogFragmentListener {
+    public interface InputDialogFragmentListener {
         void enteredText(String text, int caller);
         void enteredTextBool(String text, int caller, boolean checked);
         void onDeleteRequest(int caller);

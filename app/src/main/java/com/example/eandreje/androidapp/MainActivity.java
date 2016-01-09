@@ -21,7 +21,7 @@ import android.os.Bundle;
 
 
 public class MainActivity extends AppCompatActivity implements CategoryFragment.CategoryFragmentListener,
-        EventFragment.CreateDocumentFragmentListener
+        EventFragment.EventFragmentListener
 {
     // private GoogleApiClient googleApiClient;
     private static final int REQUEST_CODE_RESOLUTION = 1;
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements CategoryFragment.
 
     //docObject recieves the clicked listobject(document)
     @Override
-    public void docObjectClicked(Event event) {
+    public void eventObjectClicked(Event event) {
         activeObject = event;
         PresenceFragment presenceFragment = PresenceFragment.newInstance(event);
         getSupportFragmentManager().beginTransaction()
