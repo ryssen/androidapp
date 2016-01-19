@@ -11,12 +11,11 @@ public class Category extends Model implements Parcelable {
     @Column(name = "Name")
     String name;
 
-    public Category(){
+    public Category() {
         super();
     }
 
     public Category(String name) {
-        super();
         this.name = name;
     }
 

@@ -16,7 +16,7 @@ public class Columns extends Model implements Parcelable {
     @Column(name = "ParentEvent", onDelete = Column.ForeignKeyAction.CASCADE)
     private Event parentEvent;
 
-    public Columns(){
+    public Columns() {
         super();
     }
 
@@ -28,9 +28,23 @@ public class Columns extends Model implements Parcelable {
         this.isCheckbox = bool;
     }
 
-    public void setParentEvent(Event parentEvent) {
-        this.parentEvent = parentEvent;
+    protected Columns(Parcel in) {
+        header = in.readString();
+        isCheckbox = in.readByte() != 0;
+        parentEvent = in.readParcelable(Event.class.getClassLoader());
     }
+
+    public static final Creator<Columns> CREATOR = new Creator<Columns>() {
+        @Override
+        public Columns createFromParcel(Parcel in) {
+            return new Columns(in);
+        }
+
+        @Override
+        public Columns[] newArray(int size) {
+            return new Columns[size];
+        }
+    };
 
     public void setHeader(String header) {
         this.header = header;
@@ -39,6 +53,8 @@ public class Columns extends Model implements Parcelable {
     public boolean isCheckbox() {
         return isCheckbox;
     }
+
+
 
     @Override
     public String toString() {
@@ -52,5 +68,8 @@ public class Columns extends Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(header);
+        dest.writeByte((byte) (isCheckbox ? 1 : 0));
+        dest.writeParcelable(parentEvent, flags);
     }
 }

@@ -1,8 +1,7 @@
 package com.example.eandreje.androidapp;
-//
+
 import android.os.Parcel;
 import android.os.Parcelable;
-//
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -24,6 +23,23 @@ public class Event extends Model implements Parcelable {
         this.name = name;
     }
 
+    protected Event(Parcel in) {
+        name = in.readString();
+        parentCategory = in.readParcelable(Category.class.getClassLoader());
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+
     public void setName(String name){
         this.name = name;
     }
@@ -40,7 +56,8 @@ public class Event extends Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(name);
+        dest.writeParcelable(parentCategory, flags);
     }
 
     public Category getParentCategory() {

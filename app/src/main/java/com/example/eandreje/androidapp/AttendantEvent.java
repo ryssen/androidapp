@@ -14,17 +14,32 @@ public class AttendantEvent extends Model implements Parcelable{
     @Column(name="Event", onDelete = Column.ForeignKeyAction.CASCADE)
     private Event event;
 
-    public AttendantEvent()
-    {
+    public AttendantEvent() {
         super();
     }
 
     public AttendantEvent(Attendant attendant, Event event)
     {
-        super();
         this.attendant = attendant;
         this.event = event;
     }
+
+    protected AttendantEvent(Parcel in) {
+        attendant = in.readParcelable(Attendant.class.getClassLoader());
+        event = in.readParcelable(Event.class.getClassLoader());
+    }
+
+    public static final Creator<AttendantEvent> CREATOR = new Creator<AttendantEvent>() {
+        @Override
+        public AttendantEvent createFromParcel(Parcel in) {
+            return new AttendantEvent(in);
+        }
+
+        @Override
+        public AttendantEvent[] newArray(int size) {
+            return new AttendantEvent[size];
+        }
+    };
 
     public Attendant getAttendant() {
         return attendant;
@@ -41,7 +56,8 @@ public class AttendantEvent extends Model implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeParcelable(attendant, flags);
+        dest.writeParcelable(event, flags);
     }
 }
 

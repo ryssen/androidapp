@@ -30,19 +30,21 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
     private static final String EVENTLIST_TITLE = "Importera namn";
     private static final String DIALOG_IMPORT = "Välj ett event för import av deltagare";
     private static final String DIALOG_ADD_ATTENDANT = "Skriv in namn och önskat kolumnvärde om tillgängligt";
-    private static final String DIALOG_ADD_COLUMN = "Skriv namn och om kolumntypen ska vara checkruta eller text";
+    private static final String DIALOG_ADD_COLUMN = "Skriv namn och om kolumntypen ska vara kryssruta eller text";
     private static final String DIALOG_RENAME_COLUMN = "Nytt namn på kolumn";
     private static final String DELETE_TITLE = "Alternativ";
     private static final String DIALOG_DELETE = "Ta bort aktuell rad?";
     private static final String DIALOG_DELETE_COLUMN = "Ta bort aktuell kolumn och all tillhörande data?";
+    private static final String DIALOG_CHANGE_VAL = "Skriv in nytt värde" ;
+    private static final String DIALOG_RENAME_ATT = "Skriv in nytt namn på deltagaren" ;
 
     private static final int ADD_PERSON_CODE = 3;
 
     private Event event;
     private String inEventTitle;
     private List<AdapterObject> valueList;
-    private CustomBoolAdapter boolAdapter;
-    private CustomStringAdapter stringAdapter;
+    private CustomBoolAdapter customBoolAdapter;
+    private CustomStringAdapter customStringAdapter;
     private ArrayAdapter<Columns> spinnerAdapt;
     private List<Columns> spinnerColumns;
     private ListView listView;
@@ -52,7 +54,7 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
 
     public static PresenceFragment newInstance(Event event) {
         PresenceFragment presenceFragment = new PresenceFragment();
-        Bundle bundle = new Bundle(1);
+        Bundle bundle = new Bundle();
         bundle.putParcelable("activeDocument", event);
         presenceFragment.setArguments(bundle);
         return presenceFragment;
@@ -62,7 +64,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable("Document", getArguments().getParcelable("activeDocument"));
         outState.putLong("ActiveObject", activeObject);
-        //outState.putParcelable("ActiveColumn", activeColumn);
         super.onSaveInstanceState(outState);
     }
 
@@ -72,8 +73,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
             event = savedInstanceState.getParcelable("activeDocument");
             activeObject = savedInstanceState.getLong("ActiveObject");
         }
-
-        //activeColumn = savedInstanceState.getParcelable("ActiveColumn");
         super.onViewStateRestored(savedInstanceState);
     }
 
@@ -83,7 +82,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
         setHasOptionsMenu(true);
         event = getArguments().getParcelable("activeDocument");
         inEventTitle = event.toString();
-
     }
 
     @Override
@@ -104,11 +102,11 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
     valueList = new ArrayList<>();
     spinner = (Spinner) view.findViewById(R.id.spinner);
     spinnerAdapt = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerColumns);
-    boolAdapter = new CustomBoolAdapter(getContext(), valueList, this);
-    stringAdapter = new CustomStringAdapter(getContext(), valueList, this);
+    customBoolAdapter = new CustomBoolAdapter(getContext(), valueList, this);
+    customStringAdapter = new CustomStringAdapter(getContext(), valueList, this);
     spinner.setAdapter(spinnerAdapt);
     initAdapterObjectList(valueList, event);
-    listView.setAdapter(stringAdapter);
+    listView.setAdapter(customStringAdapter);
 
     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         @Override
@@ -116,14 +114,13 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
             if (spinnerColumns.get(position).isCheckbox()) {
                 activeColumn = (Columns) spinner.getItemAtPosition(position);
                 updateColumnData(valueList);
-                listView.setAdapter(boolAdapter);
+                listView.setAdapter(customBoolAdapter);
             } else {
                 activeColumn = (Columns) spinner.getItemAtPosition(position);
                 updateColumnData(valueList);
-                listView.setAdapter(stringAdapter);
+                listView.setAdapter(customStringAdapter);
             }
         }
-
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
         }
@@ -139,7 +136,7 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.in_document_actionbar, menu);
+        inflater.inflate(R.menu.in_event_actionbar, menu);
     }
 
     @Override
@@ -159,14 +156,9 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
                 bundle.putString("DialogDesc", DIALOG_ADD_ATTENDANT);
                 bundle.putInt("Caller", R.id.add_person_icon);
                 addPerson.setArguments(bundle);
-                //addPerson.listener = this;
                 addPerson.setTargetFragment(this, ADD_PERSON_CODE );
                 addPerson.show(getFragmentManager(), "addPerson");
                 break;
-
-
-
-
             case R.id.add_column_icon:
                 inputDialogFragment = new InputDialogFragment();
                 bundle = new Bundle();
@@ -176,7 +168,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
                 bundle.putString("DialogDesc", DIALOG_ADD_COLUMN);
                 inputDialogFragment.setArguments(bundle);
                 inputDialogFragment.setTargetFragment(this, ADD_PERSON_CODE);
-                //inputDialogFragment.listener = this;
                 inputDialogFragment.show(getFragmentManager(), "newColumnDialog");
                 break;
             case R.id.rename_column:
@@ -189,7 +180,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
                     bundle.putString("DialogDesc", DIALOG_RENAME_COLUMN);
                     inputDialogFragment.setArguments(bundle);
                     inputDialogFragment.setTargetFragment(this, ADD_PERSON_CODE);
-                    //inputDialogFragment.listener = this;
                     inputDialogFragment.show(getFragmentManager(), "newColumnDialog");
                 }
                 else
@@ -206,7 +196,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
                 bundle.putParcelable("ActiveDoc", event);
                 chooseDoc.setArguments(bundle);
                 chooseDoc.setTargetFragment(this, ADD_PERSON_CODE );
-                //chooseDoc.listener = this;
                 chooseDoc.show(getFragmentManager(), "DocListChoose");
                 break;
             case R.id.import_persons_columns:
@@ -220,7 +209,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
                 bundle.putParcelable("ActiveDoc", event);
                 doc.setArguments(bundle);
                 doc.setTargetFragment(this, ADD_PERSON_CODE );
-                //doc.listener = this;
                 doc.show(getFragmentManager(), "DocListChoose");
                 break;
             case R.id.delete_column:
@@ -233,7 +221,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
                     bundle.putString("DialogDesc", DIALOG_DELETE_COLUMN);
                     inputDialogFragment.setArguments(bundle);
                     inputDialogFragment.setTargetFragment(this, ADD_PERSON_CODE);
-                    //inputDialogFragment.listener = this;
                     inputDialogFragment.show(getFragmentManager(), "DeleteDialog");
                 }
                 else{
@@ -276,11 +263,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
         case R.id.person_name:
             if(!text.equals("")){
                 persDocItem = Queries.getAttendantEventRelation(activeObject, event);
-                attendant = persDocItem.getAttendant();
-                //cell = Queries.getSingleCellValue(attendant, activeColumn, event);
-                //cell.parentAttendant.setName(text);
-                //cell.save();
-                persDocItem = Queries.getAttendantEventRelation(activeObject, event);
                 persDocItem.getAttendant().setName(text);
                 persDocItem.getAttendant().save();
                 updateListview();
@@ -309,7 +291,7 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
         if(!text.equals("")){
         Columns column = new Columns(text, event, checked);
         column.save();
-        List<AttendantEvent> persons = Queries.getPersonCell(event);
+        List<AttendantEvent> persons = Queries.getAttendCell(event);
         for (AttendantEvent pDoc : persons) {
             Attendant attendant = pDoc.getAttendant();
             CellValue newColumn = new CellValue("", event, column, attendant);
@@ -335,8 +317,8 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
         }
         updateColumnData(valueList);
         initListview();
-        boolAdapter.notifyDataSetChanged();
-        stringAdapter.notifyDataSetChanged();
+        customBoolAdapter.notifyDataSetChanged();
+        customStringAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -354,11 +336,10 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
             bundle.putInt("Caller", R.id.person_name);
         else
             bundle.putInt("Caller", R.id.column_name);
-        bundle.putString("DialogDesc", DIALOG_ADD_ATTENDANT);
+        bundle.putString("DialogDesc", DIALOG_CHANGE_VAL);
         bundle.putString("addDocTitle", TEXTVIEW_CHANGE);
         dialog.setArguments(bundle);
         dialog.setTargetFragment(this, ADD_PERSON_CODE);
-        //dialog.listener = this;
         dialog.show(getFragmentManager(), "changeCustomAdaptAttr");
     }
 
@@ -366,32 +347,24 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
     public void getChoice(int pos) {
         switch (pos){
             default:
-//                Queries.deleteInColumnContent(activeObject);
-//                Queries.deleteInDocItemClass(activeObject);
-//                Queries.deleteInPersonClass(activeObject);
-                //activeColumn.delete();
-                Queries.getAttendantEventRelation(activeObject, event).getAttendant().delete();
+                //Queries.getAttendantEventRelation(activeObject, event).getAttendant().delete();
+                Queries.deleteAttendant(activeObject, event);
                 updateListview();
-
-
                 break;
         }
     }
 
     @Override
-    public void importPers(Event doc) {
-        List<AttendantEvent> importList = Queries.getAllAttendantEvent(doc);
-        if(spinnerColumns != null && stringAdapter != null && boolAdapter != null)
+    public void importAttendants(Event event) {
+        List<AttendantEvent> importList = Queries.getAllAttendantEvent(event);
+        if(spinnerColumns != null && customStringAdapter != null && customBoolAdapter != null)
         {
-            for (AttendantEvent p : importList)
+            for (AttendantEvent attendantevent : importList)
             {
-//                Attendant attendant = p.getAttendant();
-//                attendant.save();
-                //new Attendant(p.getAttendant().toString(), event.getParentCategory());
-                AttendantEvent perDocRelation = new AttendantEvent(p.getAttendant(), event);
-                perDocRelation.save();
+                AttendantEvent attEve = new AttendantEvent(attendantevent.getAttendant(), this.event);
+                attEve.save();
                 for (Columns col:spinnerColumns) {
-                    CellValue newColumn = new CellValue("", event, col, p.getAttendant());
+                    CellValue newColumn = new CellValue("", this.event, col, attendantevent.getAttendant());
                     newColumn.save();
                 }
             }
@@ -412,7 +385,7 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
         spinnerColumns = Queries.getColumnHeaders(event);
         spinnerAdapt.clear();
         spinnerAdapt.addAll(spinnerColumns);
-        importPers(doc);
+        importAttendants(doc);
         updateColumnData(valueList);
         initListview();
         updateListview();
@@ -429,7 +402,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
         bundle.putInt("Caller", R.id.listView);
         chooseDoc.setArguments(bundle);
         chooseDoc.setTargetFragment(this, ADD_PERSON_CODE);
-        //chooseDoc.listener = this;
         chooseDoc.show(getFragmentManager(), "DocListChoose");
     }
 
@@ -444,7 +416,6 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
         bundle.putInt("Caller", R.id.listView);
         chooseDoc.setArguments(bundle);
         chooseDoc.setTargetFragment(this, ADD_PERSON_CODE);
-        //chooseDoc.listener = this;
         chooseDoc.show(getFragmentManager(), "DocListChoose");
     }
 
@@ -467,23 +438,22 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
         bundle.putInt("Layout", R.layout.default_dialog);
         bundle.putInt("Caller", R.id.person_name);
         bundle.putString("addDocTitle", TEXTVIEW_CHANGE);
-        bundle.putString("DialogDesc", DIALOG_IMPORT);
+        bundle.putString("DialogDesc", DIALOG_CHANGE_VAL);
         dialog.setArguments(bundle);
         dialog.setTargetFragment(this, ADD_PERSON_CODE);
-        //dialog.listener = this;
         dialog.show(getFragmentManager(), "changeCustomAdaptAttr");
     }
 
     private void initListview(){
         if(spinnerColumns.size() != 0){
             if(activeColumn.isCheckbox()){
-                listView.setAdapter(boolAdapter);
-                boolAdapter.notifyDataSetChanged();
+                listView.setAdapter(customBoolAdapter);
+                customBoolAdapter.notifyDataSetChanged();
             }
             else
             {
-                listView.setAdapter(stringAdapter);
-                stringAdapter.notifyDataSetChanged();
+                listView.setAdapter(customStringAdapter);
+                customStringAdapter.notifyDataSetChanged();
             }
         }
         else
@@ -495,13 +465,13 @@ public class PresenceFragment extends Fragment implements EventFragment.EventFra
     }
     private void updateListview(){
         initAdapterObjectList(valueList, event);
-        boolAdapter.notifyDataSetChanged();
-        stringAdapter.notifyDataSetChanged();
+        customBoolAdapter.notifyDataSetChanged();
+        customStringAdapter.notifyDataSetChanged();
     }
 
     public void initAdapterObjectList(List<AdapterObject> adapterObjects, Event document) {
     adapterObjects.clear();
-    List<AttendantEvent> persons = Queries.getPersonCell(document);
+    List<AttendantEvent> persons = Queries.getAttendCell(document);
     for (AttendantEvent pDI:persons)
     {
         AdapterObject newObject = new AdapterObject();

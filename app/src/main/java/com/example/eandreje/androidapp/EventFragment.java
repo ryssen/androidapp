@@ -15,12 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
-//import com.google.android.gms.common.api.GoogleApiClient;
-//import com.google.android.gms.drive.Drive;
-//import com.google.android.gms.drive.DriveId;
-//import com.google.android.gms.drive.OpenFileActivityBuilder;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +36,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
     private ArrayAdapter<Event> adapter;
     private List<Event> eventList;
     private Category category;
-    private ListView listView;
     private Event eventClicked;
-    private boolean importExport = false;
-    String exportCSV;
-   // private GoogleApiClient googleApiClient;
-    public static final int requestcode = 1;
     public EventFragmentListener eventFragmentListener;
     private OptionsDialogFragment optionsDialogFragment;
     private CreateCSV createCsv;
@@ -58,7 +47,6 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
         EventFragment fragment = new EventFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("listobject", category);
-      //  bundle.putParcelable("googleApiClient", (Parcelable) googleApiClient);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,7 +56,6 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
         outState.putParcelable("Event", getArguments().getParcelable("listobject"));
         outState.putParcelable("ActiveDoc", eventClicked);
         outState.putBoolean("State", state);
-        //outState.putParcelable("ActiveColumn", activeColumn);
         super.onSaveInstanceState(outState);
     }
 
@@ -87,7 +74,6 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         category = getArguments().getParcelable("listobject");
-      //  googleApiClient = getArguments().getParcelable("googleApiClient");
     }
 
     @Override
@@ -97,7 +83,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
     }
 
     @Nullable
-    //@Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.document_layout, container, false);
         eventList = new ArrayList<>();
@@ -105,16 +91,13 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
         createCsv = new CreateCSV();
         optionsDialogFragment = new OptionsDialogFragment();
         optionsDialogFragment.setTargetFragment(this, DOCUMENT_CODE);
-        //.listener = this;
-
-        listView = (ListView) view.findViewById(R.id.document_listview);
+        ListView listView = (ListView) view.findViewById(R.id.document_listview);
         adapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, eventList);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 eventClicked = adapter.getItem(position);
-
                 eventFragmentListener.eventObjectClicked(eventList.get(position));
             }
         });
@@ -132,10 +115,8 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
                 return true;
             }
         });
-
         return view;
     }
-
 
     @Override
     public void onAttach(Activity context) {
@@ -149,7 +130,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.document_actionbar, menu);
+        inflater.inflate(R.menu.event_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -166,8 +147,6 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
                 bundle.putInt("Caller", R.id.add_doc_icon);
                 inputDialogFragment.setArguments(bundle);
                 inputDialogFragment.setTargetFragment(this, DOCUMENT_CODE);
-
-                //inputDialogFragment.listener = this;
                 inputDialogFragment.show(getFragmentManager(), "NewDocDialog");
                 break;
             case R.id.second_view_up_cloud:
@@ -180,9 +159,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
                 bundle.putParcelable("ParentAct_export", category);
                 choosedocExport.setArguments(bundle);
                 choosedocExport.setTargetFragment(this, DOCUMENT_CODE);
-                //choosedocExport.listener = this;
                 choosedocExport.show(getFragmentManager(), "ExportDoc");
-
                 break;
             default:
         }
@@ -193,7 +170,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
     public void enteredText(String text, int id) {
         if(text.contentEquals("") || text.contains("\n"))
         {
-            Toast.makeText(getActivity(), "Dokumentnamnet får innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Namnet får ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
         }
         else
         if(!state)
@@ -261,7 +238,7 @@ public class EventFragment extends Fragment implements InputDialogFragment.Input
     }
 
     @Override
-    public void importPers(Event doc)
+    public void importAttendants(Event doc)
     {
         exportFile(doc);
     }

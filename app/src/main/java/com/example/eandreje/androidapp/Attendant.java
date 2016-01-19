@@ -13,13 +13,26 @@ public class Attendant extends Model implements Parcelable{
     @Column(name = "ParentCategory", onDelete = Column.ForeignKeyAction.CASCADE)
     private Category parentCategory;
 
-    public Attendant(){
+    public Attendant() {
         super();
     }
 
-    public Category getParentCategory() {
-        return parentCategory;
+    protected Attendant(Parcel in) {
+        name = in.readString();
+        parentCategory = in.readParcelable(Category.class.getClassLoader());
     }
+
+    public static final Creator<Attendant> CREATOR = new Creator<Attendant>() {
+        @Override
+        public Attendant createFromParcel(Parcel in) {
+            return new Attendant(in);
+        }
+
+        @Override
+        public Attendant[] newArray(int size) {
+            return new Attendant[size];
+        }
+    };
 
     public Attendant(String name, Category parent)
     {
@@ -27,10 +40,6 @@ public class Attendant extends Model implements Parcelable{
         this.name = name;
         this.parentCategory = parent;
 
-    }
-
-    public void setParentCategory(Category parentCategory) {
-        this.parentCategory = parentCategory;
     }
 
     public void setName(String name) {
@@ -49,7 +58,8 @@ public class Attendant extends Model implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(name);
+        dest.writeParcelable(parentCategory, flags);
     }
     public CellValue getColumnContent(Event doc, Columns column){
         return Queries.getSingleCellValue(this, column, doc);

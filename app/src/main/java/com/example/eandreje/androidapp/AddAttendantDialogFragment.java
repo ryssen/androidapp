@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class AddAttendantDialogFragment extends DialogFragment{
     public AddPersonDialogFragmentListener listener;
     private ArrayList<Columns> columnList;
-    private ArrayList<LinearLayout> layoutList;
     private View view;
 
     @NonNull
@@ -31,7 +30,6 @@ public class AddAttendantDialogFragment extends DialogFragment{
         view = inflater.inflate(R.layout.add_person_layout, null);
         LinearLayout parent = (LinearLayout) view.findViewById(R.id.linear3);
         columnList = getArguments().getParcelableArrayList("Columns");
-        layoutList = new ArrayList<>();
         TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
         description.setText(getArguments().getString("DialogDesc"));
 
@@ -42,7 +40,6 @@ public class AddAttendantDialogFragment extends DialogFragment{
                 View checkboxView = inflater.inflate(R.layout.checkbox_view, parent, false);
                 TextView name = (TextView) checkboxView.findViewById(R.id.column_name);
                 name.setText(column.toString());
-                layoutList.add((LinearLayout) checkboxView);
                 parent.addView(checkboxView);
             }
             else
@@ -50,46 +47,39 @@ public class AddAttendantDialogFragment extends DialogFragment{
                 View editTextView = inflater.inflate(R.layout.edit_text_view, parent, false);
                 TextView name = (TextView) editTextView.findViewById(R.id.column_name);
                 name.setText(column.toString());
-                layoutList.add((LinearLayout) editTextView);
                 parent.addView(editTextView);
             }
         }
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Event doc = getArguments().getParcelable("DocParent");
+                Event event = getArguments().getParcelable("DocParent");
                 EditText personName = (EditText) view.findViewById(R.id.new_person_name);
-                Attendant attendant = new Attendant(personName.getText().toString(), doc.getParentCategory());
+                Attendant attendant = new Attendant(personName.getText().toString(), event.getParentCategory());
                 attendant.save();
-                AttendantEvent perDocRelation = new AttendantEvent(attendant, doc);
+                AttendantEvent perDocRelation = new AttendantEvent(attendant, event);
                 perDocRelation.save();
 
-                int i = 0;
                 if (columnList.size() != 0) {
-                    for (LinearLayout view : layoutList) {
-                        Columns column = columnList.get(i);
+                    for (Columns column : columnList) {
                         column.save();
                         if (!column.isCheckbox()) {
                             EditText value = (EditText) view.findViewById(R.id.column_value);
-                            CellValue cellValue = new CellValue(value.getText().toString(), doc, column, attendant);
+                            CellValue cellValue = new CellValue(value.getText().toString(), event, column, attendant);
                             cellValue.save();
-                            i++;
                         } else {
                             CheckBox value = (CheckBox) view.findViewById(R.id.checkbox_column_id);
                             String checked;
-
                             if (value.isChecked())
                                 checked = "true";
                             else
                                 checked = "false";
-
-                            CellValue cellValue = new CellValue(checked, doc, column, attendant);
+                            CellValue cellValue = new CellValue(checked, event, column, attendant);
                             cellValue.save();
-                            i++;
                         }
                     }
                 }
-                listener.newPersonAdded(doc);
+                listener.newPersonAdded(event);
             }
         });
         builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {

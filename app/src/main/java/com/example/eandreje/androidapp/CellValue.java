@@ -31,9 +31,24 @@ public class CellValue extends Model implements Parcelable {
         this.parentAttendant = attendant;
     }
 
-    public Attendant getParentAttendant() {
-        return parentAttendant;
+    protected CellValue(Parcel in) {
+        value = in.readString();
+        parentEvent = in.readParcelable(Event.class.getClassLoader());
+        parentColumn = in.readParcelable(Columns.class.getClassLoader());
+        parentAttendant = in.readParcelable(Attendant.class.getClassLoader());
     }
+
+    public static final Creator<CellValue> CREATOR = new Creator<CellValue>() {
+        @Override
+        public CellValue createFromParcel(Parcel in) {
+            return new CellValue(in);
+        }
+
+        @Override
+        public CellValue[] newArray(int size) {
+            return new CellValue[size];
+        }
+    };
 
     @Override
     public String toString() {
@@ -51,6 +66,9 @@ public class CellValue extends Model implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(value);
+        dest.writeParcelable(parentEvent, flags);
+        dest.writeParcelable(parentColumn, flags);
+        dest.writeParcelable(parentAttendant, flags);
     }
 }

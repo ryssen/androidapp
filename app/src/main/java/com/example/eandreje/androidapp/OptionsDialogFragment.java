@@ -16,7 +16,7 @@ import java.util.List;
 
 public class OptionsDialogFragment extends android.support.v4.app.DialogFragment {
     public OptionsDialogFragmentListener listener;
-    private List<Event> docList;
+    private List<Event> eventList;
 
     public OptionsDialogFragment(){
     }
@@ -32,12 +32,11 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
         listener = (OptionsDialogFragmentListener) getTargetFragment();
         LayoutInflater inflate = getActivity().getLayoutInflater();
         View view = inflate.inflate(R.layout.act_options_layout, null);
-
-        docList = new ArrayList<>();
+        eventList = new ArrayList<>();
         ListView listView = (ListView) view.findViewById(R.id.listView3);
         ArrayList<String> optionsList = new ArrayList<>();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, optionsList);
-        ArrayAdapter<Event> docAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, docList);
+        ArrayAdapter<Event> eventAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, eventList);
         final TextView description = (TextView)view.findViewById(R.id.default_dialog_description);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -45,37 +44,33 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
             builder.setTitle(getArguments().getString("DialogTitle"));
             description.setText(getArguments().getString("DialogDesc"));
         }
-//        builder.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//            }
-//        });
+
         switch (getArguments().getInt("Caller")){
             case R.id.listView:
                 optionsList.add("Radera");
                 listView.setAdapter(adapter);
                 break;
             case R.id.second_view_up_cloud:
-                docList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct_export"));
-                listView.setAdapter(docAdapter);
-                docAdapter.clear();
-                docAdapter.addAll(docList);
+                eventList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct_export"));
+                listView.setAdapter(eventAdapter);
+                eventAdapter.clear();
+                eventAdapter.addAll(eventList);
                 break;
             case R.id.import_persons:
-                docList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct"));
+                eventList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct"));
                 Event doc1 = getArguments().getParcelable("ActiveDoc");
-                docList.remove(doc1);
-                listView.setAdapter(docAdapter);
-                docAdapter.clear();
-                docAdapter.addAll(docList);
+                eventList.remove(doc1);
+                listView.setAdapter(eventAdapter);
+                eventAdapter.clear();
+                eventAdapter.addAll(eventList);
                 break;
             case R.id.import_persons_columns:
-                docList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct"));
+                eventList = Queries.getEvents((Category) getArguments().getParcelable("ParentAct"));
                 Event doc2 = getArguments().getParcelable("ActiveDoc");
-                docList.remove(doc2);
-                listView.setAdapter(docAdapter);
-                docAdapter.clear();
-                docAdapter.addAll(docList);
+                eventList.remove(doc2);
+                listView.setAdapter(eventAdapter);
+                eventAdapter.clear();
+                eventAdapter.addAll(eventList);
                 break;
             default:
                 optionsList.add("Ändra namn");
@@ -88,15 +83,15 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (getArguments().getInt("Caller")) {
                     case R.id.import_persons:
-                        listener.importPers(docList.get(position));
+                        listener.importAttendants(eventList.get(position));
                         dismiss();
                         break;
                     case R.id.second_view_up_cloud:
-                        listener.importPers(docList.get(position));
+                        listener.importAttendants(eventList.get(position));
                         dismiss();
                         break;
                     case R.id.import_persons_columns:
-                        listener.importPersCol(docList.get(position));
+                        listener.importPersCol(eventList.get(position));
                         dismiss();
                         break;
                     default:
@@ -111,7 +106,7 @@ public class OptionsDialogFragment extends android.support.v4.app.DialogFragment
 
     public interface OptionsDialogFragmentListener{
         void getChoice(int pos);
-        void importPers(Event doc);
+        void importAttendants(Event doc);
         void importPersCol(Event doc);
     }
 }

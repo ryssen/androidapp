@@ -38,7 +38,6 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.In
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable("ActiveEvent", itemClicked);
-        //outState.putParcelable("ActiveColumn", activeColumn);
         super.onSaveInstanceState(outState);
     }
 
@@ -78,11 +77,10 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.In
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activities_layout, container, false);
+        View view = inflater.inflate(R.layout.categories_layout, container, false);
         getActivity().supportInvalidateOptionsMenu();
         optionsDialog = new OptionsDialogFragment();
         optionsDialog.setTargetFragment(this, ACTIVITY_CODE);
-        //optionsDialog.listener = this;
         categoryList = Queries.getCategories();
         categoryArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.row_layout, categoryList);
         ListView categoryListView = (ListView) view.findViewById(R.id.listView);
@@ -127,7 +125,6 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.In
                 bundle.putString("DialogDesc", DIALOG_NEW_CATEGORY);
                 bundle.putInt("Caller", R.id.add_activity_icon);
                 inputDialogFragment.setArguments(bundle);
-                //inputDialogFragment.listener = this;
                 inputDialogFragment.setTargetFragment(this, ACTIVITY_CODE);
                 inputDialogFragment.show(getFragmentManager(), "dialog");
                 break;
@@ -136,13 +133,12 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.In
         return super.onOptionsItemSelected(item);
     }
 
-    //Recieved name from userinput in dialog
     @Override
     public void enteredText(String text, int id) {
         boolean nameExists = false;
         if(text.contentEquals("") || text.contains("\n") || nameExists)
         {
-            Toast.makeText(getActivity(), "Namnet måste vara unikt, ej innehålla mellanslag eller flera rader", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Namnet får ej innehålla mellanslag eller ny rad", Toast.LENGTH_LONG).show();
         }
         else
         {
@@ -182,7 +178,6 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.In
                 InputDialogFragment inputDialogFragment = new InputDialogFragment();
                 bundle.putInt("Layout", R.layout.default_dialog);
                 bundle.putString("DialogDesc", DIALOG_CHANGE_CAT_NAME);
-                //inputDialogFragment.listener = this;
                 inputDialogFragment.setTargetFragment(this, ACTIVITY_CODE);
                 inputDialogFragment.setArguments(bundle);
                 inputDialogFragment.show(getFragmentManager(), "dialog");
@@ -195,12 +190,11 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.In
     }
 
     @Override
-    public void importPers(Event doc) {
+    public void importAttendants(Event doc) {
     }
 
     @Override
     public void importPersCol(Event doc) {
-
     }
 
     public interface CategoryFragmentListener {
@@ -211,10 +205,6 @@ public class CategoryFragment extends Fragment implements InputDialogFragment.In
         categoryList = Queries.getCategories();
         categoryArrayAdapter.clear();
         categoryArrayAdapter.addAll(categoryList);
-    }
-
-    public void overViewLayout(AdapterObject list){
-
     }
 }
 
